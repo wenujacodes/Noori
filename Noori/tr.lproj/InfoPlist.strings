@@ -11,4 +11,3 @@
 "NSLocationWhenInUseUsageDescription" = "Noori, doğru kilit ekranı hava durumunu göstermek için konumunuzu kullanır.";
 "NSRemindersUsageDescription" = "Noori, anımsatıcılarınızı göstermek için Anımsatıcılar erişimine ihtiyaç duyar.";
 "NSAudioCaptureUsageDescription" = "Noori, gerçek zamanlı müzik dalga biçimi görselleştiricisini göstermek için ses yakalama iznine ihtiyaç duyar.";
-"NSScreenCaptureUsageDescription" = "Noori, yapay zeka asistanı özelliği için ekran görüntüleri yakalamak üzere ekran kaydı iznine ihtiyaç duyar.";

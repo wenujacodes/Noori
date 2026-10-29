@@ -208,7 +208,6 @@ func applyProfileSettings(_ profiles: Set<String>) {
     if isDeveloper {
         Defaults[.enableStatsFeature] = true
         Defaults[.enableTimerFeature] = true
-        Defaults[.enableScreenAssistant] = true
         Defaults[.showMirror] = false
         Defaults[.enableMinimalisticUI] = false
     }
@@ -222,7 +221,6 @@ func applyProfileSettings(_ profiles: Set<String>) {
         Defaults[.enableStatsFeature] = false
         Defaults[.enableTimerFeature] = false
         Defaults[.enableMinimalisticUI] = false
-        Defaults[.enableScreenAssistant] = false
     }
     
     // Light Use Profile Settings
@@ -233,7 +231,6 @@ func applyProfileSettings(_ profiles: Set<String>) {
         Defaults[.enableStatsFeature] = false
         Defaults[.enableTimerFeature] = true
         Defaults[.inlineHUD] = true
-        Defaults[.enableScreenAssistant] = false
         Defaults[.enableLyrics] = false
     }
     
@@ -245,7 +242,6 @@ func applyProfileSettings(_ profiles: Set<String>) {
         Defaults[.showMirror] = false
         Defaults[.enableStatsFeature] = false
         Defaults[.enableMinimalisticUI] = false
-        Defaults[.enableScreenAssistant] = false
     }
     
     // If Light Use is NOT selected but others are, ensure minimalistic is OFF
