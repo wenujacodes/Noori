@@ -9,11 +9,6 @@ PROJECT = ROOT / "Noori.xcodeproj" / "project.pbxproj"
 
 
 class PrivacyConfigurationTests(unittest.TestCase):
-    def test_camera_capture_is_explicitly_entitled(self):
-        entitlements = plistlib.loads(ENTITLEMENTS.read_bytes())
-
-        self.assertTrue(entitlements.get("com.apple.security.device.camera"))
-
     def test_media_players_are_authorized_for_apple_events(self):
         project = PROJECT.read_text()
         entitlements = plistlib.loads(ENTITLEMENTS.read_bytes())

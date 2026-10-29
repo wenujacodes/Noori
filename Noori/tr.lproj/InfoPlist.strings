@@ -3,7 +3,6 @@
 "NSBluetoothAlwaysUsageDescription" = "Noori, ses aygıtları bağlandığında bunları algılamak ve HUD'da pil durumlarını göstermek için Bluetooth erişimine ihtiyaç duyar.";
 "NSCalendarsFullAccessUsageDescription" = "Takvim etkinliklerini çentik içinde gösterir.";
 "NSCalendarsUsageDescription" = "Takvim modu için gereklidir.";
-"NSCameraUsageDescription" = "Ayna modu için kameranıza ihtiyaç duyuyoruz.";
 "NSDesktopFolderUsageDescription" = "Noori, ekran görüntülerini masaüstünüze kaydetmek için erişime ihtiyaç duyar.";
 "NSDocumentsFolderUsageDescription" = "Noori, rafa sürüklenen dosyaları kaydetmek ve okumak için erişime ihtiyaç duyar.";
 "NSDownloadsFolderUsageDescription" = "Noori, İndirilenler klasöründeki dosyaları okumak için erişime ihtiyaç duyar.";

@@ -613,7 +613,6 @@
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Noori needs Bluetooth access to detect when audio devices connect and display their battery status in the HUD.";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Show calender events inside the notch";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Need for Calendar Mode";
-				INFOPLIST_KEY_NSCameraUsageDescription = "We need your camera for Mirror mode";
 				INFOPLIST_KEY_NSDesktopFolderUsageDescription = "Noori needs access to save screenshots to your desktop.";
 				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "Noori needs access to save and read shelf dragged files.";
 				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "Noori needs access to read files in the downloads folder.";
@@ -688,7 +687,6 @@
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Noori needs Bluetooth access to detect when audio devices connect and display their battery status in the HUD.";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Show calender events inside the notch";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Need for Calendar Mode";
-				INFOPLIST_KEY_NSCameraUsageDescription = "We need your camera for Mirror mode";
 				INFOPLIST_KEY_NSDesktopFolderUsageDescription = "Noori needs access to save screenshots to your desktop.";
 				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "Noori needs access to save and read shelf dragged files.";
 				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "Noori needs access to read files in the downloads folder.";
