@@ -51,7 +51,6 @@ struct TabSelectionView: View {
     @Default(.quickShareProvider) private var quickShareProvider
     @State private var showQuickSharePopover = false
     @Default(.enableTimerFeature) var enableTimerFeature
-    @Default(.enableStatsFeature) var enableStatsFeature
     @Default(.timerDisplayMode) var timerDisplayMode
     @Default(.enableThirdPartyExtensions) private var enableThirdPartyExtensions
     @Default(.enableExtensionNotchExperiences) private var enableExtensionNotchExperiences
@@ -76,10 +75,6 @@ struct TabSelectionView: View {
             tabsArray.append(TabModel(label: "Timer", icon: "timer", view: .timer))
         }
 
-        // Stats tab only shown when stats feature is enabled
-        if Defaults[.enableStatsFeature] {
-            tabsArray.append(TabModel(label: "Stats", icon: "chart.xyaxis.line", view: .stats))
-        }
 
 
         if extensionTabsEnabled {

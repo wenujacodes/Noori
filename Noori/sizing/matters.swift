@@ -78,11 +78,6 @@ func enabledStandardTabCount() -> Int {
         count += 1
     }
 
-    // Stats tab
-    if Defaults[.enableStatsFeature] {
-        count += 1
-    }
-
     return count
 }
 
@@ -117,8 +112,6 @@ private let minimalisticLyricsExtraHeight: CGFloat = 40
 let minimalisticTimerCountdownTopPadding: CGFloat = 12
 let minimalisticTimerCountdownContentHeight: CGFloat = 82
 let minimalisticTimerCountdownBlockHeight: CGFloat = minimalisticTimerCountdownTopPadding + minimalisticTimerCountdownContentHeight
-let statsSecondRowContentHeight: CGFloat = 120
-let statsGridSpacingHeight: CGFloat = 12
 let notchShadowPaddingStandard: CGFloat = 18
 let notchShadowPaddingMinimalistic: CGFloat = 12
 
@@ -150,37 +143,6 @@ func minimalisticOpenNotchSize(isNooriMode: Bool) -> CGSize {
 let cornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 19, bottom: 24), closed: (top: 6, bottom: 14))
 let minimalisticCornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 35, bottom: 35), closed: cornerRadiusInsets.closed)
 
-func statsAdjustedNotchSize(
-    from baseSize: CGSize,
-    isStatsTabActive: Bool,
-    secondRowProgress: CGFloat
-) -> CGSize {
-    guard isStatsTabActive, Defaults[.enableStatsFeature] else {
-        return baseSize
-    }
-
-    let enabledGraphsCount = [
-        Defaults[.showCpuGraph],
-        Defaults[.showMemoryGraph],
-        Defaults[.showGpuGraph],
-        Defaults[.showNetworkGraph],
-        Defaults[.showDiskGraph]
-    ].filter { $0 }.count
-
-    guard enabledGraphsCount >= 4 else {
-        return baseSize
-    }
-
-    let clampedProgress = max(0, min(secondRowProgress, 1))
-    guard clampedProgress > 0 else {
-        return baseSize
-    }
-
-    var adjustedSize = baseSize
-    let extraHeight = (statsSecondRowContentHeight + statsGridSpacingHeight) * clampedProgress
-    adjustedSize.height += extraHeight
-    return adjustedSize
-}
 
 func notchShadowPaddingValue(isMinimalistic: Bool) -> CGFloat {
     isMinimalistic ? notchShadowPaddingMinimalistic : notchShadowPaddingStandard

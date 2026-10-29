@@ -104,7 +104,7 @@ class NooriViewCoordinator: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var hoverOpenSuppressedUntil: Date = .distantPast
     
-    private static let tabOrder: [NotchViews] = [.home, .shelf, .timer, .stats, .extensionExperience]
+    private static let tabOrder: [NotchViews] = [.home, .shelf, .timer, .extensionExperience]
     
     /// Direction of the most recent tab switch (true = forward/right, false = backward/left)
     @Published var tabSwitchForward: Bool = true
@@ -119,11 +119,9 @@ class NooriViewCoordinator: ObservableObject {
             let oldIdx = Self.tabOrder.firstIndex(of: oldValue) ?? 0
             let newIdx = Self.tabOrder.firstIndex(of: currentView) ?? 0
             tabSwitchForward = newIdx >= oldIdx
-            handleStatsTabTransition(from: oldValue, to: currentView)
         }
     }
     
-    @Published var statsSecondRowExpansion: CGFloat = 1
     @Published var selectedExtensionExperienceID: String?
     
     
@@ -228,7 +226,6 @@ class NooriViewCoordinator: ObservableObject {
             Defaults.publisher(.dynamicShelf).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.enableTimerFeature).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.timerDisplayMode).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.enableStatsFeature).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.enableMinimalisticUI).map { _ in () }.eraseToAnyPublisher()
         )
         .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
@@ -249,12 +246,6 @@ class NooriViewCoordinator: ObservableObject {
         hoverOpenSuppressedUntil = Date().addingTimeInterval(max(0, duration))
     }
 
-    private func handleStatsTabTransition(from oldValue: NotchViews, to newValue: NotchViews) {
-        guard oldValue != newValue else { return }
-        if newValue == .stats && Defaults[.enableStatsFeature] {
-            statsSecondRowExpansion = 1
-        }
-    }
 
     private func handleTimerDisplayModeChange(_ mode: TimerDisplayMode) {
         guard mode == .popover, currentView == .timer else { return }
