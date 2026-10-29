@@ -22,7 +22,6 @@ import SwiftUI
 
 struct NooriHeader: View {
     @EnvironmentObject var vm: NooriViewModel
-    @EnvironmentObject var webcamManager: WebcamManager
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var coordinator = NooriViewCoordinator.shared
     @ObservedObject var shelfState = ShelfStateViewModel.shared
@@ -66,22 +65,6 @@ struct NooriHeader: View {
 
             HStack(spacing: 4) {
                 if vm.notchState == .open && !enableMinimalisticUI {
-                    if Defaults[.showMirror] {
-                        Button(action: {
-                            vm.toggleCameraPreview()
-                        }) {
-                            Capsule()
-                                .fill(.black)
-                                .frame(width: 30, height: 30)
-                                .overlay {
-                                    Image(systemName: "web.camera")
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .imageScale(.medium)
-                                }
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
                     
                     if Defaults[.enableTimerFeature] && timerDisplayMode == .popover {
                         Button(action: {
@@ -212,5 +195,4 @@ private extension NooriHeader {
 #Preview {
     NooriHeader()
         .environmentObject(NooriViewModel())
-        .environmentObject(WebcamManager.shared)
 }
