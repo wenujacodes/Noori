@@ -28,7 +28,6 @@ import Defaults
 enum OnboardingStep {
     case welcome
     case musicPermission
-    case profileSelection
     case finished
 }
 
@@ -54,17 +53,7 @@ struct OnboardingView: View {
             case .musicPermission:
                 MusicControllerSelectionView(
                     onContinue: {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            step = .profileSelection
-                        }
-                    }
-                )
-                .transition(.opacity)
-                
-            case .profileSelection:
-                ProfileSelectionView(
-                    onContinue: { profiles in
-                        applyProfileSettings(profiles)
+                        applyDefaultSetup()
                         withAnimation(.easeInOut(duration: 0.6)) {
                             step = .finished
                         }
@@ -101,8 +90,17 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - Permission Request Logic
+}
 
+/// First-run setup: every install gets the full Noori experience (standard notch UI,
+/// menu bar icon, haptics) and a display style that matches the Mac's screen.
+func applyDefaultSetup() {
+    Defaults[.enableMinimalisticUI] = false
+    Defaults[.menubarIcon] = true
+    Defaults[.enableHaptics] = true
 
+    // Notch Macs keep the standard notch; Macs without one get the Noori pill.
+    let hasNotch = (NSScreen.main?.safeAreaInsets.top ?? 0) > 0
+    Defaults[.externalDisplayStyle] = hasNotch ? .notch : .noori
 }
 
