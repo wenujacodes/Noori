@@ -120,7 +120,6 @@ class NooriViewModel: NSObject, ObservableObject {
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 guard let self else { return }
-                guard Defaults[.enableMinimalisticUI] else { return }
                 let updatedTarget = self.calculateDynamicNotchSize()
                 guard self.notchState == .open else { return }
                 guard self.notchSize != updatedTarget else { return }
@@ -129,7 +128,7 @@ class NooriViewModel: NSObject, ObservableObject {
                 }
                 if let delegate = AppDelegate.shared {
                     delegate.ensureWindowSize(
-                        addShadowPadding(to: updatedTarget, isMinimalistic: Defaults[.enableMinimalisticUI]),
+                        addShadowPadding(to: updatedTarget, isMinimalistic: true),
                         animated: true,
                         force: false
                     )
@@ -137,28 +136,6 @@ class NooriViewModel: NSObject, ObservableObject {
             }
             .store(in: &cancellables)
 
-        Defaults.publisher(.openNotchWidth, options: [])
-            .map { $0.newValue }
-            .removeDuplicates()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                guard self.notchState == .open else { return }
-                guard !Defaults[.enableMinimalisticUI] else { return }
-                let updatedTarget = self.calculateDynamicNotchSize()
-                guard self.notchSize != updatedTarget else { return }
-                withAnimation(.smooth) {
-                    self.notchSize = updatedTarget
-                }
-                if let delegate = AppDelegate.shared {
-                    delegate.ensureWindowSize(
-                        addShadowPadding(to: updatedTarget, isMinimalistic: false),
-                        animated: true,
-                        force: false
-                    )
-                }
-            }
-            .store(in: &cancellables)
     }
 
     
@@ -218,7 +195,7 @@ class NooriViewModel: NSObject, ObservableObject {
         let applyWindowResize: () -> Void = {
             guard let delegate = AppDelegate.shared else { return }
             delegate.ensureWindowSize(
-                addShadowPadding(to: targetSize, isMinimalistic: Defaults[.enableMinimalisticUI]),
+                addShadowPadding(to: targetSize, isMinimalistic: true),
                 animated: false,
                 force: true
             )
@@ -238,7 +215,7 @@ class NooriViewModel: NSObject, ObservableObject {
     }
     
     private func calculateDynamicNotchSize() -> CGSize {
-        let baseSize = Defaults[.enableMinimalisticUI] ? minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: screen)) : openNotchSize
+        let baseSize = minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: screen))
         return baseSize
     }
 

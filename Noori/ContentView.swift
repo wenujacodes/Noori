@@ -69,7 +69,7 @@ struct ContentView: View {
     
     // Dynamic sizing based on view type and graph count with smooth transitions
     var dynamicNotchSize: CGSize {
-        let baseSize = Defaults[.enableMinimalisticUI] ? minimalisticOpenNotchSize(isNooriMode: isNooriMode) : openNotchSize
+        let baseSize = minimalisticOpenNotchSize(isNooriMode: isNooriMode)
         
         // When inline sneak peek is active in closed notch, use the wider inline width
         // so the outer maxWidth frame doesn't clip the expanded content
@@ -91,7 +91,7 @@ struct ContentView: View {
                 ? InlineHUD.airPodsListeningModeWidth(
                     closedNotchWidth: vm.closedNotchSize.width,
                     gestureProgress: gestureProgress,
-                    minimalistic: Defaults[.enableMinimalisticUI]
+                    minimalistic: true
                 ) + notchHorizontalPadding * 2
                 : 460
             return CGSize(width: max(baseSize.width, inlineWidth), height: baseSize.height)
@@ -160,7 +160,6 @@ struct ContentView: View {
     @Default(.useMusicVisualizer) var useMusicVisualizer
     @Default(.musicControlWindowEnabled) var musicControlWindowEnabled
     @Default(.useModernCloseAnimation) var useModernCloseAnimation
-    @Default(.enableMinimalisticUI) var enableMinimalisticUI
 
     private static let musicControlLogFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -199,13 +198,11 @@ struct ContentView: View {
 
     
     
+    /// The floating media controls window belonged to the wide notch layout, which Noori no longer has.
     private var standardMediaControlsActive: Bool {
-        showStandardMediaControls && !enableMinimalisticUI
+        false
     }
 
-    private var closedMusicContentEnabled: Bool {
-        enableMinimalisticUI || showStandardMediaControls
-    }
 
     private var isMusicHUDDeferredAfterUnlock: Bool {
         lockScreenManager.shouldDelayPostUnlockMusicHUD
@@ -248,7 +245,6 @@ struct ContentView: View {
         vm.notchState == .closed
             && hasActiveMusicSnapshot
             && coordinator.musicLiveActivityEnabled
-            && closedMusicContentEnabled
             && !vm.hideOnClosed
             && !lockScreenManager.isLocked
             && !isMusicHUDDeferredAfterUnlock
@@ -267,15 +263,12 @@ struct ContentView: View {
     
     // Use minimalistic corner radius ONLY when opened, keep normal when closed
     private var activeCornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) {
-        if enableMinimalisticUI {
-            // Keep normal closed corner radius, use minimalistic when opened
-            return (opened: minimalisticCornerRadiusInsets.opened, closed: cornerRadiusInsets.closed)
-        }
-        return cornerRadiusInsets
+        // Normal closed corner radius, minimalistic radius when opened
+        return (opened: minimalisticCornerRadiusInsets.opened, closed: cornerRadiusInsets.closed)
     }
     
     private var currentShadowPadding: CGFloat {
-        notchShadowPaddingValue(isMinimalistic: enableMinimalisticUI)
+        notchShadowPaddingValue(isMinimalistic: true)
     }
 
     private var currentNotchShape: NotchShape {
@@ -333,9 +326,7 @@ struct ContentView: View {
     private var currentPillShape: NooriPillShape {
         let radius: CGFloat
         if vm.notchState == .open {
-            radius = enableMinimalisticUI
-                ? minimalisticCornerRadiusInsets.opened.top
-                : nooriPillCornerRadiusInsets.opened
+            radius = minimalisticCornerRadiusInsets.opened.top
         } else {
             // Use half the closed height for a true capsule shape
             radius = max(vm.closedNotchSize.height / 2, nooriPillCornerRadiusInsets.closed.standard)
@@ -554,16 +545,13 @@ struct ContentView: View {
                 Button("Settings") {
                     SettingsWindowController.shared.showWindow()
                 }
-//                Button("Edit") { // Doesnt work....
-//                    let dn = DynamicNotch(content: EditPanelView())
-//                    dn.toggle()
-//                }
-//                #if DEBUG
-//                .disabled(false)
-//                #else
-//                .disabled(true)
-//                #endif
-//                .keyboardShortcut("E", modifiers: .command)
+                Divider()
+                Button("Restart Noori") {
+                    restartNoori()
+                }
+                Button("Quit Noori") {
+                    NSApplication.shared.terminate(nil)
+                }
             }
     }
 
@@ -675,9 +663,6 @@ struct ContentView: View {
             .onChange(of: showStandardMediaControls) { _, _ in
                 handleStandardMediaControlsAvailabilityChange()
             }
-            .onChange(of: enableMinimalisticUI) { _, _ in
-                handleStandardMediaControlsAvailabilityChange()
-            }
             .onChange(of: gestureProgress) { _, _ in
                 if shouldShowMusicControlWindow() {
                     enqueueMusicControlWindowSync(forceRefresh: true, delay: 0.05)
@@ -786,7 +771,7 @@ struct ContentView: View {
                         PrivacyLiveActivity()
                       } else if vm.notchState == .open {
                           NooriHeader()
-                              .frame(height: (Defaults[.enableMinimalisticUI] && isNooriMode) ? nil : max(24, vm.effectiveClosedNotchHeight))
+                              .frame(height: isNooriMode ? nil : max(24, vm.effectiveClosedNotchHeight))
                        } else {
                            Rectangle().fill(.clear).frame(width: vm.closedNotchSize.width - 20, height: vm.effectiveClosedNotchHeight)
                        }
@@ -1141,7 +1126,6 @@ struct ContentView: View {
     private var isClosedMusicGestureContext: Bool {
         vm.notchState == .closed
             && coordinator.musicLiveActivityEnabled
-            && closedMusicContentEnabled
             && !vm.hideOnClosed
             && !lockScreenManager.isLocked
             && !isMusicHUDDeferredAfterUnlock

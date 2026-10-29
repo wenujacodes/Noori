@@ -63,20 +63,6 @@ func currentRecommendedMinimumNotchWidth() -> CGFloat {
     640
 }
 
-/// Enforces the minimum notch width.
-/// Also clamps to screen width so the notch never exceeds the display.
-/// Only adjusts when not in minimalistic mode.
-func enforceMinimumNotchWidth() {
-    guard !Defaults[.enableMinimalisticUI] else { return }
-    let minWidth = currentRecommendedMinimumNotchWidth()
-    let maxWidth = maxAllowedNotchWidth()
-    var width = Defaults[.openNotchWidth]
-    if width < minWidth { width = minWidth }
-    if width > maxWidth { width = maxWidth }
-    if Defaults[.openNotchWidth] != width {
-        Defaults[.openNotchWidth] = width
-    }
-}
 private let minimalisticBaseOpenNotchSize: CGSize = .init(width: 420, height: 180)
 private let minimalisticLyricsExtraHeight: CGFloat = 40
 /// Bottom padding of the minimalistic player in standard notch mode.

@@ -70,7 +70,7 @@ All app code lives in `Noori/`. The Xcode project uses **synchronized folder gro
 | `NooriViewCoordinator.swift` | Shared coordinator: current tab/view, sneak-peek/HUD state. |
 | `models/` | View models (`NooriViewModel`, `BatteryStatusViewModel`) and **`Constants.swift` = almost all `Defaults.Keys` settings (~350)**. |
 | `managers/` | Singleton managers: `MusicManager`, `SystemHUDManager`/`SystemVolumeManager`/`SystemDisplayManager` (HUDs), `BluetoothAudioManager`, `BatteryActivityManager`, `DoNotDisturbManager`, `PrivacyIndicatorManager`, `ScreenRecordingManager`, `LockScreenManager` (only tracks locked/unlocked state). |
-| `components/` | SwiftUI views by feature (`Notch/`, `Music/`, `Live activities/`, `OSD/`, `Focus/`, `Privacy/`, `Recording/`, `Settings/`, `Onboarding/`, …). The notch has a single Home tab. |
+| `components/` | SwiftUI views by feature (`Notch/`, `Music/`, `Live activities/`, `OSD/`, `Focus/`, `Privacy/`, `Recording/`, `Settings/`, `Onboarding/`, …). The notch has a single Home view and only the compact (former "minimalistic") layout; there is no wide layout, tab bar, or menu bar icon. Settings, Restart and Quit are in the notch's right-click menu. |
 | `MediaControllers/` | Per-player controllers behind `MediaControllerProtocol` (Apple Music, Spotify, YouTube Music, Amazon Music, Now Playing). |
 | `helpers/`, `extensions/`, `utils/`, `private/` | AppleScript runner, permission stores, private display/brightness APIs (`CGSSpace`, DisplayServices, CoreBrightness), SMC/IOReport. |
 | `audio/`, `metal/` | Real-time audio tap + FFT visualizer (C++ via Obj-C++ bridge) and Metal shader. |

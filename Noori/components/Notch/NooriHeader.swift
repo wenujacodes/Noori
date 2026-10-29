@@ -24,7 +24,6 @@ struct NooriHeader: View {
     @EnvironmentObject var vm: NooriViewModel
     @ObservedObject var coordinator = NooriViewCoordinator.shared
     @ObservedObject var doNotDisturbManager = DoNotDisturbManager.shared
-    @Default(.enableMinimalisticUI) var enableMinimalisticUI
     
     var body: some View {
         HStack(spacing: 0) {
@@ -41,8 +40,7 @@ struct NooriHeader: View {
             if vm.notchState == .open {
                 let spacerWidth = min(vm.closedNotchSize.width, 300)
                 Rectangle()
-                    .fill(enableMinimalisticUI ? .clear : (NSScreen.screens
-                        .first(where: { $0.localizedName == coordinator.selectedScreen })?.safeAreaInsets.top ?? 0 > 0 ? .black : .clear))
+                    .fill(.clear)
                     .frame(width: spacerWidth)
                     .mask {
                         NotchShape()
@@ -50,40 +48,6 @@ struct NooriHeader: View {
             }
 
             HStack(spacing: 4) {
-                if vm.notchState == .open && !enableMinimalisticUI {
-                    
-                    
-                    if Defaults[.settingsIconInNotch] {
-                        Button(action: {
-                            SettingsWindowController.shared.showWindow()
-                        }) {
-                            Capsule()
-                                .fill(.black)
-                                .frame(width: 30, height: 30)
-                                .overlay {
-                                    Image(systemName: "gear")
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .imageScale(.medium)
-                                }
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                    
-                    // Screen Recording Indicator
-                    if Defaults[.enableScreenRecordingDetection] && Defaults[.showRecordingIndicator] {
-                        RecordingIndicator()
-                            .frame(width: 30, height: 30) // Same size as other header elements
-                    }
-
-                    if Defaults[.enableDoNotDisturbDetection]
-                        && Defaults[.showDoNotDisturbIndicator]
-                        && doNotDisturbManager.isDoNotDisturbActive {
-                        FocusIndicator()
-                            .frame(width: 30, height: 30)
-                            .transition(.opacity)
-                    }
-                }
 
             }
             .font(.system(.headline, design: .rounded))

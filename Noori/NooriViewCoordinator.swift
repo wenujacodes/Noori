@@ -89,7 +89,7 @@ class NooriViewCoordinator: ObservableObject {
     
     @Published var currentView: NotchViews = .home {
         didSet {
-            if Defaults[.enableMinimalisticUI] && currentView != .home {
+            if currentView != .home {
                 currentView = .home
                 return
             }
@@ -118,26 +118,6 @@ class NooriViewCoordinator: ObservableObject {
     
     private init() {
         selectedScreen = preferredScreen
-        Defaults.publisher(.enableMinimalisticUI)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] change in
-                self?.handleMinimalisticModeChange(change.newValue)
-            }
-            .store(in: &cancellables)
-
-        // Observe layout settings to enforce minimum notch width
-        Publishers.MergeMany(
-            Defaults.publisher(.showStandardMediaControls).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.enableMinimalisticUI).map { _ in () }.eraseToAnyPublisher()
-        )
-        .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
-        .sink { _ in
-            enforceMinimumNotchWidth()
-        }
-        .store(in: &cancellables)
-
-        // Enforce minimum width on launch for existing configurations
-        enforceMinimumNotchWidth()
     }
 
     var isHoverOpenSuppressed: Bool {
@@ -151,14 +131,6 @@ class NooriViewCoordinator: ObservableObject {
 
 
 
-    private func handleMinimalisticModeChange(_ isEnabled: Bool) {
-        guard isEnabled else { return }
-        if currentView != .home {
-            withAnimation(.smooth) {
-                currentView = .home
-            }
-        }
-    }
 
 
 

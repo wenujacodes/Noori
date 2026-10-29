@@ -86,17 +86,14 @@ struct OnboardingView: View {
 
             Button("Later", role: .cancel) {}
         } message: {
-            Text("This is optional. You can change it any time from the menu bar.")
+            Text("This is optional. You can change it any time in Settings.")
         }
     }
 
 }
 
-/// First-run setup: every install gets the full Noori experience (standard notch UI,
-/// menu bar icon, haptics) and a display style that matches the Mac's screen.
+/// First-run setup: haptics on, and a display style that matches the Mac's screen.
 func applyDefaultSetup() {
-    Defaults[.enableMinimalisticUI] = false
-    Defaults[.menubarIcon] = true
     Defaults[.enableHaptics] = true
 
     // Notch Macs keep the standard notch; Macs without one get the Noori pill.

@@ -111,7 +111,6 @@ struct InlineHUD: View {
     @Default(.showBluetoothBatteryPercentageText) var showBluetoothBatteryPercentageText
     @Default(.showBluetoothDeviceNameMarquee) var showBluetoothDeviceNameMarquee
     @Default(.useBluetoothHUD3DIcon) var useBluetoothHUD3DIcon
-    @Default(.enableMinimalisticUI) var enableMinimalisticUI
     @Default(.showCapsLockLabel) var showCapsLockLabel
     @Default(.capsLockIndicatorTintMode) var capsLockTintMode
     @ObservedObject var bluetoothManager = BluetoothAudioManager.shared
@@ -144,16 +143,16 @@ struct InlineHUD: View {
         let baseInfoWidth: CGFloat = {
             if type == .bluetoothAudio {
                 if isListeningModeEvent {
-                    return enableMinimalisticUI ? 36 : 44
+                    return 36
                 }
                 if showBluetoothDeviceNameMarquee {
-                    return enableMinimalisticUI ? 96 : 132
+                    return 96
                 }
-                return enableMinimalisticUI ? 56 : 64
+                return 56
             }
 
             if type == .capsLock && !showCapsLockLabel {
-                return enableMinimalisticUI ? 48 : 56
+                return 48
             }
 
             return 92
@@ -164,16 +163,16 @@ struct InlineHUD: View {
             let minimum: CGFloat = {
                 if type == .bluetoothAudio {
                     if isListeningModeEvent {
-                        return enableMinimalisticUI ? 32 : 38
+                        return 32
                     }
                     if showBluetoothDeviceNameMarquee {
-                        return enableMinimalisticUI ? 84 : 112
+                        return 84
                     }
-                    return enableMinimalisticUI ? 48 : 60
+                    return 48
                 }
 
                 if type == .capsLock && !showCapsLockLabel {
-                    return enableMinimalisticUI ? 36 : 44
+                    return 36
                 }
 
                 return 88
@@ -185,21 +184,21 @@ struct InlineHUD: View {
             if type == .bluetoothAudio {
                 if !hasBatteryLevel {
                     if isListeningModeEvent {
-                        return enableMinimalisticUI ? 136 : 180
+                        return 136
                     }
-                    return showBluetoothDeviceNameMarquee ? (enableMinimalisticUI ? 88 : 110) : (enableMinimalisticUI ? 66 : 80)
+                    return showBluetoothDeviceNameMarquee ? 88 : 66
                 }
 
                 if useCircularIndicator {
-                    return showBluetoothBatteryPercentageText ? (enableMinimalisticUI ? 92 : 112) : (enableMinimalisticUI ? 64 : 76)
+                    return showBluetoothBatteryPercentageText ? 92 : 64
                 }
 
-                return showBluetoothBatteryPercentageText ? (enableMinimalisticUI ? 100 : 128) : (enableMinimalisticUI ? 84 : 100)
+                return showBluetoothBatteryPercentageText ? 100 : 84
             }
 
             if type == .capsLock {
                 if showCapsLockLabel {
-                    return enableMinimalisticUI ? 76 : 88
+                    return 76
                 }
                 return 0
             }
@@ -213,20 +212,20 @@ struct InlineHUD: View {
                 if type == .bluetoothAudio {
                     if !hasBatteryLevel {
                         if isListeningModeEvent {
-                            return enableMinimalisticUI ? 128 : 172
+                            return 128
                         }
-                        return showBluetoothDeviceNameMarquee ? (enableMinimalisticUI ? 80 : 102) : (enableMinimalisticUI ? 56 : 80)
+                        return showBluetoothDeviceNameMarquee ? 80 : 56
                     }
 
                     if useCircularIndicator {
-                        return showBluetoothBatteryPercentageText ? (enableMinimalisticUI ? 80 : 102) : (enableMinimalisticUI ? 48 : 64)
+                        return showBluetoothBatteryPercentageText ? 80 : 48
                     }
 
-                    return showBluetoothBatteryPercentageText ? (enableMinimalisticUI ? 88 : 112) : (enableMinimalisticUI ? 64 : 82)
+                    return showBluetoothBatteryPercentageText ? 88 : 64
                 }
 
                 if type == .capsLock {
-                    return showCapsLockLabel ? (enableMinimalisticUI ? 60 : 72) : 0
+                    return showCapsLockLabel ? 60 : 0
                 }
 
                 return 90
@@ -350,7 +349,7 @@ struct InlineHUD: View {
                     }
                 } else if (type == .bluetoothAudio) {
                     if let listeningMode {
-                        let listeningModeTextWidth: CGFloat = enableMinimalisticUI ? 96 : 124
+                        let listeningModeTextWidth: CGFloat = 96
 
                         HStack(spacing: 0) {
                             Spacer(minLength: 0)

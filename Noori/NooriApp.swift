@@ -28,7 +28,6 @@ import SkyLightWindow
 @main
 struct NooriApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @Default(.menubarIcon) var showMenuBarIcon
     @Environment(\.openWindow) var openWindow
 
     let updaterController: SPUStandardUpdaterController
@@ -44,33 +43,8 @@ struct NooriApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("Noori", systemImage: "mountain.2.fill", isInserted: $showMenuBarIcon) {
-            Button("Settings") {
-                SettingsWindowController.shared.showWindow()
-            }
-            CheckForUpdatesView(updater: updaterController.updater)
-            Divider()
-            Button("Restart Noori") {
-                guard let bundleIdentifier = Bundle.main.bundleIdentifier else { return }
-
-                let workspace = NSWorkspace.shared
-
-                if let appURL = workspace.urlForApplication(withBundleIdentifier: bundleIdentifier)
-                {
-
-                    let configuration = NSWorkspace.OpenConfiguration()
-                    configuration.createsNewApplicationInstance = true
-
-                    workspace.openApplication(at: appURL, configuration: configuration)
-                }
-
-                NSApplication.shared.terminate(self)
-            }
-            Button("Quit", role: .destructive) {
-                NSApplication.shared.terminate(self)
-            }
-            .keyboardShortcut(KeyEquivalent("Q"), modifiers: .command)
-        }
+        // Noori has no menu bar icon; Settings, Restart and Quit live in the notch's right-click menu.
+        Settings { EmptyView() }
     }
 
     @CommandsBuilder
@@ -96,7 +70,6 @@ extension AppDelegate {
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    var statusItem: NSStatusItem?
     var windows: [NSScreen: NSWindow] = [:]
     var viewModels: [NSScreen: NooriViewModel] = [:]
     var window: NSWindow?
@@ -440,17 +413,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     height += 70
                 }
                 
-                return addShadowPadding(to: CGSize(width: width, height: height), isMinimalistic: Defaults[.enableMinimalisticUI])
+                return addShadowPadding(to: CGSize(width: width, height: height), isMinimalistic: true)
             }
         }
         
-        // Use minimalistic or normal size based on settings
-        var baseSize = Defaults[.enableMinimalisticUI] ? minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: vm.screen)) : openNotchSize
+        let baseSize = minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: vm.screen))
         
         let adjustedContentSize = baseSize
         var result = addShadowPadding(
             to: adjustedContentSize,
-            isMinimalistic: Defaults[.enableMinimalisticUI]
+            isMinimalistic: true
         )
 
         return result
@@ -624,11 +596,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }.store(in: &cancellables)
         
-        // Observe minimalistic UI setting changes - trigger window resize
-        Defaults.publisher(.enableMinimalisticUI, options: []).sink { [weak self] _ in
-            // Update window size IMMEDIATELY (no debouncing) to prevent position shift
-            self?.updateWindowSizeIfNeeded()
-        }.store(in: &cancellables)
         
         // Observe screen recording settings changes
         Defaults.publisher(.enableScreenRecordingDetection, options: []).sink { _ in
@@ -1178,10 +1145,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    @objc func showMenu() {
-        statusItem?.menu?.popUp(positioning: nil, at: NSEvent.mouseLocation, in: nil)
-    }
-    
     @objc func quitAction() {
         NSApplication.shared.terminate(nil)
     }
@@ -1254,26 +1217,16 @@ final class MediaControlsStateCoordinator {
     private var cancellables = Set<AnyCancellable>()
 
     private init() {
-        let masterPublisher = Defaults.publisher(.showStandardMediaControls)
-        let minimalisticPublisher = Defaults.publisher(.enableMinimalisticUI)
-
-        Publishers.CombineLatest(masterPublisher, minimalisticPublisher)
+        Defaults.publisher(.showStandardMediaControls)
             .receive(on: RunLoop.main)
-            .sink { [weak self] masterChange, minimalisticChange in
-                self?.handleStateChange(
-                    showStandard: masterChange.newValue,
-                    minimalistic: minimalisticChange.newValue
-                )
+            .sink { [weak self] change in
+                self?.handleStateChange(showStandard: change.newValue)
             }
             .store(in: &cancellables)
     }
 
-    private func handleStateChange(showStandard: Bool, minimalistic: Bool) {
-        if !showStandard && !minimalistic {
-            cacheAndDisableMusicLiveActivity()
-        } else {
-            restoreMusicLiveActivity(clearCache: showStandard)
-        }
+    private func handleStateChange(showStandard: Bool) {
+        restoreMusicLiveActivity(clearCache: showStandard)
 
         if showStandard {
             restoreMusicControlWindowIfNeeded()
@@ -1282,15 +1235,6 @@ final class MediaControlsStateCoordinator {
         }
     }
 
-    private func cacheAndDisableMusicLiveActivity() {
-        if Defaults[.cachedMusicLiveActivityPreference] == nil {
-            Defaults[.cachedMusicLiveActivityPreference] = NooriViewCoordinator.shared.musicLiveActivityEnabled
-        }
-
-        if NooriViewCoordinator.shared.musicLiveActivityEnabled {
-            NooriViewCoordinator.shared.musicLiveActivityEnabled = false
-        }
-    }
 
     private func restoreMusicLiveActivity(clearCache: Bool) {
         guard let cached = Defaults[.cachedMusicLiveActivityPreference] else { return }
@@ -1323,4 +1267,15 @@ final class MediaControlsStateCoordinator {
         Defaults[.musicControlWindowEnabled] = cached
         Defaults[.cachedMusicControlWindowPreference] = nil
     }
+}
+
+
+/// Relaunches Noori (used by the notch's right-click menu).
+func restartNoori() {
+    guard let bundleIdentifier = Bundle.main.bundleIdentifier,
+          let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else { return }
+    let configuration = NSWorkspace.OpenConfiguration()
+    configuration.createsNewApplicationInstance = true
+    NSWorkspace.shared.openApplication(at: appURL, configuration: configuration)
+    NSApplication.shared.terminate(nil)
 }

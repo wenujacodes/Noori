@@ -112,7 +112,6 @@ private struct SettingsForm<Content: View>: View {
 
 struct SettingsView: View {
     @State private var selectedTab: SettingsTab = .general
-    @Default(.enableMinimalisticUI) var enableMinimalisticUI
 
     let updaterController: SPUStandardUpdaterController?
 
@@ -366,7 +365,6 @@ struct GeneralSettings: View {
     @Default(.automaticallySwitchDisplay) var automaticallySwitchDisplay
     @Default(.enableGestures) var enableGestures
     @Default(.openNotchOnHover) var openNotchOnHover
-    @Default(.enableMinimalisticUI) var enableMinimalisticUI
     @Default(.enableHorizontalMusicGestures) var enableHorizontalMusicGestures
     @Default(.musicGestureBehavior) var musicGestureBehavior
     @Default(.reverseSwipeGestures) var reverseSwipeGestures
@@ -377,27 +375,8 @@ struct GeneralSettings: View {
 
     var body: some View {
         Form {
-            Section {
-                Defaults.Toggle(key: .enableMinimalisticUI) {
-                    Text("Enable Minimalistic UI")
-                }
-                .onChange(of: enableMinimalisticUI) { _, newValue in
-                    if newValue {
-                        // Auto-enable simpler animation mode
-                        Defaults[.useModernCloseAnimation] = true
-                    }
-                }
-
-            } header: {
-                Text("UI Mode")
-            } footer: {
-                Text("Minimalistic mode focuses on media controls and system HUDs, hiding all extra features for a clean, focused experience. Automatically enables simpler animations.")
-            }
 
             Section {
-                Defaults.Toggle(key: .menubarIcon) {
-                    Text("Menubar icon")
-                }
                 LaunchAtLogin.Toggle {
                     Text("Launch at login")
                 }
@@ -1301,7 +1280,6 @@ struct Media: View {
     @Default(.hideNotchOption) var hideNotchOption
     @Default(.enableSneakPeek) private var enableSneakPeek
     @Default(.sneakPeekStyles) var sneakPeekStyles
-    @Default(.enableMinimalisticUI) var enableMinimalisticUI
     @Default(.showShuffleAndRepeat) private var showShuffleAndRepeat
     @Default(.musicSkipBehavior) private var musicSkipBehavior
     @Default(.musicControlWindowEnabled) private var musicControlWindowEnabled
@@ -1321,9 +1299,6 @@ struct Media: View {
     }
 
 
-    private var standardControlsSuppressed: Bool {
-        !showStandardMediaControls && !enableMinimalisticUI
-    }
 
     var body: some View {
         Form {
@@ -1365,33 +1340,6 @@ struct Media: View {
                 SpotifyAuthSettingsSection()
             }
 
-            Section {
-                Defaults.Toggle(key: .showStandardMediaControls) {
-                    Text("Show media controls in Noori")
-                }
-                .disabled(enableMinimalisticUI)
-
-                Defaults.Toggle(key: .autoHideInactiveNotchMediaPlayer) {
-                    Text("Auto-hide inactive notch media player")
-                }
-                .disabled(enableMinimalisticUI || !showStandardMediaControls)
-
-                if enableMinimalisticUI {
-                    Text("Disable Minimalistic UI to configure the standard notch media controls.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else if standardControlsSuppressed {
-                    Text("Standard notch media controls are hidden. Re-enable the toggle above to restore them.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else if !autoHideInactiveNotchMediaPlayer {
-                    Text("When disabled, the notch music player stays visible with placeholder metadata even when playback is inactive.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            } header: {
-                Text("Noori Visibility")
-            }
             Section {
                 Defaults.Toggle(key: .showShuffleAndRepeat) {
                     HStack {
@@ -1436,12 +1384,10 @@ struct Media: View {
                     "Enable music live activity",
                     isOn: $coordinator.musicLiveActivityEnabled.animation()
                 )
-                .disabled(standardControlsSuppressed)
-                .help(standardControlsSuppressed ? "Standard notch media controls are hidden while this toggle is off." : "")
                 Defaults.Toggle(key: .musicControlWindowEnabled) {
                     Text("Show floating media controls")
                 }
-                .disabled(!coordinator.musicLiveActivityEnabled || standardControlsSuppressed)
+                .disabled(!coordinator.musicLiveActivityEnabled)
                 .help("Displays play/pause and skip buttons beside the notch while music is active. Disabled by default.")
                 Toggle("Enable sneak peek", isOn: $enableSneakPeek)
                 Toggle("Show sneak peek on playback changes", isOn: $showSneakPeekOnTrackChange)
@@ -1980,7 +1926,6 @@ struct Appearance: View {
     @Default(.openNotchWidth) var openNotchWidth
     @Default(.closedNotchWidth) var closedNotchWidth
     @Default(.customizePhysicalNotchWidth) var customizePhysicalNotchWidth
-    @Default(.enableMinimalisticUI) var enableMinimalisticUI
     @Default(.externalDisplayStyle) private var externalDisplayStyle
 
     @State private var isIconImporterPresented = false
@@ -2015,9 +1960,6 @@ struct Appearance: View {
     var body: some View {
         Form {
             Section {
-                Defaults.Toggle(key: .settingsIconInNotch) {
-                    Text("Settings icon in notch")
-                }
                 Defaults.Toggle(key: .enableShadow) {
                     Text("Enable window shadow")
                 }
@@ -2273,23 +2215,8 @@ struct Appearance: View {
     @ViewBuilder
     private func notchWidthControls() -> some View {
         Section {
-            let recommendedMin = currentRecommendedMinimumNotchWidth()
-            let dynamicRange = Double(recommendedMin)...900
-            
             let closedRange = Double(80)...400
-            let minimalisticRange = Double(250)...600
 
-            let widthBinding = Binding<Double>(
-                get: { Double(openNotchWidth) },
-                set: { newValue in
-                    let clamped = min(max(newValue, dynamicRange.lowerBound), dynamicRange.upperBound)
-                    let value = CGFloat(clamped)
-                    if openNotchWidth != value {
-                        openNotchWidth = value
-                    }
-                }
-            )
-            
             let closedWidthBinding = Binding<Double>(
                 get: { Double(closedNotchWidth) },
                 set: { newValue in
@@ -2323,44 +2250,6 @@ struct Appearance: View {
                     }
                 }
 
-                Divider().padding(.vertical, 4)
-
-                Slider(
-                    value: widthBinding,
-                    in: dynamicRange,
-                    step: 10
-                ) {
-                    HStack {
-                        Text("Expanded notch width")
-                        Spacer()
-                        Text("\(Int(openNotchWidth)) px")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .disabled(enableMinimalisticUI)
-
-                HStack {
-                    Text("Minimum \(Int(recommendedMin)) px")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    Button("Reset Width") {
-                        openNotchWidth = recommendedMin
-                    }
-                    .disabled(abs(openNotchWidth - recommendedMin) < 0.5)
-                    .buttonStyle(.bordered)
-                }
-
-                let description = enableMinimalisticUI
-                ? String(localized: "Expanded width adjustments apply only to the standard notch layout. Disable Minimalistic UI to edit this value.")
-                : String(localized: "The open notch can be resized between its minimum width and 900 px.")
-
-                Text(description)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .onAppear {
-                enforceMinimumNotchWidth()
             }
         } header: {
             HStack {

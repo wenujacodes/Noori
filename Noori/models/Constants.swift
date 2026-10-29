@@ -322,7 +322,6 @@ enum ColorExtractionMode: String, CaseIterable, Identifiable, Defaults.Serializa
 extension Defaults.Keys {
         // MARK: General
     static let logLevel = Key<LogLevel>("logLevel", default: .none)
-    static let menubarIcon = Key<Bool>("menubarIcon", default: true)
     static let showOnAllDisplays = Key<Bool>("showOnAllDisplays", default: false)
     static let automaticallySwitchDisplay = Key<Bool>("automaticallySwitchDisplay", default: true)
     static let hideNooriFromScreenCapture = Key<Bool>("hideNooriFromScreenCapture", default: false)
@@ -353,7 +352,6 @@ extension Defaults.Keys {
     
         // MARK: Appearance
     static let showEmojis = Key<Bool>("showEmojis", default: false)
-    static let settingsIconInNotch = Key<Bool>("settingsIconInNotch", default: true)
     static let lightingEffect = Key<Bool>("lightingEffect", default: true)
     static let accentColor = Key<Color>("accentColor", default: Color.blue)
     static let enableShadow = Key<Bool>("enableShadow", default: true)
@@ -531,8 +529,6 @@ extension Defaults.Keys {
     // MARK: ImageService
     static let didClearLegacyURLCacheV1 = Key<Bool>("didClearLegacyURLCacheV1", default: false)
     
-    // MARK: Minimalistic UI Mode
-    static let enableMinimalisticUI = Key<Bool>("enableMinimalisticUI", default: false)
     
     // MARK: Lyrics Feature
     static let enableLyrics = Key<Bool>("enableLyrics", default: false)
