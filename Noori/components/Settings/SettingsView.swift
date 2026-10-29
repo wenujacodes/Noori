@@ -100,140 +100,19 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .about: return .secondary
         }
     }
-
-    func highlightID(for title: String) -> String {
-        "\(rawValue)-\(title)"
-    }
-}
-
-private struct SettingsSearchEntry: Identifiable {
-    let tab: SettingsTab
-    let title: String
-    let keywords: [String]
-    let highlightID: String?
-
-    var id: String { "\(tab.rawValue)-\(title)" }
-}
-
-final class SettingsHighlightCoordinator: ObservableObject {
-    struct ScrollRequest: Identifiable, Equatable {
-        let id: String
-        fileprivate let tab: SettingsTab
-    }
-
-    @Published fileprivate var pendingScrollRequest: ScrollRequest?
-    @Published private(set) var activeHighlightID: String?
-
-    private var clearWorkItem: DispatchWorkItem?
-
-    fileprivate func focus(on entry: SettingsSearchEntry) {
-        guard let highlightID = entry.highlightID else { return }
-        pendingScrollRequest = ScrollRequest(id: highlightID, tab: entry.tab)
-        activateHighlight(id: highlightID)
-    }
-
-    func consumeScrollRequest(_ request: ScrollRequest) {
-        guard pendingScrollRequest?.id == request.id else { return }
-        pendingScrollRequest = nil
-    }
-
-    private func activateHighlight(id: String) {
-        activeHighlightID = id
-        clearWorkItem?.cancel()
-
-        let workItem = DispatchWorkItem { [weak self] in
-            guard self?.activeHighlightID == id else { return }
-            self?.activeHighlightID = nil
-        }
-
-        clearWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: workItem)
-    }
-}
-
-private struct SettingsHighlightModifier: ViewModifier {
-    let id: String
-    @EnvironmentObject private var highlightCoordinator: SettingsHighlightCoordinator
-    @State private var animatePulse = false
-
-    private var isActive: Bool {
-        highlightCoordinator.activeHighlightID == id
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .id(id)
-            .background(highlightBackground)
-            .onChange(of: isActive) { _, active in
-                animatePulse = active
-            }
-            .onAppear {
-                if isActive {
-                    animatePulse = true
-                }
-            }
-    }
-
-    private var highlightBackground: some View {
-        RoundedRectangle(cornerRadius: 12, style: .continuous)
-            .stroke(
-                Color.accentColor.opacity(isActive ? (animatePulse ? 0.95 : 0.4) : 0),
-                lineWidth: 2
-            )
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color.accentColor.opacity(isActive ? 0.08 : 0))
-            )
-            .padding(-4)
-            .shadow(color: Color.accentColor.opacity(isActive ? 0.25 : 0), radius: animatePulse ? 8 : 2)
-            .animation(
-                isActive ? .easeInOut(duration: 0.8).repeatForever(autoreverses: true) : .default,
-                value: animatePulse
-            )
-    }
-}
-
-extension View {
-    func settingsHighlight(id: String) -> some View {
-        modifier(SettingsHighlightModifier(id: id))
-    }
-
-    @ViewBuilder
-    func settingsHighlightIfPresent(_ id: String?) -> some View {
-        if let id {
-            settingsHighlight(id: id)
-        } else {
-            self
-        }
-    }
 }
 
 private struct SettingsForm<Content: View>: View {
     let tab: SettingsTab
     @ViewBuilder var content: () -> Content
 
-    @EnvironmentObject private var highlightCoordinator: SettingsHighlightCoordinator
-
     var body: some View {
-        ScrollViewReader { proxy in
-            content()
-                .onReceive(highlightCoordinator.$pendingScrollRequest.compactMap { request -> SettingsHighlightCoordinator.ScrollRequest? in
-                    guard let request, request.tab == tab else { return nil }
-                    return request
-                }) { request in
-                    withAnimation(.easeInOut(duration: 0.45)) {
-                        proxy.scrollTo(request.id, anchor: .center)
-                    }
-                    highlightCoordinator.consumeScrollRequest(request)
-                }
-        }
+        content()
     }
 }
 
 struct SettingsView: View {
     @State private var selectedTab: SettingsTab = .general
-    @State private var searchText: String = ""
-    @StateObject private var highlightCoordinator = SettingsHighlightCoordinator()
     @Default(.enableMinimalisticUI) var enableMinimalisticUI
 
     let updaterController: SPUStandardUpdaterController?
@@ -245,17 +124,6 @@ struct SettingsView: View {
     var body: some View {
         NavigationSplitView {
             VStack(spacing: 12) {
-                SettingsSidebarSearchBar(
-                    text: $searchText,
-                    suggestions: searchSuggestions,
-                    onSuggestionSelected: handleSearchSuggestionSelection
-                )
-                .padding(.horizontal, 12)
-                .padding(.top, 12)
-
-                Divider()
-                    .padding(.horizontal, 12)
-
                 List(selection: selectionBinding) {
                     ForEach(groupedFilteredTabs, id: \.group) { section in
                         Section {
@@ -286,16 +154,8 @@ struct SettingsView: View {
         .navigationSplitViewStyle(.balanced)
         .toolbar(removing: .sidebarToggle)
         .toolbar { toolbarSpacingShim }
-        .environmentObject(highlightCoordinator)
         .formStyle(.grouped)
         .frame(width: 700)
-        .onChange(of: searchText) { _, newValue in
-            let matches = tabsMatchingSearch(newValue)
-            guard let firstMatch = matches.first else { return }
-            if !matches.contains(resolvedSelection) {
-                selectedTab = firstMatch
-            }
-        }
         .background {
             Group {
                 if #available(macOS 26.0, *) {
@@ -344,9 +204,6 @@ struct SettingsView: View {
             .accessibilityHidden(true)
     }
 
-    private var filteredTabs: [SettingsTab] {
-        tabsMatchingSearch(searchText)
-    }
 
     private var selectionBinding: Binding<SettingsTab> {
         Binding(
@@ -418,7 +275,7 @@ struct SettingsView: View {
     /// Groups the filtered tabs into sidebar sections, preserving both
     /// the group order and the per-group tab order from `availableTabs`.
     private var groupedFilteredTabs: [(group: SettingsTabGroup, tabs: [SettingsTab])] {
-        let visible = filteredTabs
+        let visible = availableTabs
         var result: [(group: SettingsTabGroup, tabs: [SettingsTab])] = []
 
         for group in SettingsTabGroup.allCases {
@@ -431,296 +288,11 @@ struct SettingsView: View {
         return result
     }
 
-    private func tabsMatchingSearch(_ query: String) -> [SettingsTab] {
-        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return availableTabs }
 
-        let entryMatches = searchEntries(matching: trimmed)
-        let matchingTabs = Set(entryMatches.map(\.tab))
 
-        return availableTabs.filter { tab in
-            tab.title.localizedCaseInsensitiveContains(trimmed) || matchingTabs.contains(tab)
-        }
-    }
 
-    private var searchSuggestions: [SettingsSearchEntry] {
-        Array(searchEntries(matching: searchText).prefix(8))
-    }
 
-    private func handleSearchSuggestionSelection(_ suggestion: SettingsSearchEntry) {
-        highlightCoordinator.focus(on: suggestion)
-        selectedTab = suggestion.tab
-    }
 
-    private struct SettingsSidebarSearchBar: View {
-        @Binding var text: String
-        let suggestions: [SettingsSearchEntry]
-        let onSuggestionSelected: (SettingsSearchEntry) -> Void
-
-        @FocusState private var isFocused: Bool
-        @State private var hoveredSuggestionID: SettingsSearchEntry.ID?
-
-        var body: some View {
-            VStack(spacing: 6) {
-                searchField
-                if showSuggestions {
-                    suggestionList
-                }
-            }
-            .animation(.easeInOut(duration: 0.15), value: showSuggestions)
-        }
-
-        private var showSuggestions: Bool {
-            isFocused && !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !suggestions.isEmpty
-        }
-
-        private var searchField: some View {
-            HStack(spacing: 6) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(Color.secondary)
-
-                TextField("Search Settings", text: $text)
-                    .textFieldStyle(.plain)
-                    .focused($isFocused)
-                    .onSubmit(triggerFirstSuggestion)
-
-                if !text.isEmpty {
-                    Button {
-                        text = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(Color.secondary)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Clear search")
-                }
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 8)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(.ultraThinMaterial)
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Color.white.opacity(0.08))
-            )
-        }
-
-        private var suggestionList: some View {
-            VStack(spacing: 0) {
-                ForEach(suggestions) { suggestion in
-                    Button {
-                        selectSuggestion(suggestion)
-                    } label: {
-                        HStack(spacing: 10) {
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .fill(suggestion.tab.tint)
-                                .frame(width: 28, height: 28)
-                                .overlay {
-                                    Image(systemName: suggestion.tab.systemImage)
-                                        .font(.system(size: 13, weight: .semibold))
-                                        .foregroundStyle(Color.white)
-                                }
-
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(LocalizedStringKey(suggestion.title))
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .foregroundStyle(Color.primary)
-                                Text(LocalizedStringKey(suggestion.tab.title))
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(Color.secondary)
-                            }
-
-                            Spacer(minLength: 0)
-                        }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 7)
-                        .contentShape(Rectangle())
-                        .background(rowBackground(for: suggestion))
-                    }
-                    .buttonStyle(.plain)
-                    .onHover { hovering in
-                        hoveredSuggestionID = hovering ? suggestion.id : (hoveredSuggestionID == suggestion.id ? nil : hoveredSuggestionID)
-                    }
-
-                    if suggestion.id != suggestions.last?.id {
-                        Divider()
-                            .padding(.leading, 48)
-                    }
-                }
-            }
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(.ultraThinMaterial)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Color.white.opacity(0.08))
-            )
-            .shadow(color: Color.black.opacity(0.2), radius: 8, y: 4)
-            .transition(.opacity.combined(with: .move(edge: .top)))
-        }
-
-        private func rowBackground(for suggestion: SettingsSearchEntry) -> some View {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(hoveredSuggestionID == suggestion.id ? Color.white.opacity(0.08) : Color.clear)
-        }
-
-        private func selectSuggestion(_ suggestion: SettingsSearchEntry) {
-            onSuggestionSelected(suggestion)
-            isFocused = false
-        }
-
-        private func triggerFirstSuggestion() {
-            guard let first = suggestions.first else { return }
-            selectSuggestion(first)
-        }
-    }
-
-    private func searchEntries(matching query: String) -> [SettingsSearchEntry] {
-        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return [] }
-
-        return settingsSearchIndex
-            .filter { availableTabs.contains($0.tab) }
-            .filter { entry in
-                entry.title.localizedCaseInsensitiveContains(trimmed) ||
-                entry.keywords.contains { $0.localizedCaseInsensitiveContains(trimmed) }
-            }
-    }
-
-    private var settingsSearchIndex: [SettingsSearchEntry] {
-        [
-            // General
-            SettingsSearchEntry(tab: .general, title: "Enable Minimalistic UI", keywords: ["minimalistic", "ui mode", "general"], highlightID: SettingsTab.general.highlightID(for: "Enable Minimalistic UI")),
-            SettingsSearchEntry(tab: .general, title: "Menubar icon", keywords: ["menu bar", "status bar", "icon"], highlightID: SettingsTab.general.highlightID(for: "Menubar icon")),
-            SettingsSearchEntry(tab: .general, title: "Launch at login", keywords: ["autostart", "startup"], highlightID: SettingsTab.general.highlightID(for: "Launch at login")),
-            SettingsSearchEntry(tab: .general, title: "Show on all displays", keywords: ["multi-display", "external monitor"], highlightID: SettingsTab.general.highlightID(for: "Show on all displays")),
-            SettingsSearchEntry(tab: .general, title: "Show on a specific display", keywords: ["preferred screen", "display picker"], highlightID: SettingsTab.general.highlightID(for: "Show on a specific display")),
-            SettingsSearchEntry(tab: .general, title: "Automatically switch displays", keywords: ["auto switch", "displays"], highlightID: SettingsTab.general.highlightID(for: "Automatically switch displays")),
-            SettingsSearchEntry(tab: .general, title: "Hide Noori during screenshots & recordings", keywords: ["privacy", "screenshot", "recording"], highlightID: SettingsTab.general.highlightID(for: "Hide Noori during screenshots & recordings")),
-            SettingsSearchEntry(tab: .general, title: "Enable gestures", keywords: ["gestures", "trackpad"], highlightID: SettingsTab.general.highlightID(for: "Enable gestures")),
-            SettingsSearchEntry(tab: .general, title: "Close gesture", keywords: ["pinch", "swipe"], highlightID: SettingsTab.general.highlightID(for: "Close gesture")),
-            SettingsSearchEntry(tab: .general, title: "Reverse swipe gestures", keywords: ["reverse", "swipe", "media"], highlightID: SettingsTab.general.highlightID(for: "Reverse swipe gestures")),
-            SettingsSearchEntry(tab: .general, title: "Reverse scroll gestures", keywords: ["reverse", "scroll", "open", "close"], highlightID: SettingsTab.general.highlightID(for: "Reverse scroll gestures")),
-            SettingsSearchEntry(tab: .general, title: "Extend hover area", keywords: ["hover", "cursor"], highlightID: SettingsTab.general.highlightID(for: "Extend hover area")),
-            SettingsSearchEntry(tab: .general, title: "Enable haptics", keywords: ["haptic", "feedback"], highlightID: SettingsTab.general.highlightID(for: "Enable haptics")),
-            SettingsSearchEntry(tab: .general, title: "Open notch on hover", keywords: ["hover to open", "auto open"], highlightID: SettingsTab.general.highlightID(for: "Open notch on hover")),
-            SettingsSearchEntry(tab: .general, title: "External display style", keywords: ["noori", "pill", "external display", "non-notch", "floating", "capsule"], highlightID: SettingsTab.general.highlightID(for: "External display style")),
-            SettingsSearchEntry(tab: .general, title: "Hide until hovered", keywords: ["hide", "hover", "external", "non-notch", "auto hide", "slide"], highlightID: SettingsTab.general.highlightID(for: "Hide until hovered")),
-            SettingsSearchEntry(tab: .general, title: "Notch display height", keywords: ["display height", "menu bar size"], highlightID: SettingsTab.general.highlightID(for: "Notch display height")),
-
-            // Live Activities
-            SettingsSearchEntry(tab: .liveActivities, title: "Enable Screen Recording Detection", keywords: ["screen recording", "indicator"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable Screen Recording Detection")),
-            SettingsSearchEntry(tab: .liveActivities, title: "Show Recording Indicator", keywords: ["recording indicator", "red dot"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show Recording Indicator")),
-            SettingsSearchEntry(tab: .liveActivities, title: "Enable Focus Detection", keywords: ["focus", "do not disturb", "dnd"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable Focus Detection")),
-            SettingsSearchEntry(tab: .liveActivities, title: "Show Focus Indicator", keywords: ["focus icon", "moon"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show Focus Indicator")),
-            SettingsSearchEntry(tab: .liveActivities, title: "Show Focus Label", keywords: ["focus label", "text"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show Focus Label")),
-            SettingsSearchEntry(tab: .liveActivities, title: "Enable Camera Detection", keywords: ["camera", "privacy indicator"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable Camera Detection")),
-            SettingsSearchEntry(tab: .liveActivities, title: "Enable Microphone Detection", keywords: ["microphone", "privacy"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable Microphone Detection")),
-            SettingsSearchEntry(tab: .liveActivities, title: "Enable music live activity", keywords: ["music", "now playing"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable music live activity")),
-            SettingsSearchEntry(tab: .liveActivities, title: "Enable reminder live activity", keywords: ["reminder", "live activity"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable reminder live activity")),
-
-            // Battery (Charge)
-            SettingsSearchEntry(tab: .battery, title: "Show battery indicator", keywords: ["battery hud", "charge"], highlightID: SettingsTab.battery.highlightID(for: "Show battery indicator")),
-            SettingsSearchEntry(tab: .battery, title: "Show battery percentage", keywords: ["battery percent"], highlightID: SettingsTab.battery.highlightID(for: "Show battery percentage")),
-            SettingsSearchEntry(tab: .battery, title: "Show power status notifications", keywords: ["notifications", "power"], highlightID: SettingsTab.battery.highlightID(for: "Show power status notifications")),
-            SettingsSearchEntry(tab: .battery, title: "Show power status icons", keywords: ["power icons", "charging icon"], highlightID: SettingsTab.battery.highlightID(for: "Show power status icons")),
-            SettingsSearchEntry(tab: .battery, title: "Play low battery alert sound", keywords: ["low battery", "alert", "sound"], highlightID: SettingsTab.battery.highlightID(for: "Play low battery alert sound")),
-            SettingsSearchEntry(tab: .battery, title: "Charging HUD", keywords: ["battery", "charging", "temporary activity"], highlightID: SettingsTab.battery.highlightID(for: "Charging HUD")),
-            SettingsSearchEntry(tab: .battery, title: "Low battery HUD", keywords: ["battery", "low", "temporary activity"], highlightID: SettingsTab.battery.highlightID(for: "Low battery HUD")),
-            SettingsSearchEntry(tab: .battery, title: "Fully charged HUD", keywords: ["battery", "full", "temporary activity"], highlightID: SettingsTab.battery.highlightID(for: "Fully charged HUD")),
-            SettingsSearchEntry(tab: .battery, title: "Charging duration", keywords: ["charging", "duration", "seconds"], highlightID: SettingsTab.battery.highlightID(for: "Charging duration")),
-            SettingsSearchEntry(tab: .battery, title: "Low battery duration", keywords: ["low battery", "duration", "seconds"], highlightID: SettingsTab.battery.highlightID(for: "Low battery duration")),
-            SettingsSearchEntry(tab: .battery, title: "Full battery duration", keywords: ["full battery", "duration", "seconds"], highlightID: SettingsTab.battery.highlightID(for: "Full battery duration")),
-            SettingsSearchEntry(tab: .battery, title: "Test charging HUD", keywords: ["battery", "test", "charging", "preview"], highlightID: nil),
-            SettingsSearchEntry(tab: .battery, title: "Test low battery HUD", keywords: ["battery", "test", "low", "preview"], highlightID: nil),
-            SettingsSearchEntry(tab: .battery, title: "Test full battery HUD", keywords: ["battery", "test", "full", "preview"], highlightID: nil),
-            SettingsSearchEntry(tab: .battery, title: "Low battery style", keywords: ["battery", "style", "compact", "standard"], highlightID: SettingsTab.battery.highlightID(for: "Low battery style")),
-            SettingsSearchEntry(tab: .battery, title: "Low battery threshold", keywords: ["battery", "threshold", "percent"], highlightID: SettingsTab.battery.highlightID(for: "Low battery threshold")),
-            SettingsSearchEntry(tab: .battery, title: "Full battery style", keywords: ["battery", "style", "compact", "standard"], highlightID: SettingsTab.battery.highlightID(for: "Full battery style")),
-            SettingsSearchEntry(tab: .battery, title: "Full charge threshold", keywords: ["battery", "threshold", "full"], highlightID: SettingsTab.battery.highlightID(for: "Full charge threshold")),
-
-            // HUDs
-            SettingsSearchEntry(tab: .devices, title: "Show Bluetooth device connections", keywords: ["bluetooth", "hud"], highlightID: SettingsTab.devices.highlightID(for: "Show Bluetooth device connections")),
-            SettingsSearchEntry(tab: .devices, title: "Use circular battery indicator", keywords: ["battery", "circular"], highlightID: SettingsTab.devices.highlightID(for: "Use circular battery indicator")),
-            SettingsSearchEntry(tab: .devices, title: "Show battery percentage text in HUD", keywords: ["battery text"], highlightID: SettingsTab.devices.highlightID(for: "Show battery percentage text in HUD")),
-            SettingsSearchEntry(tab: .devices, title: "Scroll device name in HUD", keywords: ["marquee", "device name"], highlightID: SettingsTab.devices.highlightID(for: "Scroll device name in HUD")),
-            SettingsSearchEntry(tab: .devices, title: "Use 3D Bluetooth HUD icon", keywords: ["bluetooth", "3d", "animation", "mov"], highlightID: SettingsTab.devices.highlightID(for: "Use 3D Bluetooth HUD icon")),
-            SettingsSearchEntry(tab: .devices, title: "Color-coded battery display", keywords: ["color", "battery"], highlightID: SettingsTab.devices.highlightID(for: "Color-coded battery display")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Color-coded volume display", keywords: ["volume", "color"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Color-coded volume display")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Smooth color transitions", keywords: ["gradient", "smooth"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Smooth color transitions")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Show percentages beside progress bars", keywords: ["percentages", "progress"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Show percentages beside progress bars")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "HUD style", keywords: ["inline", "compact"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "HUD style")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Progressbar style", keywords: ["progress", "style"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Progressbar style")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Enable glowing effect", keywords: ["glow", "indicator"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Enable glowing effect")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Use accent color", keywords: ["accent", "color"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Use accent color")),
-
-            // Custom OSD
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Enable Custom OSD", keywords: ["osd", "on-screen display", "custom osd"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Enable Custom OSD")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Volume OSD", keywords: ["volume", "osd"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Volume OSD")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Brightness OSD", keywords: ["brightness", "osd"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Brightness OSD")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Keyboard Backlight OSD", keywords: ["keyboard", "backlight", "osd"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Keyboard Backlight OSD")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Material", keywords: ["material", "frosted", "liquid", "glass", "solid", "osd"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Material")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Icon & Progress Color", keywords: ["color", "icon", "white", "black", "gray", "osd"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Icon & Progress Color")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Volume step", keywords: ["volume", "step", "percent"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Volume step")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Volume fine step", keywords: ["volume", "fine", "step", "percent"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Volume fine step")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Brightness step", keywords: ["brightness", "step", "percent"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Brightness step")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Brightness fine step", keywords: ["brightness", "fine", "step", "percent"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Brightness fine step")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Third-party DDC app integration", keywords: ["ddc", "third party", "external", "display", "betterdisplay", "lunar"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Third-party DDC app integration")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Third-party DDC provider", keywords: ["provider", "betterdisplay", "lunar", "integration", "refresh detection"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Third-party DDC provider")),
-            SettingsSearchEntry(tab: .hudAndOSD, title: "Enable external volume control listener", keywords: ["external volume", "ddc volume", "betterdisplay volume", "lunar volume", "disable native volume"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Enable external volume control listener")),
-
-            // Media
-            SettingsSearchEntry(tab: .media, title: "Music Source", keywords: ["media source", "controller"], highlightID: SettingsTab.media.highlightID(for: "Music Source")),
-            SettingsSearchEntry(tab: .media, title: "Skip buttons", keywords: ["skip", "controls", "±10"], highlightID: SettingsTab.media.highlightID(for: "Skip buttons")),
-            SettingsSearchEntry(tab: .media, title: "Sneak Peek Style", keywords: ["sneak peek", "preview"], highlightID: SettingsTab.media.highlightID(for: "Sneak Peek Style")),
-            SettingsSearchEntry(tab: .media, title: "Enable lyrics", keywords: ["lyrics", "song text"], highlightID: SettingsTab.media.highlightID(for: "Enable lyrics")),
-            SettingsSearchEntry(tab: .media, title: "Show live canvas in Noori", keywords: ["canvas", "live canvas", "album art", "noori", "spotify canvas"], highlightID: SettingsTab.media.highlightID(for: "Show live canvas in Noori")),
-            SettingsSearchEntry(tab: .media, title: "Auto-hide inactive notch media player", keywords: ["auto hide", "inactive", "placeholder", "notch media"], highlightID: SettingsTab.media.highlightID(for: "Auto-hide inactive notch media player")),
-            SettingsSearchEntry(tab: .media, title: "Show Change Media Output control", keywords: ["airplay", "route picker", "media output"], highlightID: SettingsTab.media.highlightID(for: "Show Change Media Output control")),
-            SettingsSearchEntry(tab: .media, title: "Enable album art parallax", keywords: ["parallax", "lock screen", "album art"], highlightID: SettingsTab.media.highlightID(for: "Enable album art parallax")),
-            SettingsSearchEntry(tab: .media, title: "Enable album art parallax effect", keywords: ["parallax", "parallax effect", "album art"], highlightID: SettingsTab.media.highlightID(for: "Enable album art parallax effect")),
-
-            // Calendar
-
-            // Shelf
-
-            // Appearance
-            SettingsSearchEntry(tab: .appearance, title: "Main screen style", keywords: ["noori", "pill", "non-notch", "display style", "notch style"], highlightID: SettingsTab.appearance.highlightID(for: "Main screen style")),
-            SettingsSearchEntry(tab: .appearance, title: "Settings icon in notch", keywords: ["settings button", "toolbar"], highlightID: SettingsTab.appearance.highlightID(for: "Settings icon in notch")),
-            SettingsSearchEntry(tab: .appearance, title: "Enable window shadow", keywords: ["shadow", "appearance"], highlightID: SettingsTab.appearance.highlightID(for: "Enable window shadow")),
-            SettingsSearchEntry(tab: .appearance, title: "Corner radius scaling", keywords: ["corner radius", "shape"], highlightID: SettingsTab.appearance.highlightID(for: "Corner radius scaling")),
-            SettingsSearchEntry(tab: .appearance, title: "Use simpler close animation", keywords: ["close animation", "notch"], highlightID: SettingsTab.appearance.highlightID(for: "Use simpler close animation")),
-            SettingsSearchEntry(tab: .appearance, title: "Notch Width", keywords: ["expanded notch", "width", "resize"], highlightID: SettingsTab.appearance.highlightID(for: "Expanded notch width")),
-            SettingsSearchEntry(tab: .appearance, title: "Enable colored spectrograms", keywords: ["spectrogram", "audio"], highlightID: SettingsTab.appearance.highlightID(for: "Enable colored spectrograms")),
-            SettingsSearchEntry(tab: .appearance, title: "Enable blur effect behind album art", keywords: ["blur", "album art"], highlightID: SettingsTab.appearance.highlightID(for: "Enable blur effect behind album art")),
-            SettingsSearchEntry(tab: .appearance, title: "Slider color", keywords: ["slider", "accent"], highlightID: SettingsTab.appearance.highlightID(for: "Slider color")),
-            SettingsSearchEntry(tab: .appearance, title: "Idle Animation", keywords: ["face animation", "idle", "cool face"], highlightID: SettingsTab.appearance.highlightID(for: "Idle Animation")),
-            SettingsSearchEntry(tab: .appearance, title: "App icon", keywords: ["app icon", "custom icon"], highlightID: SettingsTab.appearance.highlightID(for: "App icon")),
-
-            // Lock Screen
-
-            // Extensions
-
-            // Shortcuts
-            SettingsSearchEntry(tab: .shortcuts, title: "Enable global keyboard shortcuts", keywords: ["keyboard", "shortcut"], highlightID: SettingsTab.shortcuts.highlightID(for: "Enable global keyboard shortcuts")),
-
-            // Timer
-
-            // Stats
-
-            // Clipboard
-
-            // Screen Assistant
-
-            // Color Picker
-
-            // Terminal
-        ]
-    }
 
     private func isTabVisible(_ tab: SettingsTab) -> Bool {
         switch tab {
@@ -804,9 +376,6 @@ struct GeneralSettings: View {
     @Default(.externalDisplayStyle) var externalDisplayStyle
     @Default(.hideNonNotchUntilHover) var hideNonNotchUntilHover
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.general.highlightID(for: title)
-    }
 
     var body: some View {
         Form {
@@ -820,19 +389,16 @@ struct GeneralSettings: View {
                         Defaults[.useModernCloseAnimation] = true
                     }
                 }
-                .settingsHighlight(id: highlightID("Enable Minimalistic UI"))
 
                 Defaults.Toggle(key: .showMinimalisticBatteryIndicator) {
                     Text("Show battery indicator")
                 }
                 .disabled(!enableMinimalisticUI)
-                .settingsHighlight(id: highlightID("Show battery indicator in Minimalistic UI"))
 
                 Defaults.Toggle(key: .showBatteryPercentInside) {
                     Text("Show battery percentage inside icon")
                 }
                 .disabled(!enableMinimalisticUI || !Defaults[.showMinimalisticBatteryIndicator])
-                .settingsHighlight(id: highlightID("Show battery percentage inside icon"))
             } header: {
                 Text("UI Mode")
             } footer: {
@@ -843,18 +409,15 @@ struct GeneralSettings: View {
                 Defaults.Toggle(key: .menubarIcon) {
                     Text("Menubar icon")
                 }
-                .settingsHighlight(id: highlightID("Menubar icon"))
                 LaunchAtLogin.Toggle {
                     Text("Launch at login")
                 }
-                .settingsHighlight(id: highlightID("Launch at login"))
                 Defaults.Toggle(key: .showOnAllDisplays) {
                     Text("Show on all displays")
                 }
                 .onChange(of: showOnAllDisplays) {
                     NotificationCenter.default.post(name: Notification.Name.showOnAllDisplaysChanged, object: nil)
                 }
-                .settingsHighlight(id: highlightID("Show on all displays"))
                 Picker("Show on a specific display", selection: $coordinator.preferredScreen) {
                     ForEach(screens, id: \.self) { screen in
                         Text(screen)
@@ -864,7 +427,6 @@ struct GeneralSettings: View {
                     screens =  NSScreen.screens.compactMap({$0.localizedName})
                 }
                 .disabled(showOnAllDisplays)
-                .settingsHighlight(id: highlightID("Show on a specific display"))
                 Defaults.Toggle(key: .automaticallySwitchDisplay) {
                     Text("Automatically switch displays")
                 }
@@ -872,11 +434,9 @@ struct GeneralSettings: View {
                     NotificationCenter.default.post(name: Notification.Name.automaticallySwitchDisplayChanged, object: nil)
                 }
                 .disabled(showOnAllDisplays)
-                .settingsHighlight(id: highlightID("Automatically switch displays"))
                 Defaults.Toggle(key: .hideNooriFromScreenCapture) {
                     Text("Hide Noori during screenshots & recordings")
                 }
-                .settingsHighlight(id: highlightID("Hide Noori during screenshots & recordings"))
             } header: {
                 Text("System features")
             }
@@ -902,7 +462,6 @@ struct GeneralSettings: View {
                             }
                             NotificationCenter.default.post(name: Notification.Name.notchHeightChanged, object: nil)
                         }
-                        .settingsHighlight(id: highlightID("Notch display height"))
                 if notchHeightMode == .custom {
                     Slider(value: $notchHeight, in: 15...45, step: 1) {
                         Text("Custom notch size - \(notchHeight, specifier: "%.0f")")
@@ -967,12 +526,10 @@ struct GeneralSettings: View {
                 Text("Enable gestures")
             }
             .disabled(!openNotchOnHover)
-            .settingsHighlight(id: highlightID("Enable gestures"))
             if enableGestures {
                 Defaults.Toggle(key: .enableHorizontalMusicGestures) {
                     Text("Media change with horizontal gestures")
                 }
-                .settingsHighlight(id: highlightID("Horizontal media gestures"))
 
                 if enableHorizontalMusicGestures {
                     Picker("Gesture skip behavior", selection: $musicGestureBehavior) {
@@ -982,7 +539,6 @@ struct GeneralSettings: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    .settingsHighlight(id: highlightID("Gesture skip behavior"))
 
                     Text(musicGestureBehavior.description)
                         .font(.caption)
@@ -991,13 +547,11 @@ struct GeneralSettings: View {
                     Defaults.Toggle(key: .reverseSwipeGestures) {
                         Text("Reverse swipe gestures")
                     }
-                    .settingsHighlight(id: highlightID("Reverse swipe gestures"))
                 }
 
                 Defaults.Toggle(key: .closeGestureEnabled) {
                     Text("Close gesture")
                 }
-                .settingsHighlight(id: highlightID("Close gesture"))
                 Slider(value: $gestureSensitivity, in: 100...300, step: 100) {
                     HStack {
                         Text("Gesture sensitivity")
@@ -1010,7 +564,6 @@ struct GeneralSettings: View {
                 Defaults.Toggle(key: .reverseScrollGestures) {
                     Text("Reverse open/close scroll gestures")
                 }
-                .settingsHighlight(id: highlightID("Reverse scroll gestures"))
             }
         } header: {
             HStack {
@@ -1031,15 +584,12 @@ struct GeneralSettings: View {
             Defaults.Toggle(key: .extendHoverArea) {
                 Text("Extend hover area")
             }
-            .settingsHighlight(id: highlightID("Extend hover area"))
             Defaults.Toggle(key: .enableHaptics) {
                 Text("Enable haptics")
             }
-            .settingsHighlight(id: highlightID("Enable haptics"))
             Defaults.Toggle(key: .openNotchOnHover) {
                 Text("Open notch on hover")
             }
-            .settingsHighlight(id: highlightID("Open notch on hover"))
             Toggle("Remember last tab", isOn: $coordinator.openLastTabByDefault)
             if openNotchOnHover {
                 Slider(value: $minimumHoverDuration, in: 0...1, step: 0.1) {
@@ -1063,14 +613,12 @@ struct GeneralSettings: View {
             .onChange(of: externalDisplayStyle) {
                 NotificationCenter.default.post(name: Notification.Name.notchHeightChanged, object: nil)
             }
-            .settingsHighlight(id: highlightID("External display style"))
             Text(externalDisplayStyle.description)
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Defaults.Toggle(key: .hideNonNotchUntilHover) {
                 Text("Hide until hovered on non-notch displays")
             }
-            .settingsHighlight(id: highlightID("Hide until hovered"))
             Text("When enabled, the notch slides up and hides on external (non-notch) displays until you hover over it.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -1094,9 +642,6 @@ struct Charge: View {
     @Default(.lowBatteryHUDStyle) private var lowBatteryHUDStyle
     @Default(.fullBatteryHUDStyle) private var fullBatteryHUDStyle
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.battery.highlightID(for: title)
-    }
 
     private var chargingDurationBinding: Binding<Double> {
         Binding(
@@ -1144,15 +689,12 @@ struct Charge: View {
                     Defaults.Toggle(key: .showBatteryIndicator) {
                         Text("Show battery indicator")
                     }
-                    .settingsHighlight(id: highlightID("Show battery indicator"))
                     Defaults.Toggle(key: .showPowerStatusNotifications) {
                         Text("Show power status notifications")
                     }
-                    .settingsHighlight(id: highlightID("Show power status notifications"))
                     Defaults.Toggle(key: .playLowBatteryAlertSound) {
                         Text("Play low battery alert sound")
                     }
-                    .settingsHighlight(id: highlightID("Play low battery alert sound"))
                 } header: {
                     Text("General")
                 }
@@ -1160,11 +702,9 @@ struct Charge: View {
                     Defaults.Toggle(key: .showBatteryPercentage) {
                         Text("Show battery percentage")
                     }
-                    .settingsHighlight(id: highlightID("Show battery percentage"))
                     Defaults.Toggle(key: .showPowerStatusIcons) {
                         Text("Show power status icons")
                     }
-                    .settingsHighlight(id: highlightID("Show power status icons"))
                 } header: {
                     Text("Battery Information")
                 }
@@ -1172,17 +712,14 @@ struct Charge: View {
                     Defaults.Toggle(key: .showChargingBatteryHUD) {
                         Text("Charging HUD")
                     }
-                    .settingsHighlight(id: highlightID("Charging HUD"))
 
                     Defaults.Toggle(key: .showLowBatteryHUD) {
                         Text("Low battery HUD")
                     }
-                    .settingsHighlight(id: highlightID("Low battery HUD"))
 
                     Defaults.Toggle(key: .showFullBatteryHUD) {
                         Text("Fully charged HUD")
                     }
-                    .settingsHighlight(id: highlightID("Fully charged HUD"))
                 } header: {
                     Text("Battery HUDs")
                 } footer: {
@@ -1198,7 +735,6 @@ struct Charge: View {
                         }
                         Slider(value: chargingDurationBinding, in: 1...10, step: 1)
                     }
-                    .settingsHighlight(id: highlightID("Charging duration"))
                     .disabled(!showPowerStatusNotifications || !showChargingBatteryHUD)
                     .opacity(sectionOpacity(showPowerStatusNotifications && showChargingBatteryHUD))
 
@@ -1211,7 +747,6 @@ struct Charge: View {
                         }
                         Slider(value: lowBatteryDurationBinding, in: 1...10, step: 1)
                     }
-                    .settingsHighlight(id: highlightID("Low battery duration"))
                     .disabled(!showPowerStatusNotifications || !showLowBatteryHUD)
                     .opacity(sectionOpacity(showPowerStatusNotifications && showLowBatteryHUD))
 
@@ -1224,7 +759,6 @@ struct Charge: View {
                         }
                         Slider(value: fullBatteryDurationBinding, in: 1...10, step: 1)
                     }
-                    .settingsHighlight(id: highlightID("Full battery duration"))
                     .disabled(!showPowerStatusNotifications || !showFullBatteryHUD)
                     .opacity(sectionOpacity(showPowerStatusNotifications && showFullBatteryHUD))
                 } header: {
@@ -1269,7 +803,6 @@ struct Charge: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .settingsHighlight(id: highlightID("Low battery style"))
 
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -1281,7 +814,6 @@ struct Charge: View {
                         }
                         Slider(value: lowBatteryThresholdBinding, in: 5...30, step: 1)
                     }
-                    .settingsHighlight(id: highlightID("Low battery threshold"))
                 } header: {
                     Text("Low Battery")
                 }
@@ -1301,7 +833,6 @@ struct Charge: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    .settingsHighlight(id: highlightID("Full battery style"))
 
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -1313,7 +844,6 @@ struct Charge: View {
                         }
                         Slider(value: fullBatteryThresholdBinding, in: 80...100, step: 1)
                     }
-                    .settingsHighlight(id: highlightID("Full charge threshold"))
                 } header: {
                     Text("Full Battery")
                 }
@@ -1868,9 +1398,6 @@ private struct ExternalDisplayIntegrationsSection: View {
     @ObservedObject private var betterDisplayManager = BetterDisplayManager.shared
     @ObservedObject private var lunarManager = LunarManager.shared
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.hudAndOSD.highlightID(for: title)
-    }
 
     private var providerStatusText: String {
         switch thirdPartyDDCProvider {
@@ -1945,7 +1472,6 @@ private struct ExternalDisplayIntegrationsSection: View {
                             .monospacedDigit()
                     }
                 }
-                .settingsHighlight(id: highlightID("Volume step"))
                 .disabled(enableExternalVolumeControlListener)
 
                 Stepper(value: $volumeFineStepPercent, in: 1...25) {
@@ -1957,7 +1483,6 @@ private struct ExternalDisplayIntegrationsSection: View {
                             .monospacedDigit()
                     }
                 }
-                .settingsHighlight(id: highlightID("Volume fine step"))
                 .disabled(enableExternalVolumeControlListener)
 
                 if enableExternalVolumeControlListener {
@@ -1975,7 +1500,6 @@ private struct ExternalDisplayIntegrationsSection: View {
                             .monospacedDigit()
                     }
                 }
-                .settingsHighlight(id: highlightID("Brightness step"))
                 .disabled(enableThirdPartyDDCIntegration)
 
                 Stepper(value: $brightnessFineStepPercent, in: 1...25) {
@@ -1987,7 +1511,6 @@ private struct ExternalDisplayIntegrationsSection: View {
                             .monospacedDigit()
                     }
                 }
-                .settingsHighlight(id: highlightID("Brightness fine step"))
                 .disabled(enableThirdPartyDDCIntegration)
 
                 if enableThirdPartyDDCIntegration {
@@ -2005,7 +1528,6 @@ private struct ExternalDisplayIntegrationsSection: View {
 
             Section {
                 Toggle("Enable third-party DDC app integration", isOn: $enableThirdPartyDDCIntegration)
-                    .settingsHighlight(id: highlightID("Third-party DDC app integration"))
 
                 if enableThirdPartyDDCIntegration {
                     Picker("Provider", selection: $thirdPartyDDCProvider) {
@@ -2021,10 +1543,8 @@ private struct ExternalDisplayIntegrationsSection: View {
                             .tag(provider)
                         }
                     }
-                    .settingsHighlight(id: highlightID("Third-party DDC provider"))
 
                     Toggle("Enable external volume control listener", isOn: $enableExternalVolumeControlListener)
-                        .settingsHighlight(id: highlightID("Enable external volume control listener"))
 
                     Text(
                         enableExternalVolumeControlListener
@@ -2126,9 +1646,6 @@ private struct DevicesSettingsView: View {
     @Default(.progressBarStyle) var progressBarStyle
     @Default(.useBluetoothHUD3DIcon) private var useBluetoothHUD3DIcon
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.devices.highlightID(for: title)
-    }
 
     private var colorCodingDisabled: Bool {
         progressBarStyle == .segmented
@@ -2140,23 +1657,18 @@ private struct DevicesSettingsView: View {
                 Defaults.Toggle(key: .showBluetoothDeviceConnections) {
                     Text("Show Bluetooth device connections")
                 }
-                .settingsHighlight(id: highlightID("Show Bluetooth device connections"))
                 Defaults.Toggle(key: .useCircularBluetoothBatteryIndicator) {
                     Text("Use circular battery indicator")
                 }
-                .settingsHighlight(id: highlightID("Use circular battery indicator"))
                 Defaults.Toggle(key: .showBluetoothBatteryPercentageText) {
                     Text("Show battery percentage text in HUD")
                 }
-                .settingsHighlight(id: highlightID("Show battery percentage text in HUD"))
                 Defaults.Toggle(key: .showBluetoothDeviceNameMarquee) {
                     Text("Scroll device name in HUD")
                 }
-                .settingsHighlight(id: highlightID("Scroll device name in HUD"))
                 Defaults.Toggle(key: .showAirPodsListeningModeChanges) {
                     Text("Show AirPods listening mode changes")
                 }
-                .settingsHighlight(id: highlightID("Show AirPods listening mode changes"))
                 VStack(alignment: .leading, spacing: 12) {
                     Text("HUD icon style")
                         .font(.system(size: 13, weight: .semibold))
@@ -2179,7 +1691,6 @@ private struct DevicesSettingsView: View {
                         Spacer(minLength: 0)
                     }
                 }
-                .settingsHighlight(id: highlightID("Use 3D Bluetooth HUD icon"))
             } header: {
                 Text("Bluetooth Audio Devices")
             } footer: {
@@ -2193,7 +1704,6 @@ private struct DevicesSettingsView: View {
                     Text("Color-coded battery display")
                 }
                 .disabled(colorCodingDisabled)
-                .settingsHighlight(id: highlightID("Color-coded battery display"))
             } header: {
                 Text("Battery Indicator Styling")
             } footer: {
@@ -2229,9 +1739,6 @@ struct HUD: View {
     @ObservedObject var coordinator = NooriViewCoordinator.shared
     @ObservedObject private var accessibilityPermission = AccessibilityPermissionStore.shared
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.hudAndOSD.highlightID(for: title)
-    }
 
     private var hasAccessibilityPermission: Bool {
         accessibilityPermission.isAuthorized
@@ -2277,7 +1784,6 @@ struct HUD: View {
                 Defaults.Toggle(key: .playVolumeChangeFeedback) {
                     Text("Play feedback when volume is changed")
                 }
-                .settingsHighlight(id: highlightID("Play feedback when volume is changed"))
                 .help("Plays the supplied feedback clip whenever you press the hardware volume keys.")
             } header: {
                 Text("Audio feedback")
@@ -2292,19 +1798,16 @@ struct HUD: View {
                     Text("Color-coded volume display")
                 }
                 .disabled(colorCodingDisabled)
-                .settingsHighlight(id: highlightID("Color-coded volume display"))
 
                 if !colorCodingDisabled && (Defaults[.useColorCodedBatteryDisplay] || Defaults[.useColorCodedVolumeDisplay]) {
                     Defaults.Toggle(key: .useSmoothColorGradient) {
                         Text("Smooth color transitions")
                     }
-                    .settingsHighlight(id: highlightID("Smooth color transitions"))
                 }
 
                 Defaults.Toggle(key: .showProgressPercentages) {
                     Text("Show percentages beside progress bars")
                 }
-                .settingsHighlight(id: highlightID("Show percentages beside progress bars"))
             } header: {
                 Text("Noori Progress Bars")
             } footer: {
@@ -2330,7 +1833,6 @@ struct HUD: View {
                     Text("Inline")
                         .tag(true)
                 }
-                .settingsHighlight(id: highlightID("HUD style"))
                 .onChange(of: Defaults[.inlineHUD]) {
                     if Defaults[.inlineHUD] {
                         withAnimation {
@@ -2347,15 +1849,12 @@ struct HUD: View {
                     Text("Segmented")
                         .tag(ProgressBarStyle.segmented)
                 }
-                .settingsHighlight(id: highlightID("Progressbar style"))
                 Defaults.Toggle(key: .systemEventIndicatorShadow) {
                     Text("Enable glowing effect")
                 }
-                .settingsHighlight(id: highlightID("Enable glowing effect"))
                 Defaults.Toggle(key: .systemEventIndicatorUseAccent) {
                     Text("Use accent color")
                 }
-                .settingsHighlight(id: highlightID("Use accent color"))
             } header: {
                 HStack {
                     Text("Appearance")
@@ -2400,9 +1899,6 @@ struct Media: View {
         musicManager.bundleIdentifier == "com.apple.Music"
     }
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.media.highlightID(for: title)
-    }
 
     private var standardControlsSuppressed: Bool {
         !showStandardMediaControls && !enableMinimalisticUI
@@ -2422,7 +1918,6 @@ struct Media: View {
                         object: nil
                     )
                 }
-                .settingsHighlight(id: highlightID("Music Source"))
             } header: {
                 Text("Media Source")
             } footer: {
@@ -2454,13 +1949,11 @@ struct Media: View {
                     Text("Show media controls in Noori")
                 }
                 .disabled(enableMinimalisticUI)
-                .settingsHighlight(id: highlightID("Show media controls in Noori"))
 
                 Defaults.Toggle(key: .autoHideInactiveNotchMediaPlayer) {
                     Text("Auto-hide inactive notch media player")
                 }
                 .disabled(enableMinimalisticUI || !showStandardMediaControls)
-                .settingsHighlight(id: highlightID("Auto-hide inactive notch media player"))
 
                 if enableMinimalisticUI {
                     Text("Disable Minimalistic UI to configure the standard notch media controls.")
@@ -2489,7 +1982,6 @@ struct Media: View {
                     Defaults.Toggle(key: .showMediaOutputControl) {
                         Text("Show \"Change Media Output\" control")
                     }
-                    .settingsHighlight(id: highlightID("Show Change Media Output control"))
                     .help("Adds the AirPlay/route picker button back to the customizable controls palette.")
                     MusicSlotConfigurationView()
                 } else {
@@ -2510,7 +2002,6 @@ struct Media: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    .settingsHighlight(id: highlightID("Skip buttons"))
 
                     Text(musicSkipBehavior.description)
                         .font(.caption)
@@ -2537,11 +2028,9 @@ struct Media: View {
                 Defaults.Toggle(key: .enableLyrics) {
                     Text("Enable lyrics")
                 }
-                .settingsHighlight(id: highlightID("Enable lyrics"))
                 Defaults.Toggle(key: .showLiveCanvasInNoori) {
                     Text("Show live canvas in Noori")
                 }
-                .settingsHighlight(id: highlightID("Show live canvas in Noori"))
                 .help("Replaces the artwork tile with the live canvas when the current app provides one, and reuses that moving canvas for the surrounding lighting effect.")
                 
                 //Parallax Effect Intensity to control how much parallax is wanted
@@ -2553,7 +2042,6 @@ struct Media: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .settingsHighlight(id: highlightID("Enable album art parallax effect"))
                 
                 Picker("Sneak Peek Style", selection: $sneakPeekStyles){
                     ForEach(SneakPeekStyle.allCases) { style in
@@ -2561,7 +2049,6 @@ struct Media: View {
                     }
                 }
                 .disabled(!enableSneakPeek)
-                .settingsHighlight(id: highlightID("Sneak Peek Style"))
 
                 HStack {
                     Stepper(value: $waitInterval, in: 0...10, step: 1) {
@@ -2577,7 +2064,6 @@ struct Media: View {
                 Defaults.Toggle(key: .showSongMetadataInClosedNotch) {
                     Text("Show song title and artist on non-notch displays")
                 }
-                .settingsHighlight(id: highlightID("Show song title and artist in closed notch"))
             } header: {
                 Text("Media playback live activity")
             }
@@ -2589,7 +2075,6 @@ struct Media: View {
                         customBadge(text: "Beta")
                     }
                 }
-                .settingsHighlight(id: highlightID("Enable real-time waveform"))
                 
                 Picker("Visualizer candles", selection: $visualizerBarCount) {
                     Text("4").tag(4)
@@ -2871,9 +2356,6 @@ struct LiveActivitiesSettings: View {
     @Default(.focusIndicatorNonPersistent) var focusIndicatorNonPersistent
     @Default(.capsLockIndicatorTintMode) var capsLockTintMode
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.liveActivities.highlightID(for: title)
-    }
 
     var body: some View {
         Form {
@@ -2881,13 +2363,11 @@ struct LiveActivitiesSettings: View {
                 Defaults.Toggle(key: .enableScreenRecordingDetection) {
                     Text("Enable Screen Recording Detection")
                 }
-                .settingsHighlight(id: highlightID("Enable Screen Recording Detection"))
 
                 Defaults.Toggle(key: .showRecordingIndicator) {
                     Text("Show Recording Indicator")
                 }
                 .disabled(!enableScreenRecordingDetection)
-                .settingsHighlight(id: highlightID("Show Recording Indicator"))
 
                 if recordingManager.isMonitoring {
                     HStack {
@@ -2930,26 +2410,22 @@ struct LiveActivitiesSettings: View {
                 Defaults.Toggle(key: .enableDoNotDisturbDetection) {
                     Text("Enable Focus Detection")
                 }
-                .settingsHighlight(id: highlightID("Enable Focus Detection"))
 
                 Defaults.Toggle(key: .showDoNotDisturbIndicator) {
                     Text("Show Focus Indicator")
                 }
                 .disabled(!enableDoNotDisturbDetection)
-                .settingsHighlight(id: highlightID("Show Focus Indicator"))
 
                 Defaults.Toggle(key: .showDoNotDisturbLabel) {
                     Text("Show Focus Label")
                 }
                 .disabled(!enableDoNotDisturbDetection || focusIndicatorNonPersistent)
                 .help(focusIndicatorNonPersistent ? "Labels are forced to compact on/off text while brief toast mode is enabled." : "Show the active Focus name inside the indicator.")
-                .settingsHighlight(id: highlightID("Show Focus Label"))
 
                 Defaults.Toggle(key: .focusIndicatorNonPersistent) {
                     Text("Show Focus as brief toast")
                 }
                 .disabled(!enableDoNotDisturbDetection)
-                .settingsHighlight(id: highlightID("Show Focus as brief toast"))
                 .help("When enabled, Focus appears briefly (on/off) and then collapses instead of staying visible.")
 
                 if doNotDisturbManager.isMonitoring {
@@ -2987,13 +2463,11 @@ struct LiveActivitiesSettings: View {
                 Defaults.Toggle(key: .enableCapsLockIndicator) {
                     Text("Show Caps Lock Indicator")
                 }
-                .settingsHighlight(id: highlightID("Show Caps Lock Indicator"))
 
                 Defaults.Toggle(key: .showCapsLockLabel) {
                     Text("Show Caps Lock label")
                 }
                 .disabled(!Defaults[.enableCapsLockIndicator])
-                .settingsHighlight(id: highlightID("Show Caps Lock label"))
 
                 Picker("Caps Lock color", selection: $capsLockTintMode) {
                     ForEach(CapsLockIndicatorTintMode.allCases) { mode in
@@ -3002,7 +2476,6 @@ struct LiveActivitiesSettings: View {
                 }
                 .pickerStyle(.segmented)
                 .disabled(!Defaults[.enableCapsLockIndicator])
-                .settingsHighlight(id: highlightID("Caps Lock color"))
             } header: {
                 Text("Caps Lock Indicator")
             } footer: {
@@ -3013,11 +2486,9 @@ struct LiveActivitiesSettings: View {
                 Defaults.Toggle(key: .enableCameraDetection) {
                     Text("Enable Camera Detection")
                 }
-                .settingsHighlight(id: highlightID("Enable Camera Detection"))
                 Defaults.Toggle(key: .enableMicrophoneDetection) {
                     Text("Enable Microphone Detection")
                 }
-                .settingsHighlight(id: highlightID("Enable Microphone Detection"))
 
                 if privacyManager.isMonitoring {
                     HStack {
@@ -3065,7 +2536,6 @@ struct LiveActivitiesSettings: View {
                     "Enable music live activity",
                     isOn: $coordinator.musicLiveActivityEnabled.animation()
                 )
-                .settingsHighlight(id: highlightID("Enable music live activity"))
             } header: {
                 Text("Media Live Activity")
             } footer: {
@@ -3119,9 +2589,6 @@ struct Appearance: View {
         currentRecommendedMinimumNotchWidth()
     }
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.appearance.highlightID(for: title)
-    }
 
     private var liquidVariantRange: ClosedRange<Double> {
         Double(LiquidGlassVariant.supportedRange.lowerBound)...Double(LiquidGlassVariant.supportedRange.upperBound)
@@ -3137,19 +2604,15 @@ struct Appearance: View {
                 Defaults.Toggle(key: .settingsIconInNotch) {
                     Text("Settings icon in notch")
                 }
-                .settingsHighlight(id: highlightID("Settings icon in notch"))
                 Defaults.Toggle(key: .enableShadow) {
                     Text("Enable window shadow")
                 }
-                .settingsHighlight(id: highlightID("Enable window shadow"))
                 Defaults.Toggle(key: .cornerRadiusScaling) {
                     Text("Corner radius scaling")
                 }
-                .settingsHighlight(id: highlightID("Corner radius scaling"))
                 Defaults.Toggle(key: .useModernCloseAnimation) {
                     Text("Use simpler close animation")
                 }
-                .settingsHighlight(id: highlightID("Use simpler close animation"))
             } header: {
                 Text("General")
             }
@@ -3166,7 +2629,6 @@ struct Appearance: View {
                     .onChange(of: externalDisplayStyle) {
                         NotificationCenter.default.post(name: Notification.Name.notchHeightChanged, object: nil)
                     }
-                    .settingsHighlight(id: highlightID("Main screen style"))
                     Text(externalDisplayStyle.description)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -3182,20 +2644,17 @@ struct Appearance: View {
                 Defaults.Toggle(key: .coloredSpectrogram) {
                     Text("Enable colored spectrograms")
                 }
-                .settingsHighlight(id: highlightID("Enable colored spectrograms"))
                 Defaults.Toggle(key: .playerColorTinting) {
                     Text("Enable colored spectograms")
                 }
                 Defaults.Toggle(key: .lightingEffect) {
                     Text("Enable blur effect behind album art")
                 }
-                .settingsHighlight(id: highlightID("Enable blur effect behind album art"))
                 Picker("Slider color", selection: $sliderColor) {
                     ForEach(SliderColorEnum.allCases, id: \.self) { option in
                         Text(option.localizedName)
                     }
                 }
-                .settingsHighlight(id: highlightID("Slider color"))
             } header: {
                 Text("Media")
             }
@@ -3372,7 +2831,6 @@ struct Appearance: View {
                 Defaults.Toggle(key: .showNotHumanFace) {
                     Text("Idle Animation")
                 }
-                .settingsHighlight(id: highlightID("Idle Animation"))
             } header: {
                 HStack {
                     Text("Additional features")
@@ -3451,7 +2909,6 @@ struct Appearance: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .settingsHighlight(id: highlightID("App icon"))
             } header: {
                 HStack {
                     Text("App icon")
@@ -3620,7 +3077,6 @@ struct Appearance: View {
                 .onChange(of: customizePhysicalNotchWidth) {
                     NotificationCenter.default.post(name: Notification.Name.notchHeightChanged, object: nil)
                 }
-                .settingsHighlight(id: highlightID("Customize physical notch width"))
                 
                 Slider(
                     value: closedWidthBinding,
@@ -3634,7 +3090,6 @@ struct Appearance: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .settingsHighlight(id: highlightID("Closed notch / pill width"))
 
                 Divider().padding(.vertical, 4)
 
@@ -3651,7 +3106,6 @@ struct Appearance: View {
                     }
                 }
                 .disabled(enableMinimalisticUI)
-                .settingsHighlight(id: highlightID("Expanded notch width"))
 
                 HStack {
                     Text("\(tabCount) tab\(tabCount == 1 ? "" : "s") enabled · min \(Int(recommendedMin)) px")
@@ -3731,9 +3185,6 @@ private func copyLatestCrashReport() {
 struct Shortcuts: View {
     @Default(.enableShortcuts) var enableShortcuts
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.shortcuts.highlightID(for: title)
-    }
 
     var body: some View {
         Form {
@@ -3741,7 +3192,6 @@ struct Shortcuts: View {
                 Defaults.Toggle(key: .enableShortcuts) {
                     Text("Enable global keyboard shortcuts")
                 }
-                .settingsHighlight(id: highlightID("Enable global keyboard shortcuts"))
             } header: {
                 Text("General")
             } footer: {
@@ -3883,9 +3333,6 @@ struct CustomOSDSettings: View {
     @State private var previewValue: CGFloat = 0.65
     @State private var previewType: SneakContentType = .volume
 
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.hudAndOSD.highlightID(for: title)
-    }
 
     private var hasAccessibilityPermission: Bool {
         accessibilityPermission.isAuthorized
@@ -3929,11 +3376,8 @@ struct CustomOSDSettings: View {
             if hasAccessibilityPermission || enableThirdPartyDDCIntegration {
                 Section {
                     Toggle("Volume OSD", isOn: $enableOSDVolume)
-                        .settingsHighlight(id: highlightID("Volume OSD"))
                     Toggle("Brightness OSD", isOn: $enableOSDBrightness)
-                        .settingsHighlight(id: highlightID("Brightness OSD"))
                     Toggle("Keyboard Backlight OSD", isOn: $enableOSDKeyboardBacklight)
-                        .settingsHighlight(id: highlightID("Keyboard Backlight OSD"))
                         .disabled(enableThirdPartyDDCIntegration)
                         .help(enableThirdPartyDDCIntegration ? "Disabled while external display integration is active \u{2014} brightness keys are handled by the external app." : "")
                 } header: {
@@ -3950,7 +3394,6 @@ struct CustomOSDSettings: View {
                             Text(material.rawValue).tag(material)
                         }
                     }
-                    .settingsHighlight(id: highlightID("Material"))
                     .onChange(of: osdMaterial) { _, _ in
                         previewValue = previewValue == 0.65 ? 0.651 : 0.65
                     }
@@ -3988,7 +3431,6 @@ struct CustomOSDSettings: View {
                             Text(style.rawValue).tag(style)
                         }
                     }
-                    .settingsHighlight(id: highlightID("Icon & Progress Color"))
                     .onChange(of: osdIconColorStyle) { _, _ in
                         previewValue = previewValue == 0.65 ? 0.651 : 0.65
                     }
