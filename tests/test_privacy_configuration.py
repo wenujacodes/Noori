@@ -14,23 +14,22 @@ class PrivacyConfigurationTests(unittest.TestCase):
 
         self.assertTrue(entitlements.get("com.apple.security.device.camera"))
 
-    def test_notes_sync_is_authorized_for_apple_events(self):
+    def test_media_players_are_authorized_for_apple_events(self):
         project = PROJECT.read_text()
         entitlements = plistlib.loads(ENTITLEMENTS.read_bytes())
 
         self.assertNotIn("AUTOMATION_APPLE_EVENTS = NO;", project)
-        self.assertIn(
-            "com.apple.Notes",
-            entitlements["com.apple.security.temporary-exception.apple-events"],
-        )
+        allowed = entitlements["com.apple.security.temporary-exception.apple-events"]
+        self.assertIn("com.spotify.client", allowed)
+        self.assertIn("com.apple.Music", allowed)
 
-    def test_automation_usage_text_names_notes(self):
+    def test_automation_usage_text_names_media_players(self):
         project = PROJECT.read_text()
 
         self.assertEqual(
             2,
             project.count(
-                'INFOPLIST_KEY_NSAppleEventsUsageDescription = "Noori uses AppleScripts to control Spotify, Apple Music, and Notes.";'
+                'INFOPLIST_KEY_NSAppleEventsUsageDescription = "Noori uses AppleScripts to control Spotify and Apple Music.";'
             ),
         )
 

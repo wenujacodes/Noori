@@ -202,8 +202,6 @@ struct ProfileCard: View {
 // MARK: - Profile Settings Configuration
 
 func applyProfileSettings(_ profiles: Set<String>) {
-    // Clipboard is ALWAYS enabled (per user request)
-    Defaults[.enableClipboardManager] = true
     
     // Developer Profile Settings
     let isDeveloper = profiles.contains("developer")

@@ -46,7 +46,6 @@ class NooriViewModel: NSObject, ObservableObject {
     @Published var hideOnClosed: Bool = true
     @Published var isHoveringCalendar: Bool = false
     @Published var isBatteryPopoverActive: Bool = false
-    @Published var isClipboardPopoverActive: Bool = false
     @Published var isStatsPopoverActive: Bool = false
     @Published var isReminderPopoverActive: Bool = false
     @Published var isMediaOutputPopoverActive: Bool = false
@@ -56,7 +55,6 @@ class NooriViewModel: NSObject, ObservableObject {
     private var scrollGestureSuppressionTokens: Set<UUID> = []
     @Published private(set) var isAutoCloseSuppressed: Bool = false
     private var autoCloseSuppressionTokens: Set<UUID> = []
-    private let clipboardFocusWindow: TimeInterval = 10
 
     func setScrollGestureSuppression(_ active: Bool, token: UUID) {
         if active {
@@ -92,17 +90,6 @@ class NooriViewModel: NSObject, ObservableObject {
         isAutoCloseSuppressed = false
     }
 
-    private func focusClipboardTabIfNeeded() {
-        guard !Defaults[.enableMinimalisticUI] else { return }
-        guard Defaults[.enableClipboardManager] else { return }
-        guard Defaults[.clipboardDisplayMode] == .separateTab else { return }
-        guard let lastCopyDate = ClipboardManager.shared.lastCopiedItemDate else { return }
-        guard Date().timeIntervalSince(lastCopyDate) <= clipboardFocusWindow else { return }
-        guard coordinator.currentView != .notes else { return }
-        withAnimation(.smooth) {
-            coordinator.currentView = .notes
-        }
-    }
     
     let webcamManager = WebcamManager.shared
     @Published var isCameraExpanded: Bool = false
@@ -213,27 +200,6 @@ class NooriViewModel: NSObject, ObservableObject {
                     delegate.ensureWindowSize(
                         addShadowPadding(to: updatedTarget, isMinimalistic: Defaults[.enableMinimalisticUI]),
                         animated: false,
-                        force: false
-                    )
-                }
-            }
-            .store(in: &cancellables)
-
-        coordinator.$notesLayoutState
-            .removeDuplicates()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                guard self.notchState == .open else { return }
-                let updatedTarget = self.calculateDynamicNotchSize()
-                guard self.notchSize != updatedTarget else { return }
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    self.notchSize = updatedTarget
-                }
-                if let delegate = AppDelegate.shared {
-                    delegate.ensureWindowSize(
-                        addShadowPadding(to: updatedTarget, isMinimalistic: Defaults[.enableMinimalisticUI]),
-                        animated: true,
                         force: false
                     )
                 }
@@ -354,18 +320,11 @@ class NooriViewModel: NSObject, ObservableObject {
 
         // Force music information update when notch is opened
         MusicManager.shared.forceUpdate()
-        focusClipboardTabIfNeeded()
     }
     
     private func calculateDynamicNotchSize() -> CGSize {
         let baseSize = Defaults[.enableMinimalisticUI] ? minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: screen)) : openNotchSize
         var adjustedSize = baseSize
-
-        if coordinator.currentView == .notes || coordinator.currentView == .clipboard {
-            let preferred = coordinator.notesLayoutState.preferredHeight
-            adjustedSize.height = max(adjustedSize.height, preferred)
-            return adjustedSize
-        }
 
         return statsAdjustedNotchSize(
             from: adjustedSize,

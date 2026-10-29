@@ -104,7 +104,7 @@ class NooriViewCoordinator: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var hoverOpenSuppressedUntil: Date = .distantPast
     
-    private static let tabOrder: [NotchViews] = [.home, .shelf, .timer, .stats, .llmUsage, .notes, .clipboard, .extensionExperience]
+    private static let tabOrder: [NotchViews] = [.home, .shelf, .timer, .stats, .llmUsage, .extensionExperience]
     
     /// Direction of the most recent tab switch (true = forward/right, false = backward/left)
     @Published var tabSwitchForward: Bool = true
@@ -124,7 +124,6 @@ class NooriViewCoordinator: ObservableObject {
     }
     
     @Published var statsSecondRowExpansion: CGFloat = 1
-    @Published var notesLayoutState: NotesLayoutState = .list
     @Published var selectedExtensionExperienceID: String?
     
     
@@ -231,9 +230,6 @@ class NooriViewCoordinator: ObservableObject {
             Defaults.publisher(.enableTimerFeature).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.timerDisplayMode).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.enableStatsFeature).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.enableNotes).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.enableClipboardManager).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.clipboardDisplayMode).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.enableMinimalisticUI).map { _ in () }.eraseToAnyPublisher()
         )
         .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
@@ -456,11 +452,5 @@ class NooriViewCoordinator: ObservableObject {
         currentView = .home
     }
     
-    // MARK: - Clipboard Management
-    @Published var shouldToggleClipboardPopover: Bool = false
     
-    func toggleClipboardPopover() {
-        // Toggle the published property to trigger UI updates
-        shouldToggleClipboardPopover.toggle()
-    }
 }
