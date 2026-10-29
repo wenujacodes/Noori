@@ -40,7 +40,6 @@ class NooriViewModel: NSObject, ObservableObject {
     var onViewTeardown: (() -> Void)?
     
     @Published var hideOnClosed: Bool = true
-    @Published var isBatteryPopoverActive: Bool = false
     @Published var isMediaOutputPopoverActive: Bool = false
     @Published var shouldRecheckHover: Bool = false
     @Published var isScrollGestureActive: Bool = false

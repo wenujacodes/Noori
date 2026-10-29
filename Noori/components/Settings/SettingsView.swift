@@ -368,7 +368,6 @@ struct GeneralSettings: View {
     @Default(.enableGestures) var enableGestures
     @Default(.openNotchOnHover) var openNotchOnHover
     @Default(.enableMinimalisticUI) var enableMinimalisticUI
-    @Default(.showMinimalisticBatteryIndicator) var showMinimalisticBatteryIndicator
     @Default(.enableHorizontalMusicGestures) var enableHorizontalMusicGestures
     @Default(.musicGestureBehavior) var musicGestureBehavior
     @Default(.reverseSwipeGestures) var reverseSwipeGestures
@@ -390,15 +389,6 @@ struct GeneralSettings: View {
                     }
                 }
 
-                Defaults.Toggle(key: .showMinimalisticBatteryIndicator) {
-                    Text("Show battery indicator")
-                }
-                .disabled(!enableMinimalisticUI)
-
-                Defaults.Toggle(key: .showBatteryPercentInside) {
-                    Text("Show battery percentage inside icon")
-                }
-                .disabled(!enableMinimalisticUI || !Defaults[.showMinimalisticBatteryIndicator])
             } header: {
                 Text("UI Mode")
             } footer: {
@@ -686,9 +676,6 @@ struct Charge: View {
         Form {
             if BatteryActivityManager.shared.hasBattery() {
                 Section {
-                    Defaults.Toggle(key: .showBatteryIndicator) {
-                        Text("Show battery indicator")
-                    }
                     Defaults.Toggle(key: .showPowerStatusNotifications) {
                         Text("Show power status notifications")
                     }
@@ -699,9 +686,6 @@ struct Charge: View {
                     Text("General")
                 }
                 Section {
-                    Defaults.Toggle(key: .showBatteryPercentage) {
-                        Text("Show battery percentage")
-                    }
                     Defaults.Toggle(key: .showPowerStatusIcons) {
                         Text("Show power status icons")
                     }

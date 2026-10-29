@@ -25,9 +25,6 @@ struct NooriHeader: View {
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var coordinator = NooriViewCoordinator.shared
     @ObservedObject var doNotDisturbManager = DoNotDisturbManager.shared
-    @Default(.showBatteryIndicator) var showBatteryIndicator
-    @Default(.showBatteryPercentInside) var showBatteryPercentInside
-    @Default(.showMinimalisticBatteryIndicator) var showMinimalisticBatteryIndicator
     @Default(.enableMinimalisticUI) var enableMinimalisticUI
     
     var body: some View {
@@ -94,37 +91,6 @@ struct NooriHeader: View {
                     }
                 }
 
-                if vm.notchState == .open && showBatteryIndicator {
-                    if enableMinimalisticUI {
-                        // In minimalistic notch mode, show the battery pill only when
-                        // showMinimalisticBatteryIndicator is enabled (and not DI mode).
-                        if !shouldUseNooriMode(for: vm.screen) && showMinimalisticBatteryIndicator {
-                            MinimalisticBatteryView(
-                                levelBattery: batteryModel.levelBattery,
-                                isPluggedIn: batteryModel.isPluggedIn,
-                                isCharging: batteryModel.isCharging,
-                                isInLowPowerMode: batteryModel.isInLowPowerMode,
-                                bodyWidth: 28,
-                                bodyHeight: 14,
-                                isForNotification: false,
-                                showPercentInside: showBatteryPercentInside
-                            )
-                            .padding(.trailing, 4)
-                            .transition(.opacity.combined(with: .scale(scale: 0.85)))
-                        }
-                    } else {
-                        NooriBatteryView(
-                            batteryWidth: 30,
-                            isCharging: batteryModel.isCharging,
-                            isInLowPowerMode: batteryModel.isInLowPowerMode,
-                            isPluggedIn: batteryModel.isPluggedIn,
-                            levelBattery: batteryModel.levelBattery,
-                            maxCapacity: batteryModel.maxCapacity,
-                            timeToFullCharge: batteryModel.timeToFullCharge,
-                            isForNotification: false
-                        )
-                    }
-                }
             }
             .font(.system(.headline, design: .rounded))
             .frame(maxWidth: .infinity, alignment: .trailing)

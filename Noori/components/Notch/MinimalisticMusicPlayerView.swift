@@ -33,7 +33,6 @@ struct MinimalisticMusicPlayerView: View {
     @Default(.musicControlSlots) private var slotConfig
     @Default(.showMediaOutputControl) private var showMediaOutputControl
     @Default(.musicSkipBehavior) private var musicSkipBehavior
-    @Default(.showMinimalisticBatteryIndicator) private var showMinimalisticBatteryIndicator
     @ObservedObject private var coordinator = NooriViewCoordinator.shared
     @State private var hudValue: Double = 0
     @State private var hudDragging: Bool = false
@@ -67,7 +66,7 @@ struct MinimalisticMusicPlayerView: View {
             .animation(.smooth(duration: 0.3), value: dynamicHeightSignature)
         } else {
             VStack(spacing: 0) {
-                if showMinimalisticBatteryIndicator || shouldUseNooriMode(for: vm.screen) {
+                if shouldUseNooriMode(for: vm.screen) {
                     // ── Battery ON / DI mode: original flat layout (unchanged) ──
                     GeometryReader { headerGeo in
                         let albumArtWidth: CGFloat = 50
@@ -223,13 +222,12 @@ struct MinimalisticMusicPlayerView: View {
     private var dynamicHeightSignature: Int {
         var signature = 0
         if enableLyrics { signature += 1 }
-        if showMinimalisticBatteryIndicator { signature += 1000 }
         return signature
     }
 
     /// True when the battery indicator is hidden and we are in notch mode (not DI).
     private var batteryOffNotchMode: Bool {
-        !showMinimalisticBatteryIndicator && !shouldUseNooriMode(for: vm.screen)
+        !shouldUseNooriMode(for: vm.screen)
     }
 
     private func calculateDynamicHeight() -> CGFloat {

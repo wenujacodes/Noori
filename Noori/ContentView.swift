@@ -546,13 +546,6 @@ struct ContentView: View {
                     isHoveringClosedMusicWaveformControl = false
                 }
             }
-            .onChange(of: vm.isBatteryPopoverActive) { _, newPopoverState in
-                runAfter(0.1) {
-                    if !newPopoverState && !isHovering && vm.notchState == .open && !shouldPreventAutoClose() {
-                        vm.close()
-                    }
-                }
-            }
             .onChange(of: vm.shouldRecheckHover) { _, _ in
                 // Recheck hover state when popovers are closed
                 runAfter(0.1) {
@@ -1389,8 +1382,7 @@ struct ContentView: View {
     
     // Helper function to check if any popovers are active
     private func hasAnyActivePopovers() -> Bool {
-     return vm.isBatteryPopoverActive || 
-         vm.isMediaOutputPopoverActive
+     return vm.isMediaOutputPopoverActive
     }
 
     private func shouldPreventAutoClose() -> Bool {
