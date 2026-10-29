@@ -22,16 +22,15 @@ import Sparkle
 import SwiftUI
 
 /// SwiftUI view shown when a Sparkle update is available.
-/// Displays app icon with animated glow, version comparison with channel badge,
+/// Displays app icon with animated glow, version comparison,
 /// release notes, and action buttons.
 struct UpdateFoundView: View {
     @ObservedObject var state: UpdateUIState
     @State private var glowOpacity: Double = 0.4
     @State private var showNotes: Bool = false
 
-    private var channel: UpdateChannel {
-        Defaults[.updateChannel]
-    }
+    /// Accent colour used across the update UI.
+    private let accentColor = Color(nsColor: .systemGreen)
 
     private var newVersion: String {
         state.appcastItem?.displayVersionString ?? "Unknown"
@@ -48,7 +47,7 @@ struct UpdateFoundView: View {
                 // App icon with animated glow
                 ZStack {
                     Circle()
-                        .fill(Color(channel.badgeColor).opacity(glowOpacity))
+                        .fill(accentColor.opacity(glowOpacity))
                         .frame(width: 100, height: 100)
                         .blur(radius: 20)
 
@@ -57,7 +56,7 @@ struct UpdateFoundView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 72, height: 72)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .shadow(color: Color(channel.badgeColor).opacity(0.3), radius: 8, y: 4)
+                        .shadow(color: accentColor.opacity(0.3), radius: 8, y: 4)
                 }
                 .onAppear {
                     withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
@@ -80,20 +79,6 @@ struct UpdateFoundView: View {
 
                     versionBadge(label: "New", version: newVersion, highlighted: true)
                 }
-
-                // Channel badge
-                HStack(spacing: 4) {
-                    Image(systemName: channel.badgeIcon)
-                        .font(.caption2)
-                    Text(channel.displayName)
-                        .font(.caption2)
-                        .fontWeight(.semibold)
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(Color(channel.badgeColor).opacity(0.15))
-                .foregroundStyle(Color(channel.badgeColor))
-                .clipShape(Capsule())
             }
             .padding(.top, 28)
             .padding(.horizontal, 24)
@@ -145,7 +130,7 @@ struct UpdateFoundView: View {
                         .padding(.vertical, 8)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(Color(channel.badgeColor))
+                .tint(accentColor)
                 .controlSize(.large)
 
                 HStack(spacing: 16) {
@@ -179,13 +164,13 @@ struct UpdateFoundView: View {
                 .foregroundStyle(.secondary)
             Text(version)
                 .font(.system(.callout, design: .monospaced, weight: .medium))
-                .foregroundStyle(highlighted ? Color(channel.badgeColor) : .primary)
+                .foregroundStyle(highlighted ? accentColor : .primary)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(highlighted ? Color(channel.badgeColor).opacity(0.1) : Color.secondary.opacity(0.1))
+                .fill(highlighted ? accentColor.opacity(0.1) : Color.secondary.opacity(0.1))
         )
     }
 }

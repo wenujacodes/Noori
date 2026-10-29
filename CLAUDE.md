@@ -90,7 +90,7 @@ All app code lives in `Noori/`. The Xcode project uses **synchronized folder gro
 
 ## Updates / release
 
-- Sparkle is still integrated. Feeds point to `https://raw.githubusercontent.com/wenujacodes/Noori/main/Updates/appcast*.xml` (don't exist yet). Atoll's `SUPublicEDKey` was removed; before shipping updates, generate your own EdDSA key with Sparkle's `generate_keys` and add `SUPublicEDKey` to `Noori/Info.plist`.
+- Sparkle is still integrated with a single stable feed: `SUFeedURL` in `Noori/Info.plist` (`https://raw.githubusercontent.com/wenujacodes/Noori/main/Updates/appcast.xml`, doesn't exist yet). There are no update channels. Atoll's `SUPublicEDKey` was removed; before shipping updates, generate your own EdDSA key with Sparkle's `generate_keys` and add `SUPublicEDKey` to `Noori/Info.plist`.
 - No CI/release workflows yet (Atoll's were removed).
 
 ## Knowledge graph (graphify)

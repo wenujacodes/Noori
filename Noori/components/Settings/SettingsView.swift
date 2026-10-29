@@ -2640,8 +2640,6 @@ struct Media: View {
 
 
 struct About: View {
-    @State private var showBuildNumber: Bool = false
-    @Default(.updateChannel) var updateChannel
     let updaterController: SPUStandardUpdaterController
     @Environment(\.openWindow) var openWindow
     var body: some View {
@@ -2649,36 +2647,16 @@ struct About: View {
             Form {
                 Section {
                     HStack {
-                        Text("Release name")
+                        Text("Version")
                         Spacer()
-                        Text(Defaults[.releaseName])
+                        Text(Bundle.main.releaseVersionNumber ?? "Unknown")
                             .foregroundStyle(.secondary)
                     }
                     HStack {
-                        Text("Version")
+                        Text("Build")
                         Spacer()
-
-                        // Channel badge
-                        Text(UpdateChannel.buildChannel.displayName)
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color(UpdateChannel.buildChannel.badgeColor).opacity(0.2))
-                            .foregroundStyle(Color(UpdateChannel.buildChannel.badgeColor))
-                            .clipShape(Capsule())
-
-                        if showBuildNumber {
-                            Text("(\(Bundle.main.buildVersionNumber ?? ""))")
-                                .foregroundStyle(.secondary)
-                        }
-                        Text(Bundle.main.releaseVersionNumber ?? "unkown")
+                        Text(Bundle.main.buildVersionNumber ?? "Unknown")
                             .foregroundStyle(.secondary)
-                    }
-                    .onTapGesture {
-                        withAnimation {
-                            showBuildNumber.toggle()
-                        }
                     }
                 } header: {
                     Text("Version info")
@@ -2706,48 +2684,10 @@ struct About: View {
                 }
                 .buttonStyle(PlainButtonStyle())
 
-                Section {
-                    ForEach(UpdateChannel.availableChannels) { channel in
-                        Button {
-                            updateChannel = channel
-                        } label: {
-                            HStack(spacing: 10) {
-                                Image(systemName: channel.badgeIcon)
-                                    .font(.system(size: 13))
-                                    .foregroundStyle(Color(channel.badgeColor))
-                                    .frame(width: 20, alignment: .center)
-
-                                VStack(alignment: .leading, spacing: 1) {
-                                    Text(channel.displayName)
-                                        .foregroundStyle(.primary)
-                                    Text(channel.description)
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-
-                                Spacer()
-
-                                if updateChannel == channel {
-                                    Image(systemName: "checkmark")
-                                        .font(.system(size: 12, weight: .semibold))
-                                        .foregroundStyle(Color(channel.badgeColor))
-                                }
-                            }
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                    }
-
-                    Text("Current build: \(UpdateChannel.buildChannel.displayName)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } header: {
-                    Text("Update channel")
-                }
                 VStack(spacing: 0) {
                     Divider()
                         .padding(.bottom, 5)
-                    Text("Made with ❤️ by wenujacodes")
+                    Text("Made with ❤️ by Wenuja Liyanamana")
                         .foregroundStyle(.secondary)
                         .padding(.bottom, 7)
                         .multilineTextAlignment(.center)

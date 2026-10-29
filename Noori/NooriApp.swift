@@ -32,17 +32,12 @@ struct NooriApp: App {
     @Environment(\.openWindow) var openWindow
 
     let updaterController: SPUStandardUpdaterController
-    /// Retained delegate instance that dynamically selects the Sparkle feed URL
-    /// based on the user's update channel preference.
-    private let updaterDelegate = NooriUpdaterDelegate()
-
     init() {
         // Skip Sparkle's launch-time update check during UI testing.
-        // The NooriUpdaterDelegate overrides the feed URL at runtime
-        // based on the user's selected update channel.
+        // The update feed comes from SUFeedURL in Info.plist.
         updaterController = SPUStandardUpdaterController(
             startingUpdater: !AppRuntimeEnvironment.isUITesting,
-            updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+            updaterDelegate: nil, userDriverDelegate: nil)
 
         // Initialize the settings window controller with the updater controller
         SettingsWindowController.shared.setUpdaterController(updaterController)

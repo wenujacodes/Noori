@@ -22,19 +22,14 @@ import SwiftUI
 
 /// SwiftUI view for download and installation progress.
 /// Features a circular progress indicator with percentage, download speed,
-/// animated phase transitions, and a gradient progress bar matching the channel color.
+/// animated phase transitions, and a gradient progress bar.
 struct UpdateProgressView: View {
     @ObservedObject var state: UpdateUIState
     @State private var pulseScale: CGFloat = 1.0
     @State private var rotationAngle: Double = 0
 
-    private var channel: UpdateChannel {
-        Defaults[.updateChannel]
-    }
-
-    private var channelColor: Color {
-        Color(channel.badgeColor)
-    }
+    /// Accent colour used across the update UI.
+    private let accentColor = Color(nsColor: .systemGreen)
 
     private var progressPercent: Int {
         Int(state.progress * 100)
@@ -48,7 +43,7 @@ struct UpdateProgressView: View {
             ZStack {
                 // Background ring
                 Circle()
-                    .stroke(channelColor.opacity(0.15), lineWidth: 8)
+                    .stroke(accentColor.opacity(0.15), lineWidth: 8)
                     .frame(width: 120, height: 120)
 
                 // Progress ring
@@ -57,8 +52,8 @@ struct UpdateProgressView: View {
                     .stroke(
                         AngularGradient(
                             gradient: Gradient(colors: [
-                                channelColor.opacity(0.4),
-                                channelColor,
+                                accentColor.opacity(0.4),
+                                accentColor,
                             ]),
                             center: .center,
                             startAngle: .degrees(0),
@@ -74,7 +69,7 @@ struct UpdateProgressView: View {
                 VStack(spacing: 4) {
                     Text("\(progressPercent)%")
                         .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundStyle(channelColor)
+                        .foregroundStyle(accentColor)
                         .contentTransition(.numericText())
 
                     Image(systemName: state.phase == .extracting ? "archivebox" : "arrow.down.circle")
@@ -106,7 +101,7 @@ struct UpdateProgressView: View {
                     } icon: {
                         Image(systemName: "arrow.down")
                             .font(.caption2)
-                            .foregroundStyle(channelColor)
+                            .foregroundStyle(accentColor)
                     }
 
                     if state.totalBytes > 0 {
@@ -122,13 +117,13 @@ struct UpdateProgressView: View {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(channelColor.opacity(0.15))
+                        .fill(accentColor.opacity(0.15))
                         .frame(height: 6)
 
                     RoundedRectangle(cornerRadius: 4)
                         .fill(
                             LinearGradient(
-                                colors: [channelColor.opacity(0.7), channelColor],
+                                colors: [accentColor.opacity(0.7), accentColor],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -174,7 +169,7 @@ struct UpdateProgressView: View {
                         .padding(.vertical, 8)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(channelColor)
+                .tint(accentColor)
                 .controlSize(.large)
                 .padding(.horizontal, 40)
                 .padding(.bottom, 20)
@@ -200,7 +195,7 @@ struct UpdateProgressView: View {
         VStack(spacing: 4) {
             Image(systemName: systemImage)
                 .font(.system(size: 14))
-                .foregroundStyle(isComplete || isActive ? channelColor : Color.secondary.opacity(0.5))
+                .foregroundStyle(isComplete || isActive ? accentColor : Color.secondary.opacity(0.5))
                 .symbolEffect(.pulse, isActive: isActive)
 
             Text(label)
@@ -213,7 +208,7 @@ struct UpdateProgressView: View {
     @ViewBuilder
     private func stepConnector(isComplete: Bool) -> some View {
         Rectangle()
-            .fill(isComplete ? channelColor.opacity(0.5) : Color.secondary.opacity(0.2))
+            .fill(isComplete ? accentColor.opacity(0.5) : Color.secondary.opacity(0.2))
             .frame(width: 40, height: 2)
             .padding(.bottom, 16)
     }
