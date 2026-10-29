@@ -250,9 +250,7 @@ class NooriViewModel: NSObject, ObservableObject {
         resetScrollGestureSuppression()
         resetAutoCloseSuppression()
 
-        if !coordinator.openLastTabByDefault {
-            coordinator.currentView = .home
-        }
+        coordinator.currentView = .home
     }
 
     func closeForLockScreen() {

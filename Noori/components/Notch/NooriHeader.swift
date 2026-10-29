@@ -29,12 +29,7 @@ struct NooriHeader: View {
     var body: some View {
         HStack(spacing: 0) {
             HStack {
-                if !enableMinimalisticUI {
-                    let shouldShowTabs = coordinator.alwaysShowTabs || vm.notchState == .open
-                    if shouldShowTabs {
-                        TabSelectionView()
-                    }
-                }
+                Spacer(minLength: 0)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .opacity(vm.notchState == .closed ? 0 : 1)

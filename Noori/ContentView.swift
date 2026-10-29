@@ -198,21 +198,7 @@ struct ContentView: View {
     private let musicControlPauseGrace: TimeInterval = 5
     private let musicControlResumeDelay: TimeInterval = 0.24
 
-    // MARK: - Tab switch direction for smooth transitions
     
-    private var tabSwitchTransition: AnyTransition {
-        if coordinator.tabSwitchForward {
-            return .asymmetric(
-                insertion: .move(edge: .trailing).combined(with: .opacity),
-                removal: .move(edge: .leading).combined(with: .opacity)
-            )
-        } else {
-            return .asymmetric(
-                insertion: .move(edge: .leading).combined(with: .opacity),
-                removal: .move(edge: .trailing).combined(with: .opacity)
-            )
-        }
-    }
     
     private var standardMediaControlsActive: Bool {
         showStandardMediaControls && !enableMinimalisticUI
@@ -849,7 +835,7 @@ struct ContentView: View {
                           }
                       }
                       .id(coordinator.currentView)
-                      .transition(tabSwitchTransition)
+                      .transition(.opacity)
                   }
               }
               .zIndex(1)

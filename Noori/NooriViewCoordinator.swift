@@ -87,21 +87,12 @@ class NooriViewCoordinator: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var hoverOpenSuppressedUntil: Date = .distantPast
     
-    private static let tabOrder: [NotchViews] = [.home]
-    
-    /// Direction of the most recent tab switch (true = forward/right, false = backward/left)
-    @Published var tabSwitchForward: Bool = true
-    
     @Published var currentView: NotchViews = .home {
         didSet {
             if Defaults[.enableMinimalisticUI] && currentView != .home {
                 currentView = .home
                 return
             }
-            // Track direction before SwiftUI re-renders
-            let oldIdx = Self.tabOrder.firstIndex(of: oldValue) ?? 0
-            let newIdx = Self.tabOrder.firstIndex(of: currentView) ?? 0
-            tabSwitchForward = newIdx >= oldIdx
         }
     }
     
@@ -111,23 +102,6 @@ class NooriViewCoordinator: ObservableObject {
     @AppStorage("showWhatsNew") var showWhatsNew: Bool = true
     @AppStorage("musicLiveActivityEnabled") var musicLiveActivityEnabled: Bool = true
 
-    
-    @AppStorage("alwaysShowTabs") var alwaysShowTabs: Bool = true {
-        didSet {
-            if !alwaysShowTabs {
-                openLastTabByDefault = false
-                currentView = .home
-            }
-        }
-    }
-    
-    @AppStorage("openLastTabByDefault") var openLastTabByDefault: Bool = false {
-        didSet {
-            if openLastTabByDefault {
-                alwaysShowTabs = true
-            }
-        }
-    }
     
     @AppStorage("hudReplacement") var hudReplacement: Bool = true
     
@@ -151,7 +125,7 @@ class NooriViewCoordinator: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Observe all tab-affecting settings to enforce minimum notch width
+        // Observe layout settings to enforce minimum notch width
         Publishers.MergeMany(
             Defaults.publisher(.showStandardMediaControls).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.enableMinimalisticUI).map { _ in () }.eraseToAnyPublisher()

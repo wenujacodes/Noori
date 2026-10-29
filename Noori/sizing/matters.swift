@@ -56,35 +56,14 @@ func maxAllowedNotchWidth() -> CGFloat {
     maxAllowedNotchWidth(for: nil)
 }
 
-// MARK: - Tab-Based Notch Width
+// MARK: - Notch Width
 
-/// Counts the number of currently enabled standard notch tabs.
-/// Mirrors the tab-building logic in ``TabSelectionView``.
-func enabledStandardTabCount() -> Int {
-    var count = 0
-
-    // Home tab
-    if Defaults[.showStandardMediaControls] {
-        count += 1
-    }
-
-
-    return count
-}
-
-/// Returns the recommended minimum notch width for the given tab count.
-func recommendedMinimumNotchWidth(forTabCount count: Int) -> CGFloat {
-    if count >= 6 { return 770 }
-    if count >= 5 { return 690 }
-    return 640
-}
-
-/// Returns the recommended minimum notch width for the current tab configuration.
+/// Minimum width of the open notch in the standard layout.
 func currentRecommendedMinimumNotchWidth() -> CGFloat {
-    recommendedMinimumNotchWidth(forTabCount: enabledStandardTabCount())
+    640
 }
 
-/// Enforces the minimum notch width based on current tab count.
+/// Enforces the minimum notch width.
 /// Also clamps to screen width so the notch never exceeds the display.
 /// Only adjusts when not in minimalistic mode.
 func enforceMinimumNotchWidth() {

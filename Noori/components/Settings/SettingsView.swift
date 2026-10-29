@@ -580,7 +580,6 @@ struct GeneralSettings: View {
             Defaults.Toggle(key: .openNotchOnHover) {
                 Text("Open notch on hover")
             }
-            Toggle("Remember last tab", isOn: $coordinator.openLastTabByDefault)
             if openNotchOnHover {
                 Slider(value: $minimumHoverDuration, in: 0...1, step: 0.1) {
                     HStack {
@@ -2023,7 +2022,6 @@ struct Appearance: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Always show tabs", isOn: $coordinator.alwaysShowTabs)
                 Defaults.Toggle(key: .settingsIconInNotch) {
                     Text("Settings icon in notch")
                 }
@@ -2464,7 +2462,6 @@ struct Appearance: View {
     private func notchWidthControls() -> some View {
         Section {
             let recommendedMin = currentRecommendedMinimumNotchWidth()
-            let tabCount = enabledStandardTabCount()
             let dynamicRange = Double(recommendedMin)...900
             
             let closedRange = Double(80)...400
@@ -2531,7 +2528,7 @@ struct Appearance: View {
                 .disabled(enableMinimalisticUI)
 
                 HStack {
-                    Text("\(tabCount) tab\(tabCount == 1 ? "" : "s") enabled · min \(Int(recommendedMin)) px")
+                    Text("Minimum \(Int(recommendedMin)) px")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()
@@ -2544,7 +2541,7 @@ struct Appearance: View {
 
                 let description = enableMinimalisticUI
                 ? String(localized: "Expanded width adjustments apply only to the standard notch layout. Disable Minimalistic UI to edit this value.")
-                : String(localized: "Recommended minimum width adjusts automatically based on the number of enabled tabs.")
+                : String(localized: "The open notch can be resized between its minimum width and 900 px.")
 
                 Text(description)
                     .font(.caption)
