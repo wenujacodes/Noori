@@ -1898,7 +1898,7 @@ struct LiveActivitiesSettings: View {
             } header: {
                 Text("Media Live Activity")
             } footer: {
-                Text("Use the Media tab to configure sneak peek, lyrics, and floating media controls.")
+                Text("Use the Media tab to configure sneak peek and lyrics.")
             }
 
         }
