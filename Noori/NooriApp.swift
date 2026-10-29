@@ -1227,12 +1227,6 @@ final class MediaControlsStateCoordinator {
 
     private func handleStateChange(showStandard: Bool) {
         restoreMusicLiveActivity(clearCache: showStandard)
-
-        if showStandard {
-            restoreMusicControlWindowIfNeeded()
-        } else {
-            cacheAndDisableMusicControlWindow()
-        }
     }
 
 
@@ -1250,23 +1244,7 @@ final class MediaControlsStateCoordinator {
 
 
 
-    private func cacheAndDisableMusicControlWindow() {
-        if Defaults[.cachedMusicControlWindowPreference] == nil {
-            Defaults[.cachedMusicControlWindowPreference] = Defaults[.musicControlWindowEnabled]
-        }
 
-        if Defaults[.musicControlWindowEnabled] {
-            Defaults[.musicControlWindowEnabled] = false
-        }
-
-        MusicControlWindowManager.shared.hide()
-    }
-
-    private func restoreMusicControlWindowIfNeeded() {
-        guard let cached = Defaults[.cachedMusicControlWindowPreference] else { return }
-        Defaults[.musicControlWindowEnabled] = cached
-        Defaults[.cachedMusicControlWindowPreference] = nil
-    }
 }
 
 
