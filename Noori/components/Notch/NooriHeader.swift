@@ -30,12 +30,10 @@ struct NooriHeader: View {
     @ObservedObject var timerManager = TimerManager.shared
     @ObservedObject var doNotDisturbManager = DoNotDisturbManager.shared
     @State private var showClipboardPopover = false
-    @State private var showColorPickerPopover = false
     @State private var showTimerPopover = false
     @Default(.enableTimerFeature) var enableTimerFeature
     @Default(.timerDisplayMode) var timerDisplayMode
     @Default(.showClipboardIcon) var showClipboardIcon
-    @Default(.showColorPickerIcon) var showColorPickerIcon
     @Default(.clipboardDisplayMode) var clipboardDisplayMode
     @Default(.showBatteryIndicator) var showBatteryIndicator
     @Default(.showBatteryPercentInside) var showBatteryPercentInside
@@ -134,41 +132,6 @@ struct NooriHeader: View {
                         }
                     }
                     
-                    // ColorPicker button
-                    if Defaults[.enableColorPickerFeature] && showColorPickerIcon{
-                        Button(action: {
-                            switch Defaults[.colorPickerDisplayMode] {
-                            case .panel:
-                                ColorPickerPanelManager.shared.toggleColorPickerPanel()
-                            case .popover:
-                                showColorPickerPopover.toggle()
-                            }
-                        }) {
-                            Capsule()
-                                .fill(.black)
-                                .frame(width: 30, height: 30)
-                                .overlay {
-                                    Image(systemName: "eyedropper")
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .imageScale(.medium)
-                                }
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .popover(isPresented: $showColorPickerPopover, arrowEdge: .bottom) {
-                            ColorPickerPopover()
-                        }
-                        .onChange(of: showColorPickerPopover) { isActive in
-                            vm.isColorPickerPopoverActive = isActive
-                            
-                            // If popover was closed, trigger a hover recheck
-                            if !isActive {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    vm.shouldRecheckHover.toggle()
-                                }
-                            }
-                        }
-                    }
                     
                     if Defaults[.enableTimerFeature] && timerDisplayMode == .popover {
                         Button(action: {
@@ -317,7 +280,6 @@ private extension NooriHeader {
         Defaults[.settingsIconInNotch]
             && Defaults[.enableClipboardManager]
             && Defaults[.showClipboardIcon]
-            && Defaults[.showColorPickerIcon]
             && Defaults[.enableTimerFeature]
     }
 }

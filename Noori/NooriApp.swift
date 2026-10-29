@@ -747,12 +747,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }.store(in: &cancellables)
 
-        Defaults.publisher(.enableColorPickerFeature, options: []).sink { [weak self] _ in
-            Task { @MainActor [weak self] in
-                self?.updateFeatureShortcutAvailability()
-            }
-        }.store(in: &cancellables)
-
         Defaults.publisher(.enableScreenAssistant, options: []).sink { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.updateFeatureShortcutAvailability()
@@ -1244,10 +1238,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        KeyboardShortcuts.onKeyDown(for: .colorPickerPanel) {
-            guard Defaults[.enableShortcuts], Defaults[.enableColorPickerFeature] else { return }
-            ColorPickerPanelManager.shared.toggleColorPickerPanel()
-        }
 
 
         KeyboardShortcuts.onKeyDown(for: .screenAssistantPanel) { [weak self] in
@@ -1274,7 +1264,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func updateFeatureShortcutAvailability() {
         updateShortcut(.startDemoTimer, isEnabled: Defaults[.enableShortcuts] && Defaults[.enableTimerFeature])
         updateShortcut(.clipboardHistoryPanel, isEnabled: Defaults[.enableShortcuts] && Defaults[.enableClipboardManager])
-        updateShortcut(.colorPickerPanel, isEnabled: Defaults[.enableShortcuts] && Defaults[.enableColorPickerFeature])
         updateShortcut(.screenAssistantPanel, isEnabled: Defaults[.enableShortcuts] && Defaults[.enableScreenAssistant])
     }
 

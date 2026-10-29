@@ -77,7 +77,6 @@ public enum NotchViews {
     case timer
     case stats
     case llmUsage
-    case colorPicker
     case notes
     case clipboard
     case extensionExperience

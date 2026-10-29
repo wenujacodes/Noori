@@ -47,7 +47,6 @@ class NooriViewModel: NSObject, ObservableObject {
     @Published var isHoveringCalendar: Bool = false
     @Published var isBatteryPopoverActive: Bool = false
     @Published var isClipboardPopoverActive: Bool = false
-    @Published var isColorPickerPopoverActive: Bool = false
     @Published var isStatsPopoverActive: Bool = false
     @Published var isReminderPopoverActive: Bool = false
     @Published var isMediaOutputPopoverActive: Bool = false

@@ -60,7 +60,6 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
     case stats
     case clipboard
     case screenAssistant
-    case colorPicker
     case shelf
     case shortcuts
     case notes
@@ -75,7 +74,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .media, .liveActivities, .lockScreen, .devices:                 return .mediaAndDisplay
         case .hudAndOSD, .battery:                                           return .system
         case .timer, .calendar, .notes:                                      return .productivity
-        case .clipboard, .screenAssistant, .colorPicker, .shelf,
+        case .clipboard, .screenAssistant, .shelf,
              .shortcuts:                                         return .utilities
         case .stats:                                                         return .developer
         case .extensions:                                                    return .integrations
@@ -99,7 +98,6 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .stats: return String(localized: "Stats")
         case .clipboard: return String(localized: "Clipboard")
         case .screenAssistant: return String(localized: "Screen Assistant")
-        case .colorPicker: return String(localized: "Color Picker")
         case .shelf: return String(localized: "Shelf")
         case .shortcuts: return String(localized: "Shortcuts")
         case .notes: return String(localized: "Notes")
@@ -123,7 +121,6 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .stats: return "chart.xyaxis.line"
         case .clipboard: return "clipboard"
         case .screenAssistant: return "brain.head.profile"
-        case .colorPicker: return "eyedropper"
         case .shelf: return "books.vertical"
         case .shortcuts: return "keyboard"
         case .notes: return "note.text"
@@ -147,7 +144,6 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .stats: return .teal
         case .clipboard: return .mint
         case .screenAssistant: return .pink
-        case .colorPicker: return .accentColor
         case .shelf: return .brown
         case .shortcuts: return .orange
         case .notes: return Color(red: 0.979, green: 0.716, blue: 0.153, opacity: 1.000)
@@ -481,7 +477,6 @@ struct SettingsView: View {
             // Utilities
             .clipboard,
             .screenAssistant,
-            .colorPicker,
             .shelf,
             .shortcuts,
             // Developer
@@ -887,11 +882,6 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .screenAssistant, title: "Display Mode", keywords: ["screen assistant", "mode"], highlightID: SettingsTab.screenAssistant.highlightID(for: "Display Mode")),
 
             // Color Picker
-            SettingsSearchEntry(tab: .colorPicker, title: "Enable Color Picker", keywords: ["color picker", "eyedropper"], highlightID: SettingsTab.colorPicker.highlightID(for: "Enable Color Picker")),
-            SettingsSearchEntry(tab: .colorPicker, title: "Show Color Picker Icon", keywords: ["color icon", "toolbar"], highlightID: SettingsTab.colorPicker.highlightID(for: "Show Color Picker Icon")),
-            SettingsSearchEntry(tab: .colorPicker, title: "Display Mode", keywords: ["color", "list"], highlightID: SettingsTab.colorPicker.highlightID(for: "Display Mode")),
-            SettingsSearchEntry(tab: .colorPicker, title: "History Size", keywords: ["color history"], highlightID: SettingsTab.colorPicker.highlightID(for: "History Size")),
-            SettingsSearchEntry(tab: .colorPicker, title: "Show All Color Formats", keywords: ["hex", "hsl", "color formats"], highlightID: SettingsTab.colorPicker.highlightID(for: "Show All Color Formats")),
 
             // Terminal
         ]
@@ -899,7 +889,7 @@ struct SettingsView: View {
 
     private func isTabVisible(_ tab: SettingsTab) -> Bool {
         switch tab {
-        case .timer, .stats, .clipboard, .screenAssistant, .colorPicker, .shelf, .notes:
+        case .timer, .stats, .clipboard, .screenAssistant, .shelf, .notes:
             return !enableMinimalisticUI
         default:
             return true
@@ -964,10 +954,6 @@ struct SettingsView: View {
         case .screenAssistant:
             SettingsForm(tab: .screenAssistant) {
                 ScreenAssistantSettings()
-            }
-        case .colorPicker:
-            SettingsForm(tab: .colorPicker) {
-                ColorPickerSettings()
             }
         case .shelf:
             SettingsForm(tab: .shelf) {
@@ -6148,7 +6134,6 @@ struct Shortcuts: View {
     @Default(.enableClipboardManager) var enableClipboardManager
     @Default(.enableShortcuts) var enableShortcuts
     @Default(.enableStatsFeature) var enableStatsFeature
-    @Default(.enableColorPickerFeature) var enableColorPickerFeature
 
     private func highlightID(_ title: String) -> String {
         SettingsTab.shortcuts.highlightID(for: title)
@@ -6264,28 +6249,6 @@ struct Shortcuts: View {
                         .font(.caption)
                 }
 
-                Section {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            KeyboardShortcuts.Recorder("Color Picker Panel:", name: .colorPickerPanel)
-                                .disabled(!enableShortcuts || !enableColorPickerFeature)
-                            if !enableColorPickerFeature {
-                                Text("Color Picker feature is disabled")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .padding(.top, 2)
-                            }
-                        }
-                        Spacer()
-                    }
-                } header: {
-                    Text("Color Picker")
-                } footer: {
-                    Text("Opens the color picker panel for screen color capture. Default is Cmd+Shift+P. Only works when color picker feature is enabled.")
-                        .multilineTextAlignment(.trailing)
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
-                }
             } else {
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
@@ -7619,127 +7582,6 @@ struct ScreenAssistantSettings: View {
     }
 }
 
-struct ColorPickerSettings: View {
-    @ObservedObject var colorPickerManager = ColorPickerManager.shared
-    @Default(.enableColorPickerFeature) var enableColorPickerFeature
-    @Default(.showColorFormats) var showColorFormats
-    @Default(.colorPickerDisplayMode) var colorPickerDisplayMode
-    @Default(.colorHistorySize) var colorHistorySize
-    @Default(.showColorPickerIcon) var showColorPickerIcon
-
-    private func highlightID(_ title: String) -> String {
-        SettingsTab.colorPicker.highlightID(for: title)
-    }
-
-    var body: some View {
-        Form {
-            Section {
-                Defaults.Toggle(key: .enableColorPickerFeature) {
-                    Text("Enable Color Picker")
-                }
-                .settingsHighlight(id: highlightID("Enable Color Picker"))
-            } header: {
-                Text("Color Picker")
-            } footer: {
-                Text("Enable screen color picking functionality. Use Cmd+Shift+P to quickly access the color picker.")
-            }
-
-            if enableColorPickerFeature {
-                Section {
-                    Defaults.Toggle(key: .showColorPickerIcon) {
-                        Text("Show Color Picker Icon")
-                    }
-                    .settingsHighlight(id: highlightID("Show Color Picker Icon"))
-
-                    HStack {
-                        Text("Display Mode")
-                        Spacer()
-                        Picker("", selection: $colorPickerDisplayMode) {
-                            ForEach(ColorPickerDisplayMode.allCases, id: \.self) { mode in
-                                Text(mode.displayName).tag(mode)
-                            }
-                        }
-                        .pickerStyle(.menu)
-                        .frame(minWidth: 100)
-                    }
-                    .settingsHighlight(id: highlightID("Display Mode"))
-
-                    HStack {
-                        Text("History Size")
-                        Spacer()
-                        Picker("", selection: $colorHistorySize) {
-                            Text("5 colors").tag(5)
-                            Text("10 colors").tag(10)
-                            Text("15 colors").tag(15)
-                            Text("20 colors").tag(20)
-                        }
-                        .pickerStyle(.menu)
-                        .frame(minWidth: 100)
-                    }
-                    .settingsHighlight(id: highlightID("History Size"))
-
-                    Defaults.Toggle(key: .showColorFormats) {
-                        Text("Show All Color Formats")
-                    }
-                    .settingsHighlight(id: highlightID("Show All Color Formats"))
-
-                } header: {
-                    Text("Settings")
-                } footer: {
-                    switch colorPickerDisplayMode {
-                    case .popover:
-                        Text("Popover mode shows color picker as a dropdown attached to the color picker button. Panel mode shows color picker in a floating window.")
-                    case .panel:
-                        Text("Panel mode shows color picker in a floating window. Popover mode shows color picker as a dropdown attached to the color picker button.")
-                    }
-                }
-
-                Section {
-                    HStack {
-                        Text("Color History")
-                        Spacer()
-                        Text("\(colorPickerManager.colorHistory.count)")
-                            .foregroundColor(.secondary)
-                    }
-
-                    HStack {
-                        Text("Picking Status")
-                        Spacer()
-                        Text(colorPickerManager.isPickingColor ? "Active" : "Ready")
-                            .foregroundColor(colorPickerManager.isPickingColor ? .green : .secondary)
-                    }
-
-                    Button("Show Color Picker Panel") {
-                        ColorPickerPanelManager.shared.showColorPickerPanel()
-                    }
-                    .disabled(!enableColorPickerFeature)
-
-                } header: {
-                    Text("Status & Actions")
-                }
-
-                Section {
-                    Button("Clear Color History") {
-                        colorPickerManager.clearHistory()
-                    }
-                    .foregroundColor(.red)
-                    .disabled(colorPickerManager.colorHistory.isEmpty)
-
-                    Button("Start Color Picking") {
-                        colorPickerManager.startColorPicking()
-                    }
-                    .disabled(!enableColorPickerFeature || colorPickerManager.isPickingColor)
-
-                } header: {
-                    Text("Quick Actions")
-                } footer: {
-                    Text("Clear color history removes all picked colors. Start color picking begins screen color capture mode.")
-                }
-            }
-        }
-        .navigationTitle("Color Picker")
-    }
-}
 
 struct CustomOSDSettings: View {
     @Default(.enableCustomOSD) var enableCustomOSD

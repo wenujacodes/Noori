@@ -346,24 +346,6 @@ enum ScreenAssistantDisplayMode: String, CaseIterable, Codable, Defaults.Seriali
     }
 }
 
-enum ColorPickerDisplayMode: String, CaseIterable, Codable, Defaults.Serializable {
-    case popover = "popover"     // Traditional popover attached to button
-    case panel = "panel"         // Floating panel near notch
-    
-    var displayName: String {
-        switch self {
-        case .popover: return "Popover"
-        case .panel: return "Panel"
-        }
-    }
-    
-    var description: String {
-        switch self {
-        case .popover: return "Shows color picker as a dropdown attached to the color picker button"
-        case .panel: return "Shows color picker in a floating panel near the notch"
-        }
-    }
-}
 
 enum ThirdPartyDDCProvider: String, CaseIterable, Codable, Defaults.Serializable, Identifiable {
     case betterDisplay
@@ -1125,12 +1107,6 @@ extension Defaults.Keys {
     static let reminderSneakPeekDuration = Key<Double>("reminderSneakPeekDuration", default: 5)
     static let timerControlWindowEnabled = Key<Bool>("timerControlWindowEnabled", default: true)
     
-    // MARK: ColorPicker Feature
-    static let enableColorPickerFeature = Key<Bool>("enableColorPickerFeature", default: true)
-    static let showColorFormats = Key<Bool>("showColorFormats", default: true)
-    static let colorPickerDisplayMode = Key<ColorPickerDisplayMode>("colorPickerDisplayMode", default: .panel)
-    static let colorHistorySize = Key<Int>("colorHistorySize", default: 10)
-    static let showColorPickerIcon = Key<Bool>("showColorPickerIcon", default: true)
     
     // MARK: Clipboard Feature
     static let enableClipboardManager = Key<Bool>("enableClipboardManager", default: true)
