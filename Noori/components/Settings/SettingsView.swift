@@ -2652,6 +2652,12 @@ struct About: View {
                         Text(Bundle.main.releaseVersionNumber ?? "Unknown")
                             .foregroundStyle(.secondary)
                     }
+                    HStack {
+                        Text("Build")
+                        Spacer()
+                        Text(Bundle.main.buildVersionNumber ?? "Unknown")
+                            .foregroundStyle(.secondary)
+                    }
                 } header: {
                     Text("Version info")
                 }
