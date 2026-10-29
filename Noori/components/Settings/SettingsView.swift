@@ -1215,18 +1215,6 @@ struct HUD: View {
                 }
             }
 
-            Section {
-                Defaults.Toggle(key: .playVolumeChangeFeedback) {
-                    Text("Play feedback when volume is changed")
-                }
-                .help("Plays the supplied feedback clip whenever you press the hardware volume keys.")
-            } header: {
-                Text("Audio feedback")
-            } footer: {
-                Text("Requires Accessibility permission so Noori can intercept the hardware volume keys.")
-                    .foregroundStyle(.secondary)
-                    .font(.caption)
-            }
 
             Section {
                 Defaults.Toggle(key: .useColorCodedVolumeDisplay) {
