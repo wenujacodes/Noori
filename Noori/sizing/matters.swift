@@ -68,10 +68,6 @@ func enabledStandardTabCount() -> Int {
         count += 1
     }
 
-    // Shelf tab
-    if Defaults[.dynamicShelf] {
-        count += 1
-    }
 
     return count
 }

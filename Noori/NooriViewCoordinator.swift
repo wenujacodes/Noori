@@ -87,7 +87,7 @@ class NooriViewCoordinator: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var hoverOpenSuppressedUntil: Date = .distantPast
     
-    private static let tabOrder: [NotchViews] = [.home, .shelf]
+    private static let tabOrder: [NotchViews] = [.home]
     
     /// Direction of the most recent tab switch (true = forward/right, false = backward/left)
     @Published var tabSwitchForward: Bool = true
@@ -116,9 +116,7 @@ class NooriViewCoordinator: ObservableObject {
         didSet {
             if !alwaysShowTabs {
                 openLastTabByDefault = false
-                if TrayDrop.shared.isEmpty || !Defaults[.openShelfByDefault] {
-                    currentView = .home
-                }
+                currentView = .home
             }
         }
     }
@@ -156,7 +154,6 @@ class NooriViewCoordinator: ObservableObject {
         // Observe all tab-affecting settings to enforce minimum notch width
         Publishers.MergeMany(
             Defaults.publisher(.showStandardMediaControls).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.dynamicShelf).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.enableMinimalisticUI).map { _ in () }.eraseToAnyPublisher()
         )
         .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)

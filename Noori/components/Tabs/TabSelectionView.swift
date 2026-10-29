@@ -41,9 +41,6 @@ struct TabModel: Identifiable {
 
 struct TabSelectionView: View {
     @ObservedObject var coordinator = NooriViewCoordinator.shared
-    @StateObject private var quickShareService = QuickShareService.shared
-    @Default(.quickShareProvider) private var quickShareProvider
-    @State private var showQuickSharePopover = false
     @Default(.showStandardMediaControls) private var showStandardMediaControls
     @Default(.enableMinimalisticUI) private var enableMinimalisticUI
     @Namespace var animation
@@ -55,9 +52,6 @@ struct TabSelectionView: View {
             tabsArray.append(TabModel(label: "Home", icon: "house.fill", view: .home))
         }
 
-        if Defaults[.dynamicShelf] {
-            tabsArray.append(TabModel(label: "Shelf", icon: "tray.fill", view: .shelf))
-        }
         
 
         return tabsArray

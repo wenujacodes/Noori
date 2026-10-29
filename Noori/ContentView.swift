@@ -46,8 +46,6 @@ struct ContentView: View {
     @ObservedObject var doNotDisturbManager = DoNotDisturbManager.shared
     @ObservedObject var lockScreenManager = LockScreenManager.shared
     @ObservedObject var capsLockManager = CapsLockManager.shared
-    @ObservedObject var localSendService = LocalSendService.shared
-    @ObservedObject var shelfState = ShelfStateViewModel.shared
     
     @Default(.enableHorizontalMusicGestures) var enableHorizontalMusicGestures
     @Default(.showCapsLockLabel) var showCapsLockLabel
@@ -344,18 +342,7 @@ struct ContentView: View {
         shouldHideUntilHover && !lockScreenManager.isLocked
     }
     
-    /// Whether the LocalSend live activity should be shown
-    private var localSendLiveActivityActive: Bool {
-        localSendService.isSending || 
-        localSendService.transferState == .completed ||
-        isLocalSendFailedOrRejected
-    }
     
-    private var isLocalSendFailedOrRejected: Bool {
-        if case .failed = localSendService.transferState { return true }
-        if case .rejected = localSendService.transferState { return true }
-        return false
-    }
 
     /// Pill shape for Noori mode with animated corner radius transitions.
     private var currentPillShape: NooriPillShape {
@@ -574,13 +561,6 @@ struct ContentView: View {
                     }
                 }
             }
-            .onReceive(NotificationCenter.default.publisher(for: .sharingDidFinish)) { _ in
-                runAfter(0.1) {
-                    if vm.notchState == .open && !isHovering && !shouldPreventAutoClose() {
-                        vm.close()
-                    }
-                }
-            }
             .onChange(of: coordinator.sneakPeek.show) { _, sneakPeekShowing in
                 // When sneak peek finishes, check if user is still hovering and open notch if needed
                 if !sneakPeekShowing {
@@ -620,7 +600,6 @@ struct ContentView: View {
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .environmentObject(privacyManager)
-        .background(dragDetector)
         .environmentObject(vm)
     }
 
@@ -782,8 +761,6 @@ struct ContentView: View {
                               return currentScreenExpansionType == .doNotDisturb
                           case .capsLock:
                               return false
-                          case .shelf:
-                              return false
                           }
                       }()
                       let canShowMusicDuringExpansion = !isCurrentScreenExpansionVisible
@@ -825,16 +802,10 @@ struct ContentView: View {
                               .transition(closedLiveActivitySwapTransition)
                       } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .recording) && vm.notchState == .closed && (recordingManager.isRecording || !recordingManager.isRecorderIdle) && Defaults[.enableScreenRecordingDetection] && !vm.hideOnClosed && !musicPairingEligible {
                           RecordingLiveActivity()
-                      } else if !isCurrentScreenExpansionVisible && vm.notchState == .closed && localSendLiveActivityActive && !vm.hideOnClosed {
-                          LocalSendLiveActivity()
-                              .transition(.blurReplace.animation(.interactiveSpring(dampingFraction: 1.2)))
                       } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .doNotDisturb) && vm.notchState == .closed && Defaults[.enableDoNotDisturbDetection] && Defaults[.showDoNotDisturbIndicator] && (doNotDisturbManager.isDoNotDisturbActive || doNotDisturbManager.isFocusToastDismissing) && !vm.hideOnClosed && !lockScreenManager.isLocked {
                           DoNotDisturbLiveActivity()
                     } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .privacy) && vm.notchState == .closed && privacyManager.hasAnyIndicator && (Defaults[.enableCameraDetection] || Defaults[.enableMicrophoneDetection]) && !vm.hideOnClosed {
                         PrivacyLiveActivity()
-                      } else if !coordinator.expandingView.show && vm.notchState == .closed && !shelfState.isEmpty && !vm.hideOnClosed && !lockScreenManager.isLocked && !enableMinimalisticUI {
-                          ShelfInlineLiveActivity()
-                              .transition(.opacity.animation(.smooth(duration: 0.25)))
                       } else if !coordinator.expandingView.show && vm.notchState == .closed && (!musicManager.isPlaying && musicManager.isPlayerIdle) && Defaults[.showNotHumanFace] && !vm.hideOnClosed  {
                       } else if !isCurrentScreenExpansionVisible && vm.notchState == .closed && (!musicManager.isPlaying && musicManager.isPlayerIdle) && Defaults[.showNotHumanFace] && !vm.hideOnClosed  {
                           NooriFaceAnimation().animation(.interactiveSpring, value: musicManager.isPlayerIdle)
@@ -882,8 +853,6 @@ struct ContentView: View {
                           switch coordinator.currentView {
                               case .home:
                                   NotchHomeView(albumArtNamespace: albumArtNamespace)
-                              case .shelf:
-                                  NotchShelfView()
                           }
                       }
                       .id(coordinator.currentView)
@@ -1033,11 +1002,6 @@ struct ContentView: View {
             return .capsLock(showLabel: showCapsLockLabel)
         }
 
-        // Shelf: show file count as lowest-priority secondary
-        if !shelfState.isEmpty && !lockScreenManager.isLocked && !enableMinimalisticUI {
-            return .shelf(count: shelfState.items.count)
-        }
-
         return nil
     }
 
@@ -1051,8 +1015,6 @@ struct ContentView: View {
             return focusRightWingWidth(baseWidth: baseWidth)
         case .recording:
             return recordingRightWingWidth(baseWidth: baseWidth)
-        case .shelf:
-            return baseWidth
         }
     }
 
@@ -1099,10 +1061,6 @@ struct ContentView: View {
                     Image(systemName: "capslock.fill")
                         .font(.system(size: badgeSize * 0.5, weight: .semibold))
                         .foregroundStyle(capsLockTintMode.color)
-                case .shelf:
-                    Image(systemName: "tray.and.arrow.down.fill")
-                        .font(.system(size: badgeSize * 0.50, weight: .semibold))
-                        .foregroundStyle(.white)
                 }
             }
             .frame(width: badgeSize, height: badgeSize)
@@ -1142,14 +1100,6 @@ struct ContentView: View {
             spectrumView(forceSpectrum: true)
         case .recording:
             spectrumView(forceSpectrum: true, trailingInset: 6)
-        case .shelf(let count):
-            // File count badge: bold white number, like a minimal pill
-            Text("\(count)")
-                .font(.system(.callout, design: .rounded, weight: .bold))
-                .foregroundStyle(.white)
-                .contentTransition(.numericText(countsDown: false))
-                .animation(.smooth(duration: 0.3), value: count)
-                .frame(alignment: .center)
         case .none:
             spectrumView(
                 forceSpectrum: false,
@@ -1219,35 +1169,6 @@ struct ContentView: View {
 
 
     
-    @ViewBuilder
-    var dragDetector: some View {
-        if lockScreenManager.isLocked {
-            EmptyView()
-        } else if Defaults[.dynamicShelf] && !Defaults[.enableMinimalisticUI] {
-            Color.clear
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .contentShape(Rectangle())
-                .onDrop(of: [.data], isTargeted: $vm.dragDetectorTargeting) { _ in true }
-                .onChange(of: vm.anyDropZoneTargeting) { _, isTargeted in
-                    if isTargeted, vm.notchState == .closed {
-                        coordinator.currentView = .shelf
-                        openNotch()
-                    } else if !isTargeted {
-                        if vm.dropEvent {
-                            vm.dropEvent = false
-                            return
-                        }
-
-                        vm.dropEvent = false
-                        if !shouldPreventAutoClose() {
-                            vm.close()
-                        }
-                    }
-                }
-        } else {
-            EmptyView()
-        }
-    }
 
     // MARK: - Private Methods
     private func openNotch() {
@@ -1473,7 +1394,7 @@ struct ContentView: View {
     }
 
     private func shouldPreventAutoClose() -> Bool {
-        coordinator.firstLaunch || hasAnyActivePopovers() || vm.isAutoCloseSuppressed || SharingStateManager.shared.preventNotchClose
+        coordinator.firstLaunch || hasAnyActivePopovers() || vm.isAutoCloseSuppressed
     }
     
     // Helper to prevent rapid haptic feedback
@@ -1889,7 +1810,6 @@ private enum MusicSecondaryLiveActivity: Equatable {
     case recording
     case focus(FocusModeType)
     case capsLock(showLabel: Bool)
-    case shelf(count: Int)
 
     var id: String {
         switch self {
@@ -1899,8 +1819,6 @@ private enum MusicSecondaryLiveActivity: Equatable {
             return "focus-\(mode.rawValue)"
         case .capsLock(let showLabel):
             return showLabel ? "caps-lock-label" : "caps-lock-icon"
-        case .shelf(let count):
-            return "shelf-\(count)"
         }
     }
 }
@@ -1934,21 +1852,3 @@ private func musicMeasureText(_ text: String, font: MusicSupplementFont) -> CGFl
     return CGFloat(ceil(NSAttributedString(string: text, attributes: attributes).size().width))
 }
 
-struct FullScreenDropDelegate: DropDelegate {
-    @Binding var isTargeted: Bool
-    let onDrop: () -> Void
-
-    func dropEntered(info _: DropInfo) {
-        isTargeted = true
-    }
-
-    func dropExited(info _: DropInfo) {
-        isTargeted = false
-    }
-
-    func performDrop(info _: DropInfo) -> Bool {
-        isTargeted = false
-        onDrop()
-        return true
-    }
-}

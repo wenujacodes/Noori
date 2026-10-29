@@ -26,10 +26,6 @@ import Defaults
 import Lottie
 import Foundation
 
-private let availableDirectories = FileManager
-    .default
-    .urls(for: .documentDirectory, in: .userDomainMask)
-let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 let bundleIdentifier = Bundle.main.bundleIdentifier!
 let appVersion = "\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""))"
 
@@ -523,16 +519,6 @@ extension Defaults.Keys {
     static let systemEventIndicatorUseAccent = Key<Bool>("systemEventIndicatorUseAccent", default: false)
     static let showProgressPercentages = Key<Bool>("showProgressPercentages", default: true)
     
-        // MARK: Shelf
-    static let dynamicShelf = Key<Bool>("dynamicShelf", default: true)
-    static let openShelfByDefault = Key<Bool>("openShelfByDefault", default: true)
-        static let quickShareProvider = Key<String>("quickShareProvider", default: "AirDrop")
-        static let localSendSelectedDeviceID = Key<String>("localSendSelectedDeviceID", default: "")
-        static let localSendDevicePickerGlassMode = Key<LockScreenGlassCustomizationMode>("localSendDevicePickerGlassMode", default: .standard)
-        static let localSendDevicePickerLiquidGlassVariant = Key<LiquidGlassVariant>("localSendDevicePickerLiquidGlassVariant", default: .v11)
-        static let copyOnDrag = Key<Bool>("copyOnDrag", default: false)
-        static let autoRemoveShelfItems = Key<Bool>("autoRemoveShelfItems", default: false)
-        static let expandedDragDetection = Key<Bool>("expandedDragDetection", default: true)
     
     
         // MARK: Fullscreen Media Detection

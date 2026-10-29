@@ -73,7 +73,6 @@ public enum NotchState {
 
 public enum NotchViews {
     case home
-    case shelf
 }
 
 
@@ -83,7 +82,6 @@ enum SettingsEnum {
     case charge
     case mediaPlayback
     case hud
-    case shelf
 }
 
 
