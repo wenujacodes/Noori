@@ -159,7 +159,6 @@ struct ContentView: View {
 
     @Default(.useMusicVisualizer) var useMusicVisualizer
     @Default(.musicControlWindowEnabled) var musicControlWindowEnabled
-    @Default(.showNotHumanFace) var showNotHumanFace
     @Default(.useModernCloseAnimation) var useModernCloseAnimation
     @Default(.enableMinimalisticUI) var enableMinimalisticUI
 
@@ -785,9 +784,6 @@ struct ContentView: View {
                           DoNotDisturbLiveActivity()
                     } else if (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .privacy) && vm.notchState == .closed && privacyManager.hasAnyIndicator && (Defaults[.enableCameraDetection] || Defaults[.enableMicrophoneDetection]) && !vm.hideOnClosed {
                         PrivacyLiveActivity()
-                      } else if !coordinator.expandingView.show && vm.notchState == .closed && (!musicManager.isPlaying && musicManager.isPlayerIdle) && Defaults[.showNotHumanFace] && !vm.hideOnClosed  {
-                      } else if !isCurrentScreenExpansionVisible && vm.notchState == .closed && (!musicManager.isPlaying && musicManager.isPlayerIdle) && Defaults[.showNotHumanFace] && !vm.hideOnClosed  {
-                          NooriFaceAnimation().animation(.interactiveSpring, value: musicManager.isPlayerIdle)
                       } else if vm.notchState == .open {
                           NooriHeader()
                               .frame(height: (Defaults[.enableMinimalisticUI] && isNooriMode) ? nil : max(24, vm.effectiveClosedNotchHeight))
@@ -847,22 +843,6 @@ struct ContentView: View {
       }
 
 
-    @ViewBuilder
-    func NooriFaceAnimation() -> some View {
-        let sideSize = max(0, vm.effectiveClosedNotchHeight - 12)
-        HStack {
-            HStack {
-                Rectangle()
-                    .fill(.clear)
-                    .frame(width: sideSize, height: sideSize)
-                Rectangle()
-                    .fill(.black)
-                    .frame(width: vm.closedNotchSize.width - 20)
-                IdleAnimationView()
-                    .frame(width: sideSize, height: sideSize)
-            }
-        }.frame(height: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0), alignment: .center)
-    }
 
     @ViewBuilder
     private func MusicLiveActivity(secondary preResolvedSecondary: MusicSecondaryLiveActivity? = nil) -> some View {
@@ -1134,9 +1114,6 @@ struct ContentView: View {
                 .padding(.trailing, trailingInset)
                 .animation(.smooth(duration: 0.16), value: isHoveringClosedMusicWaveformControl)
                 .animation(.smooth(duration: 0.2), value: musicManager.isPlaying)
-        } else {
-            LottieAnimationView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 

@@ -106,7 +106,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var timer: Timer?
     let dndManager = DoNotDisturbManager.shared  // NEW: DND detection
     let bluetoothAudioManager = BluetoothAudioManager.shared  // NEW: Bluetooth audio detection
-    let idleAnimationManager = IdleAnimationManager.shared  // NEW: Custom idle animations
     let mediaControlsStateCoordinator = MediaControlsStateCoordinator.shared
     var closeNotchWorkItem: DispatchWorkItem?
     private var previousScreens: [NSScreen]?
@@ -535,7 +534,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             .store(in: &cancellables)
         
         // Initialize idle animations (load bundled + built-in face)
-        idleAnimationManager.initializeDefaultAnimations()
 
         applySelectedAppIcon()
         installTopMenuItemsIfNeeded()
