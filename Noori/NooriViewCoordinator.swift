@@ -28,7 +28,6 @@ enum SneakContentType: Equatable {
     case music
     case mic
     case battery
-    case download
     case timer
     case reminder
     case recording
@@ -49,7 +48,6 @@ extension SneakContentType {
              (.music, .music),
              (.mic, .mic),
              (.battery, .battery),
-             (.download, .download),
              (.timer, .timer),
              (.reminder, .reminder),
              (.recording, .recording),
@@ -439,8 +437,7 @@ class NooriViewCoordinator: ObservableObject {
         didSet {
             if expandingView.show {
                 expandingViewTask?.cancel()
-                // Only auto-hide for battery, not for downloads (DownloadManager handles that)
-                if expandingView.type != .download {
+                do {
                     let duration = expandingView.autoHideDuration ?? 3
                     expandingViewTask = Task { [weak self] in
                         try? await Task.sleep(for: .seconds(duration))

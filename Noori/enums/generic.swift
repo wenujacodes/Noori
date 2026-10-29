@@ -104,35 +104,13 @@ enum SettingsEnum {
     case general
     case about
     case charge
-    case download
     case mediaPlayback
     case hud
     case shelf
     case extensions
 }
 
-enum DownloadIndicatorStyle: String, Defaults.Serializable {
-    case progress = "Progress"
-    case percentage = "Percentage"
-    case circle = "Circle"
-    
-    var localizedName: String {
-        switch self {
-            case .progress:
-                return String(localized: "Progress")
-            case .percentage:
-                return String(localized: "Percentage")
-            case .circle:
-                return String(localized: "Circle")
-        }
-    }
-}
 
-enum DownloadIconStyle: String, Defaults.Serializable {
-    case onlyAppIcon = "Only app icon"
-    case onlyIcon = "Only download icon"
-    case iconAndAppIcon = "Icon and app icon"
-}
 
 enum MirrorShapeEnum: String, Defaults.Serializable {
     case rectangle = "Rectangular"
