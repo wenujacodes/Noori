@@ -158,16 +158,6 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         guard volumeEnabled else { return }
         SystemOSDManager.suppressNativeOSDNow()
         
-        // Elastic Limit Detection (Vertical HUD)
-        if Defaults[.enableVerticalHUD] {
-            let volume = volumeController.currentVolume
-            if direction == .up && volume >= 0.99 {
-                Task { @MainActor in VerticalHUDWindowManager.shared.triggerBump(direction: 1) }
-            } else if direction == .down && volume <= 0.01 {
-                Task { @MainActor in VerticalHUDWindowManager.shared.triggerBump(direction: -1) }
-            }
-        }
-        
         let baseStep = volumeStep(for: step)
         let delta = direction == .up ? baseStep : -baseStep
         volumeController.adjust(by: delta)
@@ -191,25 +181,6 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         guard isBacklight || brightnessEnabled else { return }
         SystemOSDManager.suppressNativeOSDNow()
 
-        // Elastic Limit Detection (Vertical HUD)
-        if Defaults[.enableVerticalHUD] {
-            if isBacklight {
-                let brightness = keyboardBacklightController.currentLevel
-                if direction == .up && brightness >= 0.99 {
-                    Task { @MainActor in VerticalHUDWindowManager.shared.triggerBump(direction: 1) }
-                } else if direction == .down && brightness <= 0.01 {
-                    Task { @MainActor in VerticalHUDWindowManager.shared.triggerBump(direction: -1) }
-                }
-            } else {
-                let brightness = brightnessController.currentBrightness
-                if direction == .up && brightness >= 0.99 {
-                    Task { @MainActor in VerticalHUDWindowManager.shared.triggerBump(direction: 1) }
-                } else if direction == .down && brightness <= 0.01 {
-                    Task { @MainActor in VerticalHUDWindowManager.shared.triggerBump(direction: -1) }
-                }
-            }
-        }
-        
         let baseStep = brightnessStep(for: step)
         let delta = direction == .up ? baseStep : -baseStep
         if isBacklight {
@@ -231,30 +202,8 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
             return
         }
 
-        // Send to Circular HUD if enabled
-        if Defaults[.enableCircularHUD] && Defaults[.enableVolumeHUD] {
-            Task { @MainActor in
-                CircularHUDWindowManager.shared.show(type: .volume, value: CGFloat(value))
-            }
-            return
-        }
-        
-        // Send to Vertical HUD if enabled
-        if Defaults[.enableVerticalHUD] && Defaults[.enableVolumeHUD] {
-            let icon = resolvedVolumeIcon(isMuted: isMuted)
-            VerticalHUDWindowManager.shared.show(type: .volume, value: CGFloat(value), icon: icon)
-            return
-        }
-        
-        // Send to custom OSD if enabled
-        if Defaults[.enableCustomOSD] && Defaults[.enableOSDVolume] {
-            Task { @MainActor in
-                CustomOSDWindowManager.shared.showVolume(value: CGFloat(value))
-            }
-        }
-        
-        // Send to notch HUD if enabled and OSD/Vertical/Circular is not enabled
-        if Defaults[.enableSystemHUD] && !Defaults[.enableCustomOSD] && !Defaults[.enableVerticalHUD] && !Defaults[.enableCircularHUD] && Defaults[.enableVolumeHUD] {
+        // Send to notch HUD if enabled
+        if Defaults[.enableSystemHUD] && Defaults[.enableVolumeHUD] {
             Task { @MainActor in
                 guard let coordinator else { return }
                 coordinator.toggleSneakPeek(
@@ -277,31 +226,8 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
     }
 
     private func sendBrightnessNotification(value: Float) {
-        // Send to Circular HUD if enabled
-        if Defaults[.enableCircularHUD] && Defaults[.enableBrightnessHUD] {
-            Task { @MainActor in
-                CircularHUDWindowManager.shared.show(type: .brightness, value: CGFloat(value))
-            }
-            return
-        }
-        
-        // Send to Vertical HUD if enabled
-        if Defaults[.enableVerticalHUD] && Defaults[.enableBrightnessHUD] {
-            Task { @MainActor in
-                VerticalHUDWindowManager.shared.show(type: .brightness, value: CGFloat(value))
-            }
-            return
-        }
-
-        // Send to custom OSD if enabled
-        if Defaults[.enableCustomOSD] && Defaults[.enableOSDBrightness] {
-            Task { @MainActor in
-                CustomOSDWindowManager.shared.showBrightness(value: CGFloat(value))
-            }
-        }
-        
-        // Send to notch HUD if enabled and OSD/Vertical/Circular is not enabled
-        if Defaults[.enableSystemHUD] && !Defaults[.enableCustomOSD] && !Defaults[.enableVerticalHUD] && !Defaults[.enableCircularHUD] && Defaults[.enableBrightnessHUD] {
+        // Send to notch HUD if enabled
+        if Defaults[.enableSystemHUD] && Defaults[.enableBrightnessHUD] {
             Task { @MainActor in
                 guard let coordinator else { return }
                 coordinator.toggleSneakPeek(
@@ -315,31 +241,8 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
     }
 
     private func sendKeyboardBacklightNotification(value: Float) {
-        // Send to Circular HUD if enabled
-        if Defaults[.enableCircularHUD] && Defaults[.enableKeyboardBacklightHUD] {
-            Task { @MainActor in
-                CircularHUDWindowManager.shared.show(type: .backlight, value: CGFloat(value))
-            }
-            return
-        }
-        
-        // Send to Vertical HUD if enabled
-        if Defaults[.enableVerticalHUD] && Defaults[.enableKeyboardBacklightHUD] {
-            Task { @MainActor in
-                VerticalHUDWindowManager.shared.show(type: .backlight, value: CGFloat(value))
-            }
-            return
-        }
-
-        // Send to custom OSD if enabled
-        if Defaults[.enableCustomOSD] && Defaults[.enableOSDKeyboardBacklight] {
-            Task { @MainActor in
-                CustomOSDWindowManager.shared.showBacklight(value: CGFloat(value))
-            }
-        }
-        
-        // Send to notch HUD if enabled and OSD/Vertical/Circular is not enabled
-        if Defaults[.enableSystemHUD] && !Defaults[.enableCustomOSD] && !Defaults[.enableVerticalHUD] && !Defaults[.enableCircularHUD] && Defaults[.enableKeyboardBacklightHUD] {
+        // Send to notch HUD if enabled
+        if Defaults[.enableSystemHUD] && Defaults[.enableKeyboardBacklightHUD] {
             Task { @MainActor in
                 guard let coordinator else { return }
                 coordinator.toggleSneakPeek(

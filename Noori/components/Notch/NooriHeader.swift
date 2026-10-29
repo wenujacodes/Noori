@@ -22,7 +22,6 @@ import SwiftUI
 
 struct NooriHeader: View {
     @EnvironmentObject var vm: NooriViewModel
-    @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var coordinator = NooriViewCoordinator.shared
     @ObservedObject var doNotDisturbManager = DoNotDisturbManager.shared
     @Default(.enableMinimalisticUI) var enableMinimalisticUI

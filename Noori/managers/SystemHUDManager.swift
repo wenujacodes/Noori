@@ -35,72 +35,13 @@ class SystemHUDManager {
     }
     
     private func setupSettingsObserver() {
-        // Observe Vertical HUD toggle
-        Defaults.publisher(.enableVerticalHUD, options: []).sink { [weak self] change in
-            guard let self = self, self.isSetupComplete else {
-                return
-            }
-            Task { @MainActor in
-                if change.newValue {
-                    // Always restart to ensure correct flags are applied
-                    await self.startSystemObserver()
-                } else if Defaults[.enableSystemHUD] || Defaults[.enableCustomOSD] || Defaults[.enableCircularHUD] {
-                    // Restart to apply flags for the remaining active HUD
-                    await self.startSystemObserver()
-                } else {
-                    await self.stopSystemObserver()
-                }
-            }
-        }.store(in: &cancellables)
-        
         // Observe master HUD toggle
         Defaults.publisher(.enableSystemHUD, options: []).sink { [weak self] change in
             guard let self = self, self.isSetupComplete else {
                 return
             }
             Task { @MainActor in
-                if change.newValue && !Defaults[.enableCustomOSD] && !Defaults[.enableVerticalHUD] && !Defaults[.enableCircularHUD] {
-                     // Always restart to ensure correct flags are applied
-                    await self.startSystemObserver()
-                } else if !Defaults[.enableCustomOSD] && !Defaults[.enableVerticalHUD] && !Defaults[.enableCircularHUD] {
-                    // Only stop if others are also disabled
-                    await self.stopSystemObserver()
-                } else if change.newValue == false && (Defaults[.enableCustomOSD] || Defaults[.enableVerticalHUD] || Defaults[.enableCircularHUD]) {
-                     // If disabling system HUD but others are active, restart to update flags
-                     await self.startSystemObserver()
-                }
-            }
-        }.store(in: &cancellables)
-        
-        // Observe OSD toggle
-        Defaults.publisher(.enableCustomOSD, options: []).sink { [weak self] change in
-            guard let self = self, self.isSetupComplete else {
-                return
-            }
-            Task { @MainActor in
                 if change.newValue {
-                     // Always restart to ensure correct flags are applied
-                    await self.startSystemObserver()
-                } else if Defaults[.enableSystemHUD] || Defaults[.enableVerticalHUD] || Defaults[.enableCircularHUD] {
-                    // Restart to apply flags for the remaining active HUD
-                    await self.startSystemObserver()
-                } else {
-                    await self.stopSystemObserver()
-                }
-            }
-        }.store(in: &cancellables)
-        
-        // Observe Circular HUD toggle
-        Defaults.publisher(.enableCircularHUD, options: []).sink { [weak self] change in
-            guard let self = self, self.isSetupComplete else {
-                return
-            }
-            Task { @MainActor in
-                if change.newValue {
-                     // Always restart to ensure correct flags are applied
-                    await self.startSystemObserver()
-                } else if Defaults[.enableSystemHUD] || Defaults[.enableCustomOSD] || Defaults[.enableVerticalHUD] {
-                    // Restart to apply flags for the remaining active HUD
                     await self.startSystemObserver()
                 } else {
                     await self.stopSystemObserver()
@@ -145,43 +86,6 @@ class SystemHUDManager {
             )
         }.store(in: &cancellables)
         
-        // Observe individual OSD toggles
-        Defaults.publisher(.enableOSDVolume, options: []).sink { [weak self] _ in
-            guard let self = self, self.isSetupComplete, Defaults[.enableCustomOSD] else {
-                return
-            }
-            let flags = self.resolvedControlFlags()
-            self.changesObserver?.update(
-                volumeEnabled: flags.volume,
-                brightnessEnabled: flags.brightness,
-                keyboardBacklightEnabled: flags.backlight
-            )
-        }.store(in: &cancellables)
-        
-        Defaults.publisher(.enableOSDBrightness, options: []).sink { [weak self] _ in
-            guard let self = self, self.isSetupComplete, Defaults[.enableCustomOSD] else {
-                return
-            }
-            let flags = self.resolvedControlFlags()
-            self.changesObserver?.update(
-                volumeEnabled: flags.volume,
-                brightnessEnabled: flags.brightness,
-                keyboardBacklightEnabled: flags.backlight
-            )
-        }.store(in: &cancellables)
-        
-        Defaults.publisher(.enableOSDKeyboardBacklight, options: []).sink { [weak self] _ in
-            guard let self = self, self.isSetupComplete, Defaults[.enableCustomOSD] else {
-                return
-            }
-            let flags = self.resolvedControlFlags()
-            self.changesObserver?.update(
-                volumeEnabled: flags.volume,
-                brightnessEnabled: flags.brightness,
-                keyboardBacklightEnabled: flags.backlight
-            )
-        }.store(in: &cancellables)
-
         // Restart observer when third-party DDC integration state changes.
         Defaults.publisher(.enableThirdPartyDDCIntegration, options: []).sink { [weak self] _ in
             guard let self = self, self.isSetupComplete else { return }
@@ -208,7 +112,7 @@ class SystemHUDManager {
     private var cancellables = Set<AnyCancellable>()
 
     private var requiresSystemToggleHandling: Bool {
-        Defaults[.enableSystemHUD] || Defaults[.enableVerticalHUD] || Defaults[.enableCircularHUD]
+        Defaults[.enableSystemHUD]
     }
     
     /// Public property to check if system operations are in progress
@@ -218,11 +122,6 @@ class SystemHUDManager {
     
     func setup(coordinator: NooriViewCoordinator) {
         self.coordinator = coordinator
-
-        // Initialize OSD manager
-        Task { @MainActor in
-            CustomOSDWindowManager.shared.initialize()
-        }
 
         // Re-resolve flags when a DDC helper starts/stops so brightness handling
         // recovers if the helper is quit while integration stays enabled.
@@ -241,8 +140,8 @@ class SystemHUDManager {
             .store(in: &self.cancellables)
         }
         
-        // Start observer if any HUD/OSD is enabled
-        if Defaults[.enableSystemHUD] || Defaults[.enableCustomOSD] || Defaults[.enableVerticalHUD] || Defaults[.enableCircularHUD] {
+        // Start observer if the HUD is enabled
+        if Defaults[.enableSystemHUD] {
             Task { @MainActor in
                 await startSystemObserver()
                 self.isSetupComplete = true
@@ -254,23 +153,9 @@ class SystemHUDManager {
     
     /// Resolves the effective control flags, applying third-party DDC overrides.
     private func resolvedControlFlags() -> (volume: Bool, brightness: Bool, backlight: Bool) {
-        var volumeEnabled: Bool
-        var brightnessEnabled: Bool
-        var keyboardBacklightEnabled: Bool
-
-        if Defaults[.enableCircularHUD] || Defaults[.enableVerticalHUD] {
-            volumeEnabled = Defaults[.enableVolumeHUD]
-            brightnessEnabled = Defaults[.enableBrightnessHUD]
-            keyboardBacklightEnabled = Defaults[.enableKeyboardBacklightHUD]
-        } else if Defaults[.enableCustomOSD] {
-            volumeEnabled = Defaults[.enableOSDVolume]
-            brightnessEnabled = Defaults[.enableOSDBrightness]
-            keyboardBacklightEnabled = Defaults[.enableOSDKeyboardBacklight]
-        } else {
-            volumeEnabled = Defaults[.enableVolumeHUD]
-            brightnessEnabled = Defaults[.enableBrightnessHUD]
-            keyboardBacklightEnabled = Defaults[.enableKeyboardBacklightHUD]
-        }
+        var volumeEnabled = Defaults[.enableVolumeHUD]
+        var brightnessEnabled = Defaults[.enableBrightnessHUD]
+        var keyboardBacklightEnabled = Defaults[.enableKeyboardBacklightHUD]
 
         // Surrender brightness to the DDC helper only when it is actually running;
         // otherwise keep handling it ourselves so HUDs still show (and the native
@@ -318,7 +203,7 @@ class SystemHUDManager {
         // Force disable system HUD to ensure no duplicates
         SystemOSDManager.disableSystemHUD()
         
-        print("System observer started (HUD: \(Defaults[.enableSystemHUD]), OSD: \(Defaults[.enableCustomOSD]), Vertical: \(Defaults[.enableVerticalHUD]), ThirdPartyDDC: \(Defaults[.enableThirdPartyDDCIntegration]), Provider: \(Defaults[.thirdPartyDDCProvider].displayName), ExternalVolumeListener: \(Defaults[.enableExternalVolumeControlListener]))")
+        print("System observer started (HUD: \(Defaults[.enableSystemHUD]), ThirdPartyDDC: \(Defaults[.enableThirdPartyDDCIntegration]), Provider: \(Defaults[.thirdPartyDDCProvider].displayName), ExternalVolumeListener: \(Defaults[.enableExternalVolumeControlListener]))")
         isSystemOperationInProgress = false
     }
     

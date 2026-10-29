@@ -567,34 +567,9 @@ extension Defaults.Keys {
     static let brightnessStepPercent = Key<Int>("brightnessStepPercent", default: 6)
     static let brightnessFineStepPercent = Key<Int>("brightnessFineStepPercent", default: 2)
     
-    // MARK: Custom OSD Window Feature
-    static let enableCustomOSD = Key<Bool>("enableCustomOSD", default: false)
-    static let enableVerticalHUD = Key<Bool>("enableVerticalHUD", default: false)
-    static let enableCircularHUD = Key<Bool>("enableCircularHUD", default: false)
-    static let verticalHUDPosition = Key<String>("verticalHUDPosition", default: "right") // "left" or "right"
+// "left" or "right"
     
-    // Vertical HUD Customization
-    static let verticalHUDShowValue = Key<Bool>("verticalHUDShowValue", default: true)
-    static let verticalHUDInteractive = Key<Bool>("verticalHUDInteractive", default: true)
-    static let verticalHUDHeight = Key<CGFloat>("verticalHUDHeight", default: 160)
-    static let verticalHUDWidth = Key<CGFloat>("verticalHUDWidth", default: 36)
-    static let verticalHUDPadding = Key<CGFloat>("verticalHUDPadding", default: 24)
-    static let verticalHUDUseAccentColor = Key<Bool>("verticalHUDUseAccentColor", default: false)
-    static let verticalHUDMaterial = Key<OSDMaterial>("verticalHUDMaterial", default: .frosted)
-    static let verticalHUDLiquidGlassCustomizationMode = Key<LockScreenGlassCustomizationMode>(
-        "verticalHUDLiquidGlassCustomizationMode",
-        default: .standard
-    )
-    static let verticalHUDLiquidGlassVariant = Key<LiquidGlassVariant>(
-        "verticalHUDLiquidGlassVariant",
-        default: .defaultVariant
-    )
     
-    // Circular HUD Customization
-    static let circularHUDShowValue = Key<Bool>("circularHUDShowValue", default: true)
-    static let circularHUDSize = Key<CGFloat>("circularHUDSize", default: 65)
-    static let circularHUDStrokeWidth = Key<CGFloat>("circularHUDStrokeWidth", default: 4)
-    static let circularHUDUseAccentColor = Key<Bool>("circularHUDUseAccentColor", default: true)
 
     // MARK: Third-Party DDC Integration
     static let enableThirdPartyDDCIntegration = Key<Bool>("enableThirdPartyDDCIntegration", default: false)
@@ -606,20 +581,6 @@ extension Defaults.Keys {
     static let enableBetterDisplayIntegration = Key<Bool>("enableBetterDisplayIntegration", default: false)
     static let enableLunarIntegration = Key<Bool>("enableLunarIntegration", default: false)
     
-    static let hasSeenOSDAlphaWarning = Key<Bool>("hasSeenOSDAlphaWarning", default: false)
-    static let enableOSDVolume = Key<Bool>("enableOSDVolume", default: true)
-    static let enableOSDBrightness = Key<Bool>("enableOSDBrightness", default: true)
-    static let enableOSDKeyboardBacklight = Key<Bool>("enableOSDKeyboardBacklight", default: true)
-    static let osdMaterial = Key<OSDMaterial>("osdMaterial", default: .frosted)
-    static let osdLiquidGlassCustomizationMode = Key<LockScreenGlassCustomizationMode>(
-        "osdLiquidGlassCustomizationMode",
-        default: .standard
-    )
-    static let osdLiquidGlassVariant = Key<LiquidGlassVariant>(
-        "osdLiquidGlassVariant",
-        default: .defaultVariant
-    )
-    static let osdIconColorStyle = Key<OSDIconColorStyle>("osdIconColorStyle", default: .white)
     
     // MARK: Screen Recording Detection Feature
     static let enableScreenRecordingDetection = Key<Bool>("enableScreenRecordingDetection", default: true)

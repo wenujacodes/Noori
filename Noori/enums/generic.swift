@@ -111,25 +111,6 @@ enum SliderColorEnum: String, CaseIterable, Defaults.Serializable {
 }
 
 
-enum LockScreenGlassCustomizationMode: String, CaseIterable, Defaults.Serializable, Identifiable {
-    case standard = "Standard"
-    case customLiquid = "Custom Liquid"
-
-    var id: String { rawValue }
-
-    var allowsVariantSelection: Bool {
-        self == .customLiquid
-    }
-    
-    var localizedName: String {
-        switch self {
-            case .standard:
-                return String(localized: "Standard")
-            case .customLiquid:
-                return String(localized: "Custom Liquid")
-        }
-    }
-}
 
 
 
