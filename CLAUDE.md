@@ -4,11 +4,13 @@ Guidance for Claude Code when working in this repository.
 
 ## What this is
 
-**Noori** — a native macOS app that turns the MacBook notch into an iPhone-style island: media controls, Live Activities, lock screen widgets, system HUDs (volume/brightness/Bluetooth), system stats, timers, clipboard, color picker, shelf (file drop), terminal tab, AI screen assistant, LLM usage tracking, and an opt-in third-party extension API.
+**Noori** — a lightweight native macOS app that turns the MacBook notch into an iPhone-style island. Core features only: **media** (now playing, controls, lyrics, visualizer, live canvas), **live activities** (music, charging, Focus, screen recording, privacy indicators, caps lock), **devices** (Bluetooth/AirPods HUD), **controls** (custom volume/brightness/keyboard-backlight HUDs), **battery**, and **keyboard shortcuts**.
+
+Removed on purpose to keep the app light (see commits after `f96db6e`): Terminal, Downloads, Color Picker, Clipboard, Notes, Screen Assistant, LLM Usage, Webcam Mirror, Stats, Lock Screen widgets, Calendar/Reminders, Timer, Shelf, and Atoll's extension system. The full pre-removal code is on the `extensions-source` branch for reference. Don't re-add these without the owner asking.
 
 - Noori is a fork of **Atoll** 2.3.3 (`Ebullioscopic/Atoll`), which derives from **boring.notch**. GPL-3.0. Repo: `wenujacodes/Noori`. Owner: Wenuja Liyanamana.
 - Language: Swift / SwiftUI + AppKit, with a small C++/Obj-C++ audio layer (`Noori/audio/`) and one Metal shader (`Noori/metal/visualizer.metal`).
-- Size: ~320 Swift files, ~100k lines.
+- Size: ~160 Swift files, ~42k lines.
 - Version: `VERSION` file and `MARKETING_VERSION` in the project (currently 1.0.0).
 
 ### Rules for this repo
@@ -47,14 +49,14 @@ xcodebuild build \
 
 - No root Swift package; dependencies are SPM packages referenced from `Noori.xcodeproj` (resolve with `xcodebuild -resolvePackageDependencies -project Noori.xcodeproj -scheme Noori`).
 - Product is `Noori.app`. Debug bundle id `com.wenujacodes.Noori.dev` (icon `AppIconDev`); Release `com.wenujacodes.Noori`.
-- **Entitlements gotcha:** `Noori/Noori.entitlements` declares `com.apple.security.mach-services` (`com.wenujacodes.Noori.xpc`). With ad-hoc signing amfid kills the app at launch; remove that key locally (`plutil -remove com.apple.security.mach-services Noori/Noori.entitlements`) to run an ad-hoc build, but don't commit that.
 - Prebuilt `Frameworks/MediaRemoteAdapter.framework` (source: `mediaremote-adapter/`) provides Now Playing info; `Contents/Helpers/NowPlayingTestClient` is copied into the app and used by `MediaChecker.swift`.
 - Bridging header: `Noori/Noori-Bridging-Header.h` (exposes `audio/AudioBridge.h`).
 - Swift language mode is 5.0 (`SWIFT_VERSION = 5.0`) even though the toolchain must be 6.1+.
 
 ### Tests
 
-- `python3 -m unittest tests.test_privacy_configuration` — static checks on entitlements and the privacy usage strings in `project.pbxproj` (exact strings/counts). Run after touching entitlements or `INFOPLIST_KEY_*UsageDescription` settings.
+- `python3 -m unittest tests.test_privacy_configuration` — static checks on the Apple Events entitlement/usage string in `project.pbxproj` (exact strings/counts). Run after touching entitlements or `INFOPLIST_KEY_*UsageDescription` settings.
+- Remaining permissions: Apple Events (Spotify, Music), Bluetooth, audio capture (visualizer), Accessibility (HUD key interception). Camera, calendar, reminders, location, screen capture and folder permissions were removed with their features.
 - `NooriUITests/` exists but isn't run automatically (the notch UI can't be driven headlessly).
 
 ## Project layout
@@ -67,15 +69,14 @@ All app code lives in `Noori/`. The Xcode project uses **synchronized folder gro
 | `ContentView.swift` | Main notch view (~3k lines); most notch UI routes through here. |
 | `NooriViewCoordinator.swift` | Shared coordinator: current tab/view, sneak-peek/HUD state. |
 | `models/` | View models (`NooriViewModel`, `BatteryStatusViewModel`) and **`Constants.swift` = almost all `Defaults.Keys` settings (~350)**. |
-| `managers/` | Singleton feature managers (`MusicManager`, `StatsManager`, `LockScreenManager`, `SystemHUDManager`, `TimerManager`, `ClipboardManager`, …). `LLMUsage/` = LLM usage tracking; `Extensions/` = extension host. |
-| `components/` | SwiftUI views by feature (`Notch/`, `Music/`, `LockScreen/`, `Settings/`, `Shelf/`, `Stats/`, `Timer/`, `Live activities/`, `OSD/`, `Onboarding/`, …). |
+| `managers/` | Singleton managers: `MusicManager`, `SystemHUDManager`/`SystemVolumeManager`/`SystemDisplayManager` (HUDs), `BluetoothAudioManager`, `BatteryActivityManager`, `DoNotDisturbManager`, `PrivacyIndicatorManager`, `ScreenRecordingManager`, `LockScreenManager` (only tracks locked/unlocked state). |
+| `components/` | SwiftUI views by feature (`Notch/`, `Music/`, `Live activities/`, `OSD/`, `Focus/`, `Privacy/`, `Recording/`, `Settings/`, `Onboarding/`, …). The notch has a single Home tab. |
 | `MediaControllers/` | Per-player controllers behind `MediaControllerProtocol` (Apple Music, Spotify, YouTube Music, Amazon Music, Now Playing). |
-| `services/Extensions/` | XPC + RPC servers for third-party extensions. |
 | `helpers/`, `extensions/`, `utils/`, `private/` | AppleScript runner, permission stores, private display/brightness APIs (`CGSSpace`, DisplayServices, CoreBrightness), SMC/IOReport. |
 | `audio/`, `metal/` | Real-time audio tap + FFT visualizer (C++ via Obj-C++ bridge) and Metal shader. |
 | `Localizable.xcstrings` | The string catalog the app builds (in `Noori/`). The root-level `Localizable.xcstrings` is **not** in the build; it's kept for its extra languages. |
 | `LottieAnimations/`, `BluetoothHUDAnimations/` | Animation assets (`.mov` files are Git LFS). |
-| `NooriSamples/` | Screenshots (not part of the app). |
+| `NooriSamples/` | Screenshots (not part of the app; they show the old Atoll UI). |
 
 ## Conventions
 
@@ -87,24 +88,19 @@ All app code lives in `Noori/`. The Xcode project uses **synchronized folder gro
 - New user-facing strings go in `Noori/Localizable.xcstrings`.
 - Log changes under `## [Unreleased]` in `CHANGELOG.md`.
 
-### Extensions (AtollExtensionKit)
-
-The extension system depends on the external SPM package **`AtollExtensionKit`** (owned by Atoll's author). Its type names (`AtollLiveActivityDescriptor`, `AtollXPCServiceProtocol`, …) can't be renamed without forking the package — leave them. Extensions are **off by default** (`enableThirdPartyExtensions = false`) and each app must be approved by the user. Note: the published kit connects to Atoll's bundle id/XPC name, so third-party extensions will only reach Noori once a Noori fork of the kit exists.
-
 ## Updates / release
 
 - Sparkle is still integrated. Feeds point to `https://raw.githubusercontent.com/wenujacodes/Noori/main/Updates/appcast*.xml` (don't exist yet). Atoll's `SUPublicEDKey` was removed; before shipping updates, generate your own EdDSA key with Sparkle's `generate_keys` and add `SUPublicEDKey` to `Noori/Info.plist`.
 - No CI/release workflows yet (Atoll's were removed).
-- `ModelPricingManager` fetches `pricing.json` from `wenujacodes/Noori` main; it falls back to the bundled copy.
 
 ## Knowledge graph (graphify)
 
-A code knowledge graph is in `graphify-out/` (gitignored), built with local AST extraction only (`graphify extract . --code-only`). Hubs: `Defaults`, `ContentView`, `NooriViewModel`, `MusicManager`, `StatsManager`, `BluetoothAudioManager`, `LockScreen*` managers.
+A code knowledge graph is in `graphify-out/` (gitignored), built with local AST extraction only (`graphify extract . --code-only`). Hubs: `Defaults`, `ContentView`, `NooriViewModel`, `MusicManager`, `BluetoothAudioManager`, `SettingsView`.
 
 ```bash
 graphify query "how does the music player get now-playing info"
 graphify explain "MusicManager"
-graphify path "ContentView" "StatsManager"
+graphify path "ContentView" "MusicManager"
 graphify affected "NooriViewModel"   # what breaks if this changes
 graphify update .                    # refresh after code changes (no API cost)
 ```
