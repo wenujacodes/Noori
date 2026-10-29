@@ -69,7 +69,6 @@ final class ShelfStateViewModel: ObservableObject {
         items = merged
         invalidateURLCache()
         if !addedIDs.isEmpty {
-            ExtensionRPCServer.shared.notifyShelfItemsChanged(itemIDs: addedIDs, action: "added")
         }
     }
 
@@ -77,7 +76,6 @@ final class ShelfStateViewModel: ObservableObject {
         item.cleanupStoredData()
         items.removeAll { $0.id == item.id }
         invalidateURLCache()
-        ExtensionRPCServer.shared.notifyShelfItemsChanged(itemIDs: [item.id.uuidString], action: "removed")
     }
 
     func updateBookmark(for item: ShelfItem, bookmark: Data) {

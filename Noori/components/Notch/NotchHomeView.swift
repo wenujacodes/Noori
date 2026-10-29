@@ -687,7 +687,6 @@ struct NotchHomeView: View {
     @EnvironmentObject var vm: NooriViewModel
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var coordinator = NooriViewCoordinator.shared
-    @ObservedObject private var extensionNotchExperienceManager = ExtensionNotchExperienceManager.shared
     @ObservedObject private var musicManager = MusicManager.shared
     @Default(.showStandardMediaControls) private var showStandardMediaControls
     @Default(.autoHideInactiveNotchMediaPlayer) private var autoHideInactiveNotchMediaPlayer
@@ -710,14 +709,7 @@ struct NotchHomeView: View {
     private var mainContent: some View {
         HStack(alignment: .top, spacing: 20) {
             if Defaults[.enableMinimalisticUI] {
-                if let overridePayload = minimalisticOverridePayload {
-                    ExtensionMinimalisticExperienceView(
-                        payload: overridePayload,
-                        albumArtNamespace: albumArtNamespace
-                    )
-                } else {
-                    MinimalisticMusicPlayerView(albumArtNamespace: albumArtNamespace)
-                }
+                MinimalisticMusicPlayerView(albumArtNamespace: albumArtNamespace)
             } else {
                 // Normal mode: Show full music player with optional calendar and webcam
                 if shouldShowMusicPlayer {
@@ -749,9 +741,6 @@ struct NotchHomeView: View {
         .padding(Defaults[.enableMinimalisticUI] ? 0 : 8) //Putting the main padding for home view here for consistency
     }
 
-    private var minimalisticOverridePayload: ExtensionNotchExperiencePayload? {
-        extensionNotchExperienceManager.minimalisticReplacementPayload()
-    }
 }
 
 struct MusicSliderView: View {

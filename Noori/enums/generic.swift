@@ -75,7 +75,6 @@ public enum NotchViews {
     case home
     case shelf
     case timer
-    case extensionExperience
 }
 
 
@@ -86,7 +85,6 @@ enum SettingsEnum {
     case mediaPlayback
     case hud
     case shelf
-    case extensions
 }
 
 
