@@ -717,20 +717,6 @@ struct NotchHomeView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 
-                if Defaults[.showCalendar] {
-                    Group {
-                        if shouldShowMusicPlayer {
-                            CalendarView()
-                        } else {
-                            StandaloneCalendarView()
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .onHover { isHovering in
-                        vm.isHoveringCalendar = isHovering
-                    }
-                    .environmentObject(vm)
-                }
                 
             }
         }

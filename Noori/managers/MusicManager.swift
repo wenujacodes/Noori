@@ -1667,7 +1667,7 @@ class MusicManager: ObservableObject {
     // MARK: - Video Artwork
 
     func fetchVideoArtwork() {
-        guard Defaults[.lockScreenMusicFullscreenVideoArtwork] else {
+        guard Defaults[.showLiveCanvasInNoori] else {
             videoArtworkURL = nil
             return
         }

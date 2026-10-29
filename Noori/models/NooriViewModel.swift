@@ -44,11 +44,8 @@ class NooriViewModel: NSObject, ObservableObject {
     var onViewTeardown: (() -> Void)?
     
     @Published var hideOnClosed: Bool = true
-    @Published var isHoveringCalendar: Bool = false
     @Published var isBatteryPopoverActive: Bool = false
-    @Published var isReminderPopoverActive: Bool = false
     @Published var isMediaOutputPopoverActive: Bool = false
-    @Published var isTimerPopoverActive: Bool = false
     @Published var shouldRecheckHover: Bool = false
     @Published var isScrollGestureActive: Bool = false
     private var scrollGestureSuppressionTokens: Set<UUID> = []
@@ -126,27 +123,6 @@ class NooriViewModel: NSObject, ObservableObject {
         
         setupDetectorObserver()
 
-        ReminderLiveActivityManager.shared.$activeWindowReminders
-            .removeDuplicates()
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                let updatedTarget = self.calculateDynamicNotchSize()
-                guard self.notchState == .open else { return }
-                guard self.notchSize != updatedTarget else { return }
-                withAnimation(.smooth) {
-                    self.notchSize = updatedTarget
-                }
-                if let delegate = AppDelegate.shared {
-                    delegate.ensureWindowSize(
-                        addShadowPadding(to: updatedTarget, isMinimalistic: Defaults[.enableMinimalisticUI]),
-                        animated: true,
-                        force: false
-                    )
-                }
-            }
-            .store(in: &cancellables)
-
         // Observe settings + lyrics changes to dynamically resize the notch
         let enableLyricsPublisher = Defaults.publisher(.enableLyrics).map { $0.newValue }
 
@@ -170,14 +146,6 @@ class NooriViewModel: NSObject, ObservableObject {
                         force: false
                     )
                 }
-            }
-            .store(in: &cancellables)
-
-        TimerManager.shared.$activeSource
-            .combineLatest(TimerManager.shared.$isTimerActive)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _, _ in
-                self?.handleMinimalisticTimerHeightChange()
             }
             .store(in: &cancellables)
 
@@ -205,22 +173,6 @@ class NooriViewModel: NSObject, ObservableObject {
             .store(in: &cancellables)
     }
 
-    private func handleMinimalisticTimerHeightChange() {
-        guard Defaults[.enableMinimalisticUI] else { return }
-        guard notchState == .open else { return }
-        let updatedTarget = calculateDynamicNotchSize()
-        guard notchSize != updatedTarget else { return }
-        withAnimation(.smooth) {
-            notchSize = updatedTarget
-        }
-        if let delegate = AppDelegate.shared {
-            delegate.ensureWindowSize(
-                addShadowPadding(to: updatedTarget, isMinimalistic: Defaults[.enableMinimalisticUI]),
-                animated: true,
-                force: false
-            )
-        }
-    }
     
     private func setupDetectorObserver() {
         // 1) Publisher for the user’s fullscreen detection setting

@@ -28,14 +28,6 @@ class PrivacyConfigurationTests(unittest.TestCase):
             ),
         )
 
-    def test_full_access_reminder_api_has_matching_usage_text(self):
-        project = PROJECT.read_text()
-
-        self.assertEqual(
-            2,
-            project.count("INFOPLIST_KEY_NSRemindersFullAccessUsageDescription ="),
-        )
-
 
 if __name__ == "__main__":
     unittest.main()

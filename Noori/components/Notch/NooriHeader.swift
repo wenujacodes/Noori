@@ -25,11 +25,7 @@ struct NooriHeader: View {
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var coordinator = NooriViewCoordinator.shared
     @ObservedObject var shelfState = ShelfStateViewModel.shared
-    @ObservedObject var timerManager = TimerManager.shared
     @ObservedObject var doNotDisturbManager = DoNotDisturbManager.shared
-    @State private var showTimerPopover = false
-    @Default(.enableTimerFeature) var enableTimerFeature
-    @Default(.timerDisplayMode) var timerDisplayMode
     @Default(.showBatteryIndicator) var showBatteryIndicator
     @Default(.showBatteryPercentInside) var showBatteryPercentInside
     @Default(.showMinimalisticBatteryIndicator) var showMinimalisticBatteryIndicator
@@ -66,35 +62,6 @@ struct NooriHeader: View {
             HStack(spacing: 4) {
                 if vm.notchState == .open && !enableMinimalisticUI {
                     
-                    if Defaults[.enableTimerFeature] && timerDisplayMode == .popover {
-                        Button(action: {
-                            withAnimation(.smooth) {
-                                showTimerPopover.toggle()
-                            }
-                        }) {
-                            Capsule()
-                                .fill(.black)
-                                .frame(width: 30, height: 30)
-                                .overlay {
-                                    Image(systemName: "timer")
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .imageScale(.medium)
-                                }
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .popover(isPresented: $showTimerPopover, arrowEdge: .bottom) {
-                            TimerPopover()
-                        }
-                        .onChange(of: showTimerPopover) { isActive in
-                            vm.isTimerPopoverActive = isActive
-                            if !isActive {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    vm.shouldRecheckHover.toggle()
-                                }
-                            }
-                        }
-                    }
                     
                     if Defaults[.settingsIconInNotch] {
                         Button(action: {
@@ -114,15 +81,14 @@ struct NooriHeader: View {
                     }
                     
                     // Screen Recording Indicator
-                    if Defaults[.enableScreenRecordingDetection] && Defaults[.showRecordingIndicator] && !shouldSuppressStatusIndicators {
+                    if Defaults[.enableScreenRecordingDetection] && Defaults[.showRecordingIndicator] {
                         RecordingIndicator()
                             .frame(width: 30, height: 30) // Same size as other header elements
                     }
 
                     if Defaults[.enableDoNotDisturbDetection]
                         && Defaults[.showDoNotDisturbIndicator]
-                        && doNotDisturbManager.isDoNotDisturbActive
-                        && !shouldSuppressStatusIndicators {
+                        && doNotDisturbManager.isDoNotDisturbActive {
                         FocusIndicator()
                             .frame(width: 30, height: 30)
                             .transition(.opacity)
@@ -170,25 +136,6 @@ struct NooriHeader: View {
         }
         .foregroundColor(.gray)
         .environmentObject(vm)
-        .onChange(of: enableTimerFeature) { _, newValue in
-            if !newValue {
-                showTimerPopover = false
-                vm.isTimerPopoverActive = false
-            }
-        }
-        .onChange(of: timerDisplayMode) { _, mode in
-            if mode == .tab {
-                showTimerPopover = false
-                vm.isTimerPopoverActive = false
-            }
-        }
-    }
-}
-
-private extension NooriHeader {
-    var shouldSuppressStatusIndicators: Bool {
-        Defaults[.settingsIconInNotch]
-            && Defaults[.enableTimerFeature]
     }
 }
 

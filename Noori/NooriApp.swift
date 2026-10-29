@@ -109,13 +109,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @ObservedObject var coordinator = NooriViewCoordinator.shared
     var whatsNewWindow: NSWindow?
     var timer: Timer?
-    let calendarManager = CalendarManager.shared
     let dndManager = DoNotDisturbManager.shared  // NEW: DND detection
     let bluetoothAudioManager = BluetoothAudioManager.shared  // NEW: Bluetooth audio detection
     let idleAnimationManager = IdleAnimationManager.shared  // NEW: Custom idle animations
-    let lockScreenPanelManager = LockScreenPanelManager.shared  // NEW: Lock screen music panel
     let mediaControlsStateCoordinator = MediaControlsStateCoordinator.shared
-    let systemTimerBridge = SystemTimerBridge.shared
     var closeNotchWorkItem: DispatchWorkItem?
     private var previousScreens: [NSScreen]?
     private var onboardingWindowController: NSWindowController?
@@ -425,7 +422,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                                       Defaults[.enableSneakPeek] &&
                                       (
                                           coordinator.expandingView.show &&
-                                          (coordinator.expandingView.type == .music || coordinator.expandingView.type == .timer) &&
+                                          coordinator.expandingView.type == .music &&
                                           Defaults[.sneakPeekStyles] == .inline ||
                                           airPodsListeningModeSneakActive
                                       )
@@ -477,11 +474,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Use minimalistic or normal size based on settings
         var baseSize = Defaults[.enableMinimalisticUI] ? minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: vm.screen)) : openNotchSize
-        
-        // Use a consistent height for different view types
-        if coordinator.currentView == .timer {
-            baseSize.height = 250 // Extra space for timer presets
-        }
         
         let adjustedContentSize = baseSize
         var result = addShadowPadding(
@@ -543,15 +535,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func shouldAnimateResize(for newSize: CGSize) -> Bool {
-        if Defaults[.enableMinimalisticUI] && !ReminderLiveActivityManager.shared.activeWindowReminders.isEmpty {
-            return false
-        }
         return true
     }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
 
-        LockScreenLiveActivityWindowManager.shared.configure(viewModel: vm)
         LockScreenManager.shared.configure(viewModel: vm)
         
         // Migrate legacy progress bar settings
@@ -647,21 +635,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         MemoryUsageMonitor.shared.startMonitoring()
 
-        ReminderLiveActivityManager.shared.$activeWindowReminders
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.debouncedUpdateWindowSize()
-            }
-            .store(in: &cancellables)
-
-        TimerManager.shared.$activeSource
-            .combineLatest(TimerManager.shared.$isTimerActive)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.debouncedUpdateWindowSize()
-            }
-            .store(in: &cancellables)
-
         Defaults.publisher(.enableShortcuts, options: []).sink { [weak self] change in
             Task { @MainActor [weak self] in
                 guard let self else { return }
@@ -670,11 +643,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }.store(in: &cancellables)
 
-        Defaults.publisher(.enableTimerFeature, options: []).sink { [weak self] _ in
-            Task { @MainActor [weak self] in
-                self?.updateFeatureShortcutAvailability()
-            }
-        }.store(in: &cancellables)
 
 
         // Pin/unpin the notch above all spaces when the hide option changes:
@@ -837,18 +805,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         previousScreens = NSScreen.screens
 
-        // Skip weather under UI testing: prepareLocationAccess prompts for Location.
-        if Defaults[.enableLockScreenWeatherWidget] && !AppRuntimeEnvironment.isUITesting {
-            LockScreenWeatherManager.shared.prepareLocationAccess()
-            Task { @MainActor in
-                await LockScreenWeatherManager.shared.refresh(force: true)
-            }
-        }
-
-        // Warm up the lock screen timer widget manager so it can observe timer/default
-        // changes immediately instead of waiting for the first lock event.
-        let timerWidgetManager = LockScreenTimerWidgetManager.shared
-        timerWidgetManager.handleLockStateChange(isLocked: LockScreenManager.shared.currentLockStatus)
 
     }
 
@@ -1123,10 +1079,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard !optionalShortcutHandlersRegistered else { return }
         optionalShortcutHandlersRegistered = true
 
-        KeyboardShortcuts.onKeyDown(for: .startDemoTimer) {
-            guard Defaults[.enableShortcuts], Defaults[.enableTimerFeature] else { return }
-            TimerManager.shared.startDemoTimer(duration: 300)
-        }
 
 
 
@@ -1135,7 +1087,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @MainActor
     private func updateFeatureShortcutAvailability() {
-        updateShortcut(.startDemoTimer, isEnabled: Defaults[.enableShortcuts] && Defaults[.enableTimerFeature])
     }
 
     @MainActor
@@ -1354,10 +1305,8 @@ final class MediaControlsStateCoordinator {
         }
 
         if showStandard {
-            restoreLockScreenPanelIfNeeded()
             restoreMusicControlWindowIfNeeded()
         } else {
-            cacheAndDisableLockScreenPanel()
             cacheAndDisableMusicControlWindow()
         }
     }
@@ -1384,22 +1333,7 @@ final class MediaControlsStateCoordinator {
         }
     }
 
-    private func cacheAndDisableLockScreenPanel() {
-        if Defaults[.cachedLockScreenMediaWidgetPreference] == nil {
-            Defaults[.cachedLockScreenMediaWidgetPreference] = Defaults[.enableLockScreenMediaWidget]
-        }
 
-        if Defaults[.enableLockScreenMediaWidget] {
-            Defaults[.enableLockScreenMediaWidget] = false
-            LockScreenPanelManager.shared.hidePanel()
-        }
-    }
-
-    private func restoreLockScreenPanelIfNeeded() {
-        guard let cached = Defaults[.cachedLockScreenMediaWidgetPreference] else { return }
-        Defaults[.enableLockScreenMediaWidget] = cached
-        Defaults[.cachedLockScreenMediaWidgetPreference] = nil
-    }
 
     private func cacheAndDisableMusicControlWindow() {
         if Defaults[.cachedMusicControlWindowPreference] == nil {

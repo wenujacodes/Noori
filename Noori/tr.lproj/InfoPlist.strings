@@ -1,12 +1,7 @@
 "CFBundleDisplayName" = "Noori";
 "NSAppleEventsUsageDescription" = "Noori, Spotify ve Apple Music'i kontrol etmek için AppleScript kullanır.";
 "NSBluetoothAlwaysUsageDescription" = "Noori, ses aygıtları bağlandığında bunları algılamak ve HUD'da pil durumlarını göstermek için Bluetooth erişimine ihtiyaç duyar.";
-"NSCalendarsFullAccessUsageDescription" = "Takvim etkinliklerini çentik içinde gösterir.";
-"NSCalendarsUsageDescription" = "Takvim modu için gereklidir.";
 "NSDesktopFolderUsageDescription" = "Noori, ekran görüntülerini masaüstünüze kaydetmek için erişime ihtiyaç duyar.";
 "NSDocumentsFolderUsageDescription" = "Noori, rafa sürüklenen dosyaları kaydetmek ve okumak için erişime ihtiyaç duyar.";
 "NSDownloadsFolderUsageDescription" = "Noori, İndirilenler klasöründeki dosyaları okumak için erişime ihtiyaç duyar.";
-"NSLocationUsageDescription" = "Noori, doğru kilit ekranı hava durumunu göstermek için konumunuzu kullanır.";
-"NSLocationWhenInUseUsageDescription" = "Noori, doğru kilit ekranı hava durumunu göstermek için konumunuzu kullanır.";
-"NSRemindersUsageDescription" = "Noori, anımsatıcılarınızı göstermek için Anımsatıcılar erişimine ihtiyaç duyar.";
 "NSAudioCaptureUsageDescription" = "Noori, gerçek zamanlı müzik dalga biçimi görselleştiricisini göstermek için ses yakalama iznine ihtiyaç duyar.";

@@ -64,17 +64,12 @@ func enabledStandardTabCount() -> Int {
     var count = 0
 
     // Home tab
-    if Defaults[.showStandardMediaControls] || Defaults[.showCalendar] {
+    if Defaults[.showStandardMediaControls] {
         count += 1
     }
 
     // Shelf tab
     if Defaults[.dynamicShelf] {
-        count += 1
-    }
-
-    // Timer tab (only in .tab display mode)
-    if Defaults[.enableTimerFeature] && Defaults[.timerDisplayMode] == .tab {
         count += 1
     }
 
@@ -109,9 +104,8 @@ func enforceMinimumNotchWidth() {
 }
 private let minimalisticBaseOpenNotchSize: CGSize = .init(width: 420, height: 180)
 private let minimalisticLyricsExtraHeight: CGFloat = 40
-let minimalisticTimerCountdownTopPadding: CGFloat = 12
-let minimalisticTimerCountdownContentHeight: CGFloat = 82
-let minimalisticTimerCountdownBlockHeight: CGFloat = minimalisticTimerCountdownTopPadding + minimalisticTimerCountdownContentHeight
+/// Bottom padding of the minimalistic player in standard notch mode.
+let minimalisticBaselineBottomPadding: CGFloat = 3
 let notchShadowPaddingStandard: CGFloat = 18
 let notchShadowPaddingMinimalistic: CGFloat = 12
 
@@ -128,16 +122,6 @@ func minimalisticOpenNotchSize(isNooriMode: Bool) -> CGSize {
         size.height += minimalisticLyricsExtraHeight
     }
     
-    let reminderCount = ReminderLiveActivityManager.shared.activeWindowReminders.count
-    if reminderCount > 0 {
-        let reminderHeight = ReminderLiveActivityManager.additionalHeight(forRowCount: reminderCount)
-        size.height += reminderHeight
-    }
-
-    if NooriViewCoordinator.shared.timerLiveActivityEnabled && TimerManager.shared.isExternalTimerActive {
-        size.height += minimalisticTimerCountdownBlockHeight
-    }
-
     return size
 }
 let cornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 19, bottom: 24), closed: (top: 6, bottom: 14))

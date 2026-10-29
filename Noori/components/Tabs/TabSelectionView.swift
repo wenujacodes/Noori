@@ -44,9 +44,6 @@ struct TabSelectionView: View {
     @StateObject private var quickShareService = QuickShareService.shared
     @Default(.quickShareProvider) private var quickShareProvider
     @State private var showQuickSharePopover = false
-    @Default(.enableTimerFeature) var enableTimerFeature
-    @Default(.timerDisplayMode) var timerDisplayMode
-    @Default(.showCalendar) private var showCalendar
     @Default(.showStandardMediaControls) private var showStandardMediaControls
     @Default(.enableMinimalisticUI) private var enableMinimalisticUI
     @Namespace var animation
@@ -62,9 +59,6 @@ struct TabSelectionView: View {
             tabsArray.append(TabModel(label: "Shelf", icon: "tray.fill", view: .shelf))
         }
         
-        if enableTimerFeature && timerDisplayMode == .tab {
-            tabsArray.append(TabModel(label: "Timer", icon: "timer", view: .timer))
-        }
 
         return tabsArray
     }
@@ -107,7 +101,7 @@ struct TabSelectionView: View {
         if enableMinimalisticUI {
             return true
         }
-        return showStandardMediaControls || showCalendar
+        return showStandardMediaControls
     }
 
     private func isSelected(_ tab: TabModel) -> Bool {

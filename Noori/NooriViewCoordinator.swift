@@ -28,13 +28,10 @@ enum SneakContentType: Equatable {
     case music
     case mic
     case battery
-    case timer
-    case reminder
     case recording
     case doNotDisturb
     case bluetoothAudio
     case privacy
-    case lockScreen
     case capsLock
 }
 
@@ -47,13 +44,10 @@ extension SneakContentType {
              (.music, .music),
              (.mic, .mic),
              (.battery, .battery),
-             (.timer, .timer),
-             (.reminder, .reminder),
              (.recording, .recording),
              (.doNotDisturb, .doNotDisturb),
              (.bluetoothAudio, .bluetoothAudio),
              (.privacy, .privacy),
-             (.lockScreen, .lockScreen),
              (.capsLock, .capsLock):
             return true
         default:
@@ -93,7 +87,7 @@ class NooriViewCoordinator: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var hoverOpenSuppressedUntil: Date = .distantPast
     
-    private static let tabOrder: [NotchViews] = [.home, .shelf, .timer]
+    private static let tabOrder: [NotchViews] = [.home, .shelf]
     
     /// Direction of the most recent tab switch (true = forward/right, false = backward/left)
     @Published var tabSwitchForward: Bool = true
@@ -116,10 +110,7 @@ class NooriViewCoordinator: ObservableObject {
     @AppStorage("firstLaunch") var firstLaunch: Bool = true
     @AppStorage("showWhatsNew") var showWhatsNew: Bool = true
     @AppStorage("musicLiveActivityEnabled") var musicLiveActivityEnabled: Bool = true
-    @AppStorage("timerLiveActivityEnabled") var timerLiveActivityEnabled: Bool = true
 
-    @Default(.enableTimerFeature) private var enableTimerFeature
-    @Default(.timerDisplayMode) private var timerDisplayMode
     
     @AppStorage("alwaysShowTabs") var alwaysShowTabs: Bool = true {
         didSet {
@@ -155,20 +146,6 @@ class NooriViewCoordinator: ObservableObject {
     
     private init() {
         selectedScreen = preferredScreen
-        Defaults.publisher(.timerDisplayMode)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] change in
-                self?.handleTimerDisplayModeChange(change.newValue)
-            }
-            .store(in: &cancellables)
-
-        Defaults.publisher(.enableTimerFeature)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] change in
-                self?.handleTimerFeatureToggle(change.newValue)
-            }
-            .store(in: &cancellables)
-
         Defaults.publisher(.enableMinimalisticUI)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] change in
@@ -179,10 +156,7 @@ class NooriViewCoordinator: ObservableObject {
         // Observe all tab-affecting settings to enforce minimum notch width
         Publishers.MergeMany(
             Defaults.publisher(.showStandardMediaControls).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.showCalendar).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.dynamicShelf).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.enableTimerFeature).map { _ in () }.eraseToAnyPublisher(),
-            Defaults.publisher(.timerDisplayMode).map { _ in () }.eraseToAnyPublisher(),
             Defaults.publisher(.enableMinimalisticUI).map { _ in () }.eraseToAnyPublisher()
         )
         .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
@@ -204,19 +178,7 @@ class NooriViewCoordinator: ObservableObject {
     }
 
 
-    private func handleTimerDisplayModeChange(_ mode: TimerDisplayMode) {
-        guard mode == .popover, currentView == .timer else { return }
-        withAnimation(.smooth) {
-            currentView = .home
-        }
-    }
 
-    private func handleTimerFeatureToggle(_ isEnabled: Bool) {
-        guard !isEnabled, currentView == .timer else { return }
-        withAnimation(.smooth) {
-            currentView = .home
-        }
-    }
 
     private func handleMinimalisticModeChange(_ isEnabled: Bool) {
         guard isEnabled else { return }
@@ -245,15 +207,11 @@ class NooriViewCoordinator: ObservableObject {
     ) {
         let resolvedDuration: TimeInterval
         switch type {
-        case .timer:
-            resolvedDuration = 10
-        case .reminder:
-            resolvedDuration = Defaults[.reminderSneakPeekDuration]
         default:
             resolvedDuration = duration
         }
         sneakPeekDuration = resolvedDuration
-        let bypassedTypes: [SneakContentType] = [.music, .timer, .reminder, .bluetoothAudio]
+        let bypassedTypes: [SneakContentType] = [.music, .bluetoothAudio]
         
         if !bypassedTypes.contains(type) && !Defaults[.enableSystemHUD] {
             return
