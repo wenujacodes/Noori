@@ -1541,17 +1541,15 @@ struct About: View {
                     Spacer(minLength: 0)
                 }
                 .buttonStyle(PlainButtonStyle())
+                .listRowSeparator(.hidden)
 
-                VStack(spacing: 0) {
-                    Divider()
-                        .padding(.bottom, 5)
-                    Text("Made with ❤️ by Wenuja Liyanamana")
-                        .foregroundStyle(.secondary)
-                        .padding(.bottom, 7)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 10)
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
+                Text("Made with ❤️ by Wenuja Liyanamana")
+                    .foregroundStyle(.secondary)
+                    .padding(.bottom, 7)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 10)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .listRowSeparator(.hidden)
             }
         }
         .toolbar {
