@@ -113,6 +113,119 @@
         }
       }
     },
+    "'Now Playing' was the only option on previous versions and works with all media apps." : {
+      "comment" : "merge:ko:alt='이전 버전에서는 ‘지금 재생 중’만 선택할 수 있었으며, 모든 미디어 앱과 호환됩니다.'",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "'Now Playing' was the only option on previous versions and works with all media apps."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "\"Nyní hraje\" byla jediná možnost na předchozích verzích a funguje se všemi mediálními aplikacemi."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Jetzt läuft\" war die einzige Option auf vorherigen Versionen und funktioniert mit allen Medien-Apps."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'Now Playing' was the only option on previous versions and works with all media apps."
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'Now Playing' was the only option on previous versions and works with all media apps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "'En reproducción' era la única opción en versiones anteriores y funciona con todas las aplicaciones multimedia."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“À l’écoute” était la seule option dans les précédentes versions et fonctionne avec toutes les applications multimédias."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "'Now Playing' was the only option on previous versions and works with all media apps."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "'Now Playing' era l'unica opzione sulle versioni precedenti e funziona con tutte le app multimediali."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "이전 버전에서는 ‘현재 재생 중' 만 선택할 수 있었으며, 모든 미디어 애플리케이션과 호환됩니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'Huidig onderdeel' was de enige optie in eerdere versies en werkt met alle media-apps."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "'Teraz odtwarzane' było jedyną opcją w poprzednich wersjach i działa ze wszystkimi multimediami."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'Tocando agora' era a única opção em versões anteriores e funciona em todos os aplicativos de mídia."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'Сейчас воспроизводится' был единственным вариантом в предыдущих версиях, он работает со всеми медиа приложениями."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'กำลังเล่น' เป็นตัวเลือกเดียวในเวอร์ชันก่อนหน้าและทำงานกับแอปสื่อทั้งหมด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'Şimdi Oynatılıyor' önceki sürümlerdeki tek seçenekti ve tüm medya uygulamalarıyla çalışır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "'Зараз грає' був єдиним варіантом на попередніх версіях і працює з усіма медіа застосунками."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "“当前播放”是以前版本中唯一的选项，并适用于所有媒体应用。"
+          }
+        }
+      }
+    },
     "%.0f seconds" : {
       "comment" : "merge:ko:alt='%.0f초'",
       "localizations" : {
@@ -339,6 +452,36 @@
         }
       }
     },
+    "%@ left" : {
+      "comment" : "A string indicating how much time there is left of an event.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ over"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ осталось"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ left"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剩余 %@"
+          }
+        }
+      }
+    },
     "%0.1f" : {
       "localizations" : {
         "ko" : {
@@ -369,36 +512,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%0.1f"
-          }
-        }
-      }
-    },
-    "%@ left" : {
-      "comment" : "A string indicating how much time there is left of an event.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ over"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ осталось"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ left"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "剩余 %@"
           }
         }
       }
@@ -598,118 +711,345 @@
         }
       }
     },
-    "'Now Playing' was the only option on previous versions and works with all media apps." : {
-      "comment" : "merge:ko:alt='이전 버전에서는 ‘지금 재생 중’만 선택할 수 있었으며, 모든 미디어 앱과 호환됩니다.'",
+    "• Bug fixes" : {
+      "comment" : "merge:ko:alt='• 버그 수정'",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "'Now Playing' was the only option on previous versions and works with all media apps."
+            "value" : "• Bug fixes"
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "\"Nyní hraje\" byla jediná možnost na předchozích verzích a funguje se všemi mediálními aplikacemi."
+            "value" : "• Opravy chyb"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\"Jetzt läuft\" war die einzige Option auf vorherigen Versionen und funktioniert mit allen Medien-Apps."
+            "value" : "• Fehlerbehebungen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'Now Playing' was the only option on previous versions and works with all media apps."
+            "value" : "• Bug fixes"
           }
         },
         "en-GB" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'Now Playing' was the only option on previous versions and works with all media apps."
+            "value" : "• Bug fixes"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "'En reproducción' era la única opción en versiones anteriores y funciona con todas las aplicaciones multimedia."
+            "value" : "• Corrección de errores"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“À l’écoute” était la seule option dans les précédentes versions et fonctionne avec toutes les applications multimédias."
+            "value" : "• Corrections de bugs"
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "'Now Playing' was the only option on previous versions and works with all media apps."
+            "value" : "• Bug fixes"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "'Now Playing' era l'unica opzione sulle versioni precedenti e funziona con tutte le app multimediali."
+            "value" : "• Correzione bug"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "이전 버전에서는 ‘현재 재생 중' 만 선택할 수 있었으며, 모든 미디어 애플리케이션과 호환됩니다."
+            "value" : "수정된 버그들"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'Huidig onderdeel' was de enige optie in eerdere versies en werkt met alle media-apps."
+            "value" : "• Bugfixes"
           }
         },
         "pl" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "'Teraz odtwarzane' było jedyną opcją w poprzednich wersjach i działa ze wszystkimi multimediami."
+            "value" : "Poprawki błędów"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'Tocando agora' era a única opção em versões anteriores e funciona em todos os aplicativos de mídia."
+            "value" : "Correções de bugs"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'Сейчас воспроизводится' был единственным вариантом в предыдущих версиях, он работает со всеми медиа приложениями."
+            "value" : "• Исправления ошибок"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'กำลังเล่น' เป็นตัวเลือกเดียวในเวอร์ชันก่อนหน้าและทำงานกับแอปสื่อทั้งหมด"
+            "value" : "• แก้ไขบั๊ก"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "'Şimdi Oynatılıyor' önceki sürümlerdeki tek seçenekti ve tüm medya uygulamalarıyla çalışır."
+            "value" : "• Hata düzeltmeleri"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "'Зараз грає' був єдиним варіантом на попередніх версіях і працює з усіма медіа застосунками."
+            "value" : "• Виправлення помилок"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "“当前播放”是以前版本中唯一的选项，并适用于所有媒体应用。"
+            "value" : "• Bug 修复"
           }
         }
       }
+    },
+    "• Improved performance" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Improved performance"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Zlepšený výkon"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Verbesserte Leistung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Improved performance"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Improved performance"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Rendimiento mejorado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Amélioration des performances"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Improved performance"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Prestazioni migliorate"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• 향상된 성능"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Verbeterde prestaties"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Poprawiona wydajność"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Desempenho melhorado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Улучшена производительность"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• ปรับปรุงประสิทธิภาพ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Geliştirilmiş performans"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Покращено продуктивність"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• 提升性能"
+          }
+        }
+      }
+    },
+    "• New feature 1" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• New feature 1"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Nová funkce 1"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Neue Funktion 1"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• New feature 1"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• New feature 1"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Nueva funcionalidad 1"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nouvelle fonctionnalité 1"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• New feature 1"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Nuova funzionalità 1"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• 새 기능 1"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Nieuwe functie 1"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nowa funkcja 1"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Novo recurso 1"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Новая функция 1"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• ฟีเจอร์ใหม่ 1"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Yeni özellik 1"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• Нова функція 1"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "• 新功能1"
+          }
+        }
+      }
+    },
+    "±10 Seconds" : {
+
     },
     "1. Open Spotify in a browser and log in" : {
       "comment" : "A step in the process of getting the Spotify cookie.",
@@ -801,43 +1141,18 @@
         }
       }
     },
-    "4" : {},
-    "5" : {},
-    "6" : {},
+    "4" : {
+
+    },
+    "5" : {
+
+    },
+    "6" : {
+
+    },
     "A new version of Noori is available!" : {
       "comment" : "A title for a view that displays an update is available.",
       "isCommentAutoGenerated" : true
-    },
-    "ALPHA" : {
-      "comment" : "A label indicating a feature that is still in development.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "АЛЬФА"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "อัลฟา"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ALFA"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "测试版"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "About" : {
       "comment" : "merge:ko:alt='정보'",
@@ -952,7 +1267,9 @@
         }
       }
     },
-    "Accent" : {},
+    "Accent" : {
+
+    },
     "Accent color" : {
       "localizations" : {
         "ar" : {
@@ -1510,6 +1827,37 @@
         }
       }
     },
+    "ALPHA" : {
+      "comment" : "A label indicating a feature that is still in development.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "АЛЬФА"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัลฟา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ALFA"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "测试版"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
     "Always hide in fullscreen" : {
       "localizations" : {
         "ar" : {
@@ -1622,7 +1970,9 @@
         }
       }
     },
-    "Amazon Music" : {},
+    "Amazon Music" : {
+
+    },
     "App icon" : {
       "localizations" : {
         "ar" : {
@@ -1847,7 +2197,9 @@
         }
       }
     },
-    "Apple Music" : {},
+    "Apple Music" : {
+
+    },
     "Automatically check for updates" : {
       "localizations" : {
         "ar" : {
@@ -2679,6 +3031,7 @@
       }
     },
     "Both Active" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2760,6 +3113,34 @@
         }
       }
     },
+    "Brightness fine step" : {
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Helderheid, kleine stap"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точный шаг яркости"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ขั้นละเอียดความสว่าง"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "亮度微调步长"
+          }
+        }
+      }
+    },
     "Brightness HUD" : {
       "localizations" : {
         "fr" : {
@@ -2812,34 +3193,6 @@
         }
       }
     },
-    "Brightness fine step" : {
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Helderheid, kleine stap"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Точный шаг яркости"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ขั้นละเอียดความสว่าง"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "亮度微调步长"
-          }
-        }
-      }
-    },
     "Brightness step" : {
       "localizations" : {
         "nl" : {
@@ -2868,7 +3221,9 @@
         }
       }
     },
-    "Build" : {},
+    "Build" : {
+
+    },
     "Camera" : {
       "comment" : "A label for the camera privacy indicator.",
       "isCommentAutoGenerated" : true,
@@ -2988,6 +3343,7 @@
       }
     },
     "Camera Only" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3220,52 +3576,6 @@
       },
       "shouldTranslate" : false
     },
-    "Caps Lock Indicator" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caps Lock 표시기"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caps Lock-indicator"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indicador de Caps Lock"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Индикатор Caps Lock"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ตัวบ่งชี้ Caps Lock"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Büyük Harf Kilidi Göstergesi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caps Lock 指示器"
-          }
-        }
-      }
-    },
     "Caps Lock color" : {
       "localizations" : {
         "ko" : {
@@ -3312,6 +3622,52 @@
         }
       }
     },
+    "Caps Lock Indicator" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caps Lock 표시기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caps Lock-indicator"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicador de Caps Lock"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Индикатор Caps Lock"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตัวบ่งชี้ Caps Lock"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Büyük Harf Kilidi Göstergesi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caps Lock 指示器"
+          }
+        }
+      }
+    },
     "Change Media Output" : {
       "localizations" : {
         "ko" : {
@@ -3348,34 +3704,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更改媒体输出"
-          }
-        }
-      }
-    },
-    "Charging HUD" : {
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD opladen"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Уведомление зарядки"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD การชาร์จ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "充电提示框"
           }
         }
       }
@@ -3446,6 +3774,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "充电提示持续时间"
+          }
+        }
+      }
+    },
+    "Charging HUD" : {
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD opladen"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уведомление зарядки"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD การชาร์จ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "充电提示框"
           }
         }
       }
@@ -3726,7 +4082,9 @@
         }
       }
     },
-    "Cider" : {},
+    "Cider" : {
+
+    },
     "Classic notch shape that blends into the top screen edge" : {
       "comment" : "Description of a notch shape that blends into the top screen edge.",
       "isCommentAutoGenerated" : true,
@@ -4342,7 +4700,9 @@
         }
       }
     },
-    "Compact" : {},
+    "Compact" : {
+
+    },
     "Compact keeps the alert inline. Standard uses the taller full-charge HUD with the charging animation." : {
       "localizations" : {
         "nl" : {
@@ -6228,166 +6588,6 @@
         }
       }
     },
-    "Enable Camera Detection" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카메라 감지 활성화"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cameradetectie inschakelen"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Включить обнаружение камеры"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิดใช้การตรวจจับกล้อง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kamera Algılamayı Etkinleştir"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用相机检测"
-          }
-        }
-      }
-    },
-    "Enable Focus Detection" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "집중 모드 감지 활성화"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schakel focusdetectie in"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Включить отслеживание Фокусирования"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิดใช้การตรวจจับโฟกัส"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odak Algılamayı Etkinleştir"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用专注模式检测"
-          }
-        }
-      }
-    },
-    "Enable Microphone Detection" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "마이크 감지 활성화"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schakel microfoondetectie in"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отслеживать использование микрофона"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิดใช้การตรวจจับไมโครโฟน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mikrofon Algılamayı Etkinleştir"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用麦克风检测"
-          }
-        }
-      }
-    },
-    "Enable Screen Recording Detection" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "화면 녹화 감지 활성화"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schakel schermopnamedetectie in"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отслеживать запись экрана"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิดใช้การตรวจจับการบันทึกหน้าจอ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ekran Kaydı Algılamayı Etkinleştir"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "启用屏幕录制检测"
-          }
-        }
-      }
-    },
     "Enable blur effect behind album art" : {
       "localizations" : {
         "ko" : {
@@ -6424,6 +6624,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用专辑封面后的模糊效果"
+          }
+        }
+      }
+    },
+    "Enable Camera Detection" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라 감지 활성화"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cameradetectie inschakelen"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить обнаружение камеры"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดใช้การตรวจจับกล้อง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera Algılamayı Etkinleştir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用相机检测"
           }
         }
       }
@@ -6667,6 +6907,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用外部音量控制监听"
+          }
+        }
+      }
+    },
+    "Enable Focus Detection" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 모드 감지 활성화"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schakel focusdetectie in"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить отслеживание Фокусирования"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดใช้การตรวจจับโฟกัส"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odak Algılamayı Etkinleştir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用专注模式检测"
           }
         }
       }
@@ -6989,6 +7269,46 @@
         }
       }
     },
+    "Enable Microphone Detection" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마이크 감지 활성화"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schakel microfoondetectie in"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отслеживать использование микрофона"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดใช้การตรวจจับไมโครโฟน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon Algılamayı Etkinleştir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用麦克风检测"
+          }
+        }
+      }
+    },
     "Enable music live activity" : {
       "localizations" : {
         "ar" : {
@@ -7137,6 +7457,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用实时波形"
+          }
+        }
+      }
+    },
+    "Enable Screen Recording Detection" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 녹화 감지 활성화"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schakel schermopnamedetectie in"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отслеживать запись экрана"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดใช้การตรวจจับการบันทึกหน้าจอ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekran Kaydı Algılamayı Etkinleştir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用屏幕录制检测"
           }
         }
       }
@@ -7623,6 +7983,48 @@
         }
       }
     },
+    "Focus detection mode" : {
+      "comment" : "The title of a confirmation dialog that lets users choose between using the focus detection mode with or without the use of the SwiftUI Inspector (DevTools).",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 모드 감지 모드"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focusdetectiemodus"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим обнаружения фокуса"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "โหมดตรวจจับโฟกัส"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odak algılama modu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专注检测模式"
+          }
+        }
+      }
+    },
     "Focus Status" : {
       "localizations" : {
         "ko" : {
@@ -7665,48 +8067,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "专注状态"
-          }
-        }
-      }
-    },
-    "Focus detection mode" : {
-      "comment" : "The title of a confirmation dialog that lets users choose between using the focus detection mode with or without the use of the SwiftUI Inspector (DevTools).",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "집중 모드 감지 모드"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Focusdetectiemodus"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Режим обнаружения фокуса"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "โหมดตรวจจับโฟกัส"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odak algılama modu"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "专注检测模式"
           }
         }
       }
@@ -7775,46 +8135,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "满电量"
-          }
-        }
-      }
-    },
-    "Full Disk Access unlocks custom Focus icons, colors, and labels. Standard Focus detection still works without it—grant access only if you need personalized indicators." : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "전체 디스크 접근 권한을 허용하면 사용자 지정 집중 모드 아이콘, 색상 및 레이블을 사용할 수 있습니다. 권한이 없어도 표준 집중 모드 감지는 정상적으로 작동하므로, 개인화된 표시기가 필요한 경우에만 권한을 허용하십시오."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volledige schijftoegang ontgrendelt aangepaste Focus-pictogrammen, kleuren en labels. Standaard Focus-detectie werkt ook zonder. Verleen alleen toegang als je gepersonaliseerde indicatoren nodig hebt."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Полный доступ к диску открывает пользовательские иконки, цвета и метки фокуса. Стандартное обнаружение работает и без него."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Full Disk Access ปลดล็อกไอคอน สี และป้ายกำกับโฟกัสกำหนดเอง การตรวจจับโฟกัสมาตรฐานยังทำงานโดยไม่ต้องมี — ให้สิทธิ์เฉพาะเมื่อต้องการตัวบ่งชี้ส่วนตัว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tam Disk Erişimi, özel Odak simgelerinin, renklerinin ve etiketlerinin kilidini açar. Standart Odak tespiti bu özellik olmadan da çalışır; yalnızca kişiselleştirilmiş göstergelere ihtiyacınız varsa erişim izni verin."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完全磁盘访问解锁自定义专注模式图标、颜色和标签。标准专注检测无需此权限即可工作——仅在需要个性化指示器时授予访问权限。"
           }
         }
       }
@@ -7941,6 +8261,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "满电阈值"
+          }
+        }
+      }
+    },
+    "Full Disk Access unlocks custom Focus icons, colors, and labels. Standard Focus detection still works without it—grant access only if you need personalized indicators." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 디스크 접근 권한을 허용하면 사용자 지정 집중 모드 아이콘, 색상 및 레이블을 사용할 수 있습니다. 권한이 없어도 표준 집중 모드 감지는 정상적으로 작동하므로, 개인화된 표시기가 필요한 경우에만 권한을 허용하십시오."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volledige schijftoegang ontgrendelt aangepaste Focus-pictogrammen, kleuren en labels. Standaard Focus-detectie werkt ook zonder. Verleen alleen toegang als je gepersonaliseerde indicatoren nodig hebt."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полный доступ к диску открывает пользовательские иконки, цвета и метки фокуса. Стандартное обнаружение работает и без него."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full Disk Access ปลดล็อกไอคอน สี และป้ายกำกับโฟกัสกำหนดเอง การตรวจจับโฟกัสมาตรฐานยังทำงานโดยไม่ต้องมี — ให้สิทธิ์เฉพาะเมื่อต้องการตัวบ่งชี้ส่วนตัว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam Disk Erişimi, özel Odak simgelerinin, renklerinin ve etiketlerinin kilidini açar. Standart Odak tespiti bu özellik olmadan da çalışır; yalnızca kişiselleştirilmiş göstergelere ihtiyacınız varsa erişim izni verin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完全磁盘访问解锁自定义专注模式图标、颜色和标签。标准专注检测无需此权限即可工作——仅在需要个性化指示器时授予访问权限。"
           }
         }
       }
@@ -8830,213 +9190,45 @@
         }
       }
     },
-    "Green" : {},
-    "HUD Duration" : {
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD-duur"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Длительность показа"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ระยะเวลา HUD"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "提示框持续时间"
-          }
-        }
-      }
+    "Green" : {
+
     },
-    "HUD Tests" : {
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD-tests"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Тестирование HUD"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ทดสอบ HUD"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "提示框测试"
-          }
-        }
-      }
-    },
-    "HUD icon style" : {
-      "comment" : "A label describing the style of the 3D or symbol-based Bluetooth HUD icon.",
-      "isCommentAutoGenerated" : true,
+    "Hide Noori during screenshots & recordings" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "HUD 아이콘 스타일"
+            "value" : "스크린샷 및 화면 기록 시 Noori 숨기기"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "HUD-pictogramstijl"
+            "value" : "Verberg Noori tijdens screenshots en opnames"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Стиль иконки HUD"
+            "value" : "Скрывать Noori на снимках и записях экрана"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "สไตล์ไอคอน HUD"
+            "value" : "ซ่อนไดนามิกไอแลนด์ระหว่างจับภาพหน้าจอและบันทึก"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "HUD simge stili"
+            "value" : "Ekran görüntüleri ve kayıtlar sırasında Noori'yi gizle"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "HUD 图标样式"
-          }
-        }
-      }
-    },
-    "HUD style" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "HUD style"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Styl HUD"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD Stil"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD style"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD style"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "HUD style"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Style de l’ATH"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "HUD style"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Stile HUD"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "HUD 스타일"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD-stijl"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Styl HUD"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estilo do HUD"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Стиль панели"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สไตล์ HUD"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD tarzı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "HUD style"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "HUD 样式"
+            "value" : "截图和录制时隐藏Noori"
           }
         }
       }
@@ -9092,50 +9284,6 @@
           }
         }
       }
-    },
-    "Hide Noori during screenshots & recordings" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "스크린샷 및 화면 기록 시 Noori 숨기기"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verberg Noori tijdens screenshots en opnames"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Скрывать Noori на снимках и записях экрана"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ซ่อนไดนามิกไอแลนด์ระหว่างจับภาพหน้าจอและบันทึก"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ekran görüntüleri ve kayıtlar sırasında Noori'yi gizle"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "截图和录制时隐藏Noori"
-          }
-        }
-      }
-    },
-    "Hide Release Notes" : {
-      "comment" : "A label for a button that hides the release notes.",
-      "isCommentAutoGenerated" : true
     },
     "Hide only when NowPlaying app is in fullscreen" : {
       "localizations" : {
@@ -9248,6 +9396,10 @@
           }
         }
       }
+    },
+    "Hide Release Notes" : {
+      "comment" : "A label for a button that hides the release notes.",
+      "isCommentAutoGenerated" : true
     },
     "Hide until hovered on non-notch displays" : {
       "localizations" : {
@@ -9510,6 +9662,383 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "高"
+          }
+        }
+      }
+    },
+    "https://github.com/th-ch/youtube-music" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://github.com/th-ch/youtube-music"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "HUD Duration" : {
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD-duur"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Длительность показа"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ระยะเวลา HUD"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示框持续时间"
+          }
+        }
+      }
+    },
+    "HUD icon style" : {
+      "comment" : "A label describing the style of the 3D or symbol-based Bluetooth HUD icon.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD 아이콘 스타일"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD-pictogramstijl"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стиль иконки HUD"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สไตล์ไอคอน HUD"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD simge stili"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD 图标样式"
+          }
+        }
+      }
+    },
+    "HUD style" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "HUD style"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Styl HUD"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD Stil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD style"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD style"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "HUD style"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Style de l’ATH"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "HUD style"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stile HUD"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "HUD 스타일"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD-stijl"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Styl HUD"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estilo do HUD"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стиль панели"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สไตล์ HUD"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD tarzı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "HUD style"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "HUD 样式"
+          }
+        }
+      }
+    },
+    "HUD Tests" : {
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD-tests"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тестирование HUD"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทดสอบ HUD"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示框测试"
+          }
+        }
+      }
+    },
+    "in %@" : {
+      "comment" : "\"In x hours\" as showed on the lock screen calendar widget.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "in %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "через %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "in %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@后"
+          }
+        }
+      }
+    },
+    "in %lld" : {
+      "comment" : "A label used to indicate an event happening in a set amount of time.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "in %lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "через %lld"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "in %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还有 %lld"
           }
         }
       }
@@ -9786,54 +10315,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "键盘快捷键已禁用"
-          }
-        }
-      }
-    },
-    "LIVE" : {
-      "comment" : "A label indicating that the music is live.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Live"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LEEF"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AO VIVO"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LIVE"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CANLI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "直播"
           }
         }
       }
@@ -10146,6 +10627,54 @@
         }
       }
     },
+    "LIVE" : {
+      "comment" : "A label indicating that the music is live.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LEEF"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AO VIVO"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LIVE"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CANLI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直播"
+          }
+        }
+      }
+    },
     "Live Activities" : {
       "comment" : "The title of the \"Live Activities\" screen.",
       "isCommentAutoGenerated" : true,
@@ -10359,76 +10888,6 @@
         }
       }
     },
-    "Low Battery" : {
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lage batterij"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Низкий заряд"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แบตเตอรี่ต่ำ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "低电量"
-          }
-        }
-      }
-    },
-    "Low Power: %@" : {
-      "comment" : "Text displayed in a status label at the top of the screen indicating whether low power mode is on or off.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "배터리 부족: %@"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laag vermogen: %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Энергосбережение: %@"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Low Power: %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Düşük Güç: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "低电量：%@"
-          }
-        }
-      }
-    },
     "Low battery" : {
       "comment" : "Text displayed when the battery level drops below a certain threshold.",
       "isCommentAutoGenerated" : true,
@@ -10471,30 +10930,30 @@
         }
       }
     },
-    "Low battery HUD" : {
+    "Low Battery" : {
       "localizations" : {
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lage batterij-HUD"
+            "value" : "Lage batterij"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Уведомление низкого заряда"
+            "value" : "Низкий заряд"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "HUD แบตเตอรี่ต่ำ"
+            "value" : "แบตเตอรี่ต่ำ"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "低电量提示框"
+            "value" : "低电量"
           }
         }
       }
@@ -10523,6 +10982,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "低电量提示持续时间"
+          }
+        }
+      }
+    },
+    "Low battery HUD" : {
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lage batterij-HUD"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уведомление низкого заряда"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD แบตเตอรี่ต่ำ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低电量提示框"
           }
         }
       }
@@ -10579,6 +11066,48 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "低电量阈值"
+          }
+        }
+      }
+    },
+    "Low Power: %@" : {
+      "comment" : "Text displayed in a status label at the top of the screen indicating whether low power mode is on or off.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "배터리 부족: %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laag vermogen: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Энергосбережение: %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Low Power: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düşük Güç: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低电量：%@"
           }
         }
       }
@@ -11153,166 +11682,6 @@
         }
       }
     },
-    "Media Live Activity" : {
-      "comment" : "A section header that lists the media live activity settings.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "미디어 실시간 현황"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Live activiteit voor media"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atividade de mídia ao vivo"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Медиа Live Activity"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "กิจกรรมสดสื่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Medya Canlı Etkinliği"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "媒体实时活动"
-          }
-        }
-      }
-    },
-    "Media Source" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Media Source"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Zdroj médií"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Medium Quelle"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Media Source"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Media Source"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Media Source"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Source du Média"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Media Source"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sorgente multimediale"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "미디어 소스"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mediabron"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Źródło multimediów"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fonte de mídia"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Источник медиа"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แหล่งสื่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Medya kaynağı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Media Source"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "媒体来源"
-          }
-        }
-      }
-    },
     "Media change with horizontal gestures" : {
       "comment" : "A toggle that lets the user enable or disable the feature of changing the currently playing media using horizontal gestures.",
       "isCommentAutoGenerated" : true,
@@ -11653,6 +12022,54 @@
         }
       }
     },
+    "Media Live Activity" : {
+      "comment" : "A section header that lists the media live activity settings.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미디어 실시간 현황"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live activiteit voor media"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atividade de mídia ao vivo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Медиа Live Activity"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กิจกรรมสดสื่อ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medya Canlı Etkinliği"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "媒体实时活动"
+          }
+        }
+      }
+    },
     "Media output" : {
       "comment" : "Accessibility label describing the control that opens the media output selector.",
       "isCommentAutoGenerated" : true,
@@ -11810,6 +12227,118 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "媒体播放实时活动"
+          }
+        }
+      }
+    },
+    "Media Source" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Media Source"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zdroj médií"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medium Quelle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media Source"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media Source"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Media Source"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source du Média"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Media Source"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sorgente multimediale"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "미디어 소스"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mediabron"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Źródło multimediów"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte de mídia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Источник медиа"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แหล่งสื่อ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Medya kaynağı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Media Source"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "媒体来源"
           }
         }
       }
@@ -12202,6 +12731,7 @@
       }
     },
     "Microphone Only" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12231,6 +12761,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Yalnızca mikrofon"
+          }
+        }
+      }
+    },
+    "Microphone privacy indicator runs automatically whenever apps access audio." : {
+      "comment" : "A description of the microphone privacy indicator feature.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에 회의 시작"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De microfoonprivacy-indicator wordt automatisch uitgevoerd wanneer apps toegang krijgen tot audio."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O indicador de privacidade do microfone é executado automaticamente sempre que os aplicativos acessam o áudio."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Индикатор конфиденциальности микрофона включается автоматически, когда приложения используют аудио."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตัวบ่งชี้ความเป็นส่วนตัวไมโครโฟนทำงานอัตโนมัติเมื่อแอปเข้าถึงเสียง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon gizlilik göstergesi, uygulamalar sese her eriştiğinde otomatik olarak çalışır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "麦克风隐私指示器在应用访问音频时自动运行。"
           }
         }
       }
@@ -12287,50 +12865,38 @@
         }
       }
     },
-    "Microphone privacy indicator runs automatically whenever apps access audio." : {
-      "comment" : "A description of the microphone privacy indicator feature.",
-      "isCommentAutoGenerated" : true,
+    "min plural" : {
+      "comment" : "Shortened plural form of minutes. Should be kept short as it is used for the calendar reminder HUD.",
+      "extractionState" : "manual",
       "localizations" : {
-        "ko" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@에 회의 시작"
+            "value" : "min"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De microfoonprivacy-indicator wordt automatisch uitgevoerd wanneer apps toegang krijgen tot audio."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O indicador de privacidade do microfone é executado automaticamente sempre que os aplicativos acessam o áudio."
+            "value" : "min"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Индикатор конфиденциальности микрофона включается автоматически, когда приложения используют аудио."
+            "value" : "мин"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ตัวบ่งชี้ความเป็นส่วนตัวไมโครโฟนทำงานอัตโนมัติเมื่อแอปเข้าถึงเสียง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mikrofon gizlilik göstergesi, uygulamalar sese her eriştiğinde otomatik olarak çalışır."
+            "value" : "นาที"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麦克风隐私指示器在应用访问音频时自动运行。"
+            "value" : "分钟"
           }
         }
       }
@@ -12708,6 +13274,118 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "音乐可视化"
+          }
+        }
+      }
+    },
+    "muted" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "muted"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "muted"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stumm"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "muted"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "muted"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "silenciado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "muet"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "muted"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mutato"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "음소거됨"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gedempt"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wyciszony"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem Som"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "без звука"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปิดเสียงแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "susturuldu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "muted"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "已静音"
           }
         }
       }
@@ -13169,54 +13847,6 @@
       "comment" : "A label showing the current version of the app.",
       "isCommentAutoGenerated" : true
     },
-    "Noori Progress Bars" : {
-      "comment" : "A section header that lists the options for customizing the appearance of the progress bars displayed by Noori.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noori 진행 표시줄"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noori voortgangsbalk"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Barra de Progresso da Noori"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noori"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แถบความคืบหน้าไดนามิกไอแลนด์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noori İlerleme Çubukları"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noori进度条"
-          }
-        }
-      }
-    },
     "Noori always listens to selected-provider brightness events, and listens to provider volume events only when external volume listener is enabled." : {
       "comment" : "A footer text that explains the behavior of the third-party DDC integration settings. | A footer text that explains the behavior of the third-party DDC integration settings. | merge:ko:alt='Noori은 항상 선택한 제공자의 밝기 이벤트를 수신하며, 외부 음량 감지가 활성화된 경우에만 제공자의 음량 이벤트를 수신합니다.'",
       "isCommentAutoGenerated" : true,
@@ -13301,6 +13931,54 @@
         }
       }
     },
+    "Noori Progress Bars" : {
+      "comment" : "A section header that lists the options for customizing the appearance of the progress bars displayed by Noori.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noori 진행 표시줄"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noori voortgangsbalk"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barra de Progresso da Noori"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noori"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แถบความคืบหน้าไดนามิกไอแลนด์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noori İlerleme Çubukları"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noori进度条"
+          }
+        }
+      }
+    },
     "Noori uses the local `sp_dc` cookie only to request Spotify's internal web-player token and fetch the matching Canvas for the current track." : {
       "comment" : "A description of how the Spotify cookie is used.",
       "isCommentAutoGenerated" : true,
@@ -13373,6 +14051,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启用外部音量监听时，Noori 的内置音量键拦截已禁用。音量 HUD/OSD 将跟随 %@ 的数据。"
+          }
+        }
+      }
+    },
+    "Not active" : {
+      "comment" : "A description of whether the camera is currently active.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non active"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성화되지 않음"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niet actief"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inativo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Неактивно"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่ได้ใช้งาน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktif değil"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不活跃"
+          }
+        }
+      }
+    },
+    "Not charging" : {
+      "comment" : "Text displayed in the status text when the battery is not charging.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "충전 중 아님"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niet opladen"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не заряжается"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่ได้ชาร์จ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şarj olmuyor"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未充电"
           }
         }
       }
@@ -13490,6 +14264,7 @@
       }
     },
     "Not Recording" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13519,262 +14294,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kayıt yok"
-          }
-        }
-      }
-    },
-    "Not active" : {
-      "comment" : "A description of whether the camera is currently active.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non active"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "활성화되지 않음"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Niet actief"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inativo"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Неактивно"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ไม่ได้ใช้งาน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktif değil"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不活跃"
-          }
-        }
-      }
-    },
-    "Not charging" : {
-      "comment" : "Text displayed in the status text when the battery is not charging.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "충전 중 아님"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Niet opladen"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не заряжается"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ไม่ได้ชาร์จ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Şarj olmuyor"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未充电"
-          }
-        }
-      }
-    },
-    "Notch Height" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Notch Height"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Notch Height"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Größe der Notch"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notch Height"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notch Height"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Notch Height"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hauteur du Notch"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Notch Height"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Altezza Notch"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "노치 높이"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inkeping hoogte"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wysokość notcha"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Altura do Notch"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Высота выреза"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ความสูงรอยบาก"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Çentik yüksekliği"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Notch Height"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Notch高度"
-          }
-        }
-      }
-    },
-    "Notch Width" : {
-      "comment" : "A section header for adjusting the expanded notch width.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "노치 너비"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inkepingsbreedte"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Largura do Notch"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ширина выреза"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ความกว้างรอยบาก"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Çentik Genişliği"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刘海宽度"
           }
         }
       }
@@ -14003,6 +14522,166 @@
         }
       }
     },
+    "Notch Height" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Notch Height"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Notch Height"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe der Notch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notch Height"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notch Height"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Notch Height"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauteur du Notch"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Notch Height"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Altezza Notch"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "노치 높이"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inkeping hoogte"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wysokość notcha"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altura do Notch"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высота выреза"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ความสูงรอยบาก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Çentik yüksekliği"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Notch Height"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Notch高度"
+          }
+        }
+      }
+    },
+    "Notch Width" : {
+      "comment" : "A section header for adjusting the expanded notch width.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노치 너비"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inkepingsbreedte"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Largura do Notch"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ширина выреза"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ความกว้างรอยบาก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çentik Genişliği"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刘海宽度"
+          }
+        }
+      }
+    },
     "Nothing Playing" : {
       "comment" : "A label displayed when there is nothing playing in the music player.",
       "isCommentAutoGenerated" : true,
@@ -14045,7 +14724,85 @@
         }
       }
     },
-    "Now Playing" : {},
+    "now" : {
+      "comment" : "A string indicating that an event is starting at the current time.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сейчас"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "now"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在"
+          }
+        }
+      }
+    },
+    "Now Playing" : {
+
+    },
+    "of %@" : {
+      "comment" : "A label showing the download progress of the update. The argument is the current download progress, and the second is the total file size.",
+      "isCommentAutoGenerated" : true
+    },
+    "Off" : {
+      "comment" : "Text displayed in a status label at the top of the screen indicating whether low power mode is on or off.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "끔"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uit"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выкл"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปิด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapalı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关"
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "ar" : {
@@ -14153,48 +14910,6 @@
       },
       "shouldTranslate" : false
     },
-    "Off" : {
-      "comment" : "Text displayed in a status label at the top of the screen indicating whether low power mode is on or off.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "끔"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uit"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выкл"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ปิด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kapalı"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关"
-          }
-        }
-      }
-    },
     "On" : {
       "comment" : "Status text that indicates whether low power mode is on or off.",
       "isCommentAutoGenerated" : true,
@@ -14233,76 +14948,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开"
-          }
-        }
-      }
-    },
-    "Open Privacy & Security" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "개인정보 보호 및 보안 열기"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open Privacy en beveiliging"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Открыть «Конфиденциальность и безопасность»"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิดความเป็นส่วนตัวและความปลอดภัย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gizlilik ve Güvenlik'i açın"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开隐私与安全性"
-          }
-        }
-      }
-    },
-    "Open Spotify Web Player" : {
-      "comment" : "A link to open Spotify.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open Spotify Webplayer"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Открыть Spotify Web Player"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิด Spotify Web Player"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开 Spotify Web 播放器"
           }
         }
       }
@@ -14373,6 +15018,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "悬停时展开刘海"
+          }
+        }
+      }
+    },
+    "Open Privacy & Security" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인정보 보호 및 보안 열기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Privacy en beveiliging"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть «Конфиденциальность и безопасность»"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดความเป็นส่วนตัวและความปลอดภัย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizlilik ve Güvenlik'i açın"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开隐私与安全性"
+          }
+        }
+      }
+    },
+    "Open Spotify Web Player" : {
+      "comment" : "A link to open Spotify.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Spotify Webplayer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть Spotify Web Player"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิด Spotify Web Player"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 Spotify Web 播放器"
           }
         }
       }
@@ -15095,7 +15810,6 @@
         }
       }
     },
-    "Quit Noori" : {},
     "Quit app" : {
       "localizations" : {
         "ar" : {
@@ -15208,7 +15922,11 @@
         }
       }
     },
+    "Quit Noori" : {
+
+    },
     "Recording Active" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15498,7 +16216,9 @@
         }
       }
     },
-    "Replaces the macOS volume, brightness, and keyboard backlight pop-ups with Noori's HUD in the notch." : {},
+    "Replaces the macOS volume, brightness, and keyboard backlight pop-ups with Noori's HUD in the notch." : {
+
+    },
     "Request Full Disk Access" : {
       "localizations" : {
         "ko" : {
@@ -15993,7 +16713,9 @@
         }
       }
     },
-    "Scrubbable real-time waveform" : {},
+    "Scrubbable real-time waveform" : {
+
+    },
     "Segmented" : {
       "localizations" : {
         "fr" : {
@@ -16493,6 +17215,46 @@
         }
       }
     },
+    "Show battery percentage text in HUD" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HUD에 배터리 퍼센트 텍스트 표시"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toon batterijpercentagetekst in HUD"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывать процент в HUD"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสดงข้อความเปอร์เซ็นต์แบตเตอรี่ใน HUD"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pil yüzdesi metnini HUD'de göster"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 HUD 中显示电池百分比文本"
+          }
+        }
+      }
+    },
     "Show Bluetooth device connections" : {
       "localizations" : {
         "ko" : {
@@ -16613,6 +17375,46 @@
         }
       }
     },
+    "Show Focus as brief toast" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "집중 모드를 간략한 토스트로 표시"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toon Focus als een korte toast"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывать Фокус как краткое уведомление"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสดงโฟกัสเป็นแถบแจ้งสั้นๆ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odağı kısa bir tost olarak göster"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以简短提示显示专注模式"
+          }
+        }
+      }
+    },
     "Show Focus Indicator" : {
       "localizations" : {
         "ko" : {
@@ -16693,131 +17495,6 @@
         }
       }
     },
-    "Show Focus as brief toast" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "집중 모드를 간략한 토스트로 표시"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toon Focus als een korte toast"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показывать Фокус как краткое уведомление"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แสดงโฟกัสเป็นแถบแจ้งสั้นๆ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Odağı kısa bir tost olarak göster"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "以简短提示显示专注模式"
-          }
-        }
-      }
-    },
-    "Show Noori HUD" : {},
-    "Show Recording Indicator" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "화면 기록 표시기 표시"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opname-indicator weergeven"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показывать индикатор записи"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แสดงตัวบ่งชี้การบันทึก"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kayıt Göstergesini Göster"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示录制指示器"
-          }
-        }
-      }
-    },
-    "Show Release Notes" : {
-      "comment" : "A button that shows the release notes of an update.",
-      "isCommentAutoGenerated" : true
-    },
-    "Show battery percentage text in HUD" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HUD에 배터리 퍼센트 텍스트 표시"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toon batterijpercentagetekst in HUD"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Показывать процент в HUD"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แสดงข้อความเปอร์เซ็นต์แบตเตอรี่ใน HUD"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pil yüzdesi metnini HUD'de göster"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 HUD 中显示电池百分比文本"
-          }
-        }
-      }
-    },
     "Show live canvas in Noori" : {
       "localizations" : {
         "nl" : {
@@ -16845,6 +17522,9 @@
           }
         }
       }
+    },
+    "Show Noori HUD" : {
+
     },
     "Show on a specific display" : {
       "localizations" : {
@@ -17190,6 +17870,50 @@
         }
       }
     },
+    "Show Recording Indicator" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 기록 표시기 표시"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opname-indicator weergeven"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывать индикатор записи"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสดงตัวบ่งชี้การบันทึก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt Göstergesini Göster"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示录制指示器"
+          }
+        }
+      }
+    },
+    "Show Release Notes" : {
+      "comment" : "A button that shows the release notes of an update.",
+      "isCommentAutoGenerated" : true
+    },
     "Show sneak peek on playback changes" : {
       "comment" : "A toggle that enables showing sneak peek when the currently playing track changes.",
       "isCommentAutoGenerated" : true,
@@ -17460,11 +18184,9 @@
         }
       }
     },
-    "Skip This Version" : {
-      "comment" : "A button that skips the current version of an app.",
-      "isCommentAutoGenerated" : true
+    "Skip button behaviour" : {
+
     },
-    "Skip button behaviour" : {},
     "Skip buttons" : {
       "comment" : "A section header that lists the skip behaviour options.",
       "isCommentAutoGenerated" : true,
@@ -17513,7 +18235,13 @@
         }
       }
     },
-    "Skip forward or backward by ten seconds" : {},
+    "Skip forward or backward by ten seconds" : {
+
+    },
+    "Skip This Version" : {
+      "comment" : "A button that skips the current version of an app.",
+      "isCommentAutoGenerated" : true
+    },
     "Slider color" : {
       "localizations" : {
         "ar" : {
@@ -17760,118 +18488,6 @@
         }
       }
     },
-    "Sneak Peek Style" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sneak Peek Style"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sneak Peek Style"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sneak Peek Stil"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sneak Peek Style"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sneak Peek Style"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sneak Peek Style"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Style du Sneak Peek"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sneak Peek Style"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Stile Sneak Peek"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "훔쳐보기 스타일"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sneak Peek-stijl"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Styl podglądu"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sneak Peek Style"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Стиль быстрого просмотра"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สไตล์ Sneak Peek"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sneak Peek Tarzı"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sneak Peek Style"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快速预览样式"
-          }
-        }
-      }
-    },
     "Sneak Peek shows the media title and artist under the notch for a few seconds." : {
       "localizations" : {
         "ar" : {
@@ -17980,6 +18596,118 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "快速预览会在刘海下方短暂显示歌曲标题和艺人。"
+          }
+        }
+      }
+    },
+    "Sneak Peek Style" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sneak Peek Style"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sneak Peek Style"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sneak Peek Stil"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sneak Peek Style"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sneak Peek Style"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sneak Peek Style"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Style du Sneak Peek"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sneak Peek Style"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stile Sneak Peek"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "훔쳐보기 스타일"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sneak Peek-stijl"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Styl podglądu"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sneak Peek Style"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стиль быстрого просмотра"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สไตล์ Sneak Peek"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sneak Peek Tarzı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sneak Peek Style"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快速预览样式"
           }
         }
       }
@@ -18096,7 +18824,39 @@
         }
       }
     },
-    "Spotify" : {},
+    "sp_dc cookie" : {
+      "comment" : "A label for the Spotify `sp_dc` cookie.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sp_dc-cookie"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cookie sp_dc"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คุกกี้ sp_dc"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sp_dc cookie"
+          }
+        }
+      }
+    },
+    "Spotify" : {
+
+    },
     "Spotify Canvas Session" : {
       "comment" : "A section that allows the user to configure Spotify's session.",
       "isCommentAutoGenerated" : true,
@@ -18157,7 +18917,9 @@
         }
       }
     },
-    "Standard" : {},
+    "Standard" : {
+
+    },
     "Standard Notch" : {
       "comment" : "Text for the \"Standard Notch\" option in the external display style picker.",
       "isCommentAutoGenerated" : true,
@@ -18200,7 +18962,9 @@
         }
       }
     },
-    "Standard previous/next track controls" : {},
+    "Standard previous/next track controls" : {
+
+    },
     "Status" : {
       "comment" : "A label displayed next to the status indicator in the \"Third-party DDC provider\" section of the External Display Integrations settings.",
       "isCommentAutoGenerated" : true,
@@ -18595,7 +19359,9 @@
         }
       }
     },
-    "This is optional. You can change it any time in Settings." : {},
+    "This is optional. You can change it any time in Settings." : {
+
+    },
     "Toggle Notch Open:" : {
       "localizations" : {
         "ar" : {
@@ -18868,7 +19634,9 @@
         }
       }
     },
-    "Track Skip" : {},
+    "Track Skip" : {
+
+    },
     "Try Again" : {
       "comment" : "A button to retry an update.",
       "isCommentAutoGenerated" : true
@@ -19148,6 +19916,118 @@
         }
       }
     },
+    "unmuted" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "unmuted"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "unmuted"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht stummgeschaltet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unmuted"
+          }
+        },
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unmuted"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "unmuted"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sans sourdine"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "unmuted"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "smutato"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "음소거 해제됨"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "niet gedempt"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wyciszenie wyłączone"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desmutado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "незаглушенный"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดเสียงแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sesi açık"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "unmuted"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "已取消静音"
+          }
+        }
+      }
+    },
     "Unplugged" : {
       "comment" : "Text displayed in a notification when the device is plugged in.",
       "isCommentAutoGenerated" : true,
@@ -19306,48 +20186,6 @@
         }
       }
     },
-    "Use DevTools" : {
-      "comment" : "One option in the confirmation dialog in the `OnboardingView` that lets the user choose to use the developer tools for focus monitoring.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "개발도구 사용"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gebruik DevTools"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "С DevTools"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ใช้ DevTools"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DevTools'u kullanın"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用开发工具"
-          }
-        }
-      }
-    },
     "Use accent color" : {
       "localizations" : {
         "ko" : {
@@ -19428,6 +20266,48 @@
         }
       }
     },
+    "Use DevTools" : {
+      "comment" : "One option in the confirmation dialog in the `OnboardingView` that lets the user choose to use the developer tools for focus monitoring.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개발도구 사용"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gebruik DevTools"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "С DevTools"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้ DevTools"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DevTools'u kullanın"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用开发工具"
+          }
+        }
+      }
+    },
     "Use simpler close animation" : {
       "localizations" : {
         "ko" : {
@@ -19467,6 +20347,9 @@
           }
         }
       }
+    },
+    "Use the Media tab to configure sneak peek and lyrics." : {
+
     },
     "Use without DevTools" : {
       "comment" : "An option in the onboarding flow that lets users choose to use focus detection without the option provided by the developer tools.",
@@ -20072,6 +20955,34 @@
         }
       }
     },
+    "Volume fine step" : {
+      "localizations" : {
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volume, kleine stap"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точный шаг громкости"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ขั้นละเอียดระดับเสียง"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音量微调步长"
+          }
+        }
+      }
+    },
     "Volume HUD" : {
       "localizations" : {
         "fr" : {
@@ -20120,34 +21031,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "音量 HUD"
-          }
-        }
-      }
-    },
-    "Volume fine step" : {
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volume, kleine stap"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Точный шаг громкости"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ขั้นละเอียดระดับเสียง"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "音量微调步长"
           }
         }
       }
@@ -20890,6 +21773,9 @@
       "comment" : "A title displayed when the app is up to date.",
       "isCommentAutoGenerated" : true
     },
+    "Youtube Music" : {
+
+    },
     "YouTube Music requires this third-party app to be installed: " : {
       "comment" : "merge:ko:alt='Youtube Music을 사용하려면 이 타사 앱을 설치해야 합니다:'",
       "localizations" : {
@@ -20999,836 +21885,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "YouTube 音乐需要安装此第三方应用程序： "
-          }
-        }
-      }
-    },
-    "Youtube Music" : {},
-    "https://github.com/th-ch/youtube-music" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://github.com/th-ch/youtube-music"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "in %@" : {
-      "comment" : "\"In x hours\" as showed on the lock screen calendar widget.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "in %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "через %@"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "in %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@后"
-          }
-        }
-      }
-    },
-    "in %lld" : {
-      "comment" : "A label used to indicate an event happening in a set amount of time.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "in %lld"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "через %lld"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "in %lld"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "还有 %lld"
-          }
-        }
-      }
-    },
-    "min plural" : {
-      "comment" : "Shortened plural form of minutes. Should be kept short as it is used for the calendar reminder HUD.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "min"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "min"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "мин"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "นาที"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "分钟"
-          }
-        }
-      }
-    },
-    "muted" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "muted"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "muted"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stumm"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "muted"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "muted"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "silenciado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "muet"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "muted"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "mutato"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "음소거됨"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "gedempt"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wyciszony"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sem Som"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "без звука"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ปิดเสียงแล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "susturuldu"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "muted"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "已静音"
-          }
-        }
-      }
-    },
-    "now" : {
-      "comment" : "A string indicating that an event is starting at the current time.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "nu"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "сейчас"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "now"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "现在"
-          }
-        }
-      }
-    },
-    "of %@" : {
-      "comment" : "A label showing the download progress of the update. The argument is the current download progress, and the second is the total file size.",
-      "isCommentAutoGenerated" : true
-    },
-    "sp_dc cookie" : {
-      "comment" : "A label for the Spotify `sp_dc` cookie.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sp_dc-cookie"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cookie sp_dc"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "คุกกี้ sp_dc"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sp_dc cookie"
-          }
-        }
-      }
-    },
-    "unmuted" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "unmuted"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "unmuted"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht stummgeschaltet"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "unmuted"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "unmuted"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "unmuted"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "sans sourdine"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "unmuted"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "smutato"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "음소거 해제됨"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "niet gedempt"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wyciszenie wyłączone"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desmutado"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "незаглушенный"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิดเสียงแล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "sesi açık"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "unmuted"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "已取消静音"
-          }
-        }
-      }
-    },
-    "±10 Seconds" : {},
-    "• Bug fixes" : {
-      "comment" : "merge:ko:alt='• 버그 수정'",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Bug fixes"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Opravy chyb"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Fehlerbehebungen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Bug fixes"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Bug fixes"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Corrección de errores"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Corrections de bugs"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Bug fixes"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Correzione bug"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "수정된 버그들"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Bugfixes"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Poprawki błędów"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Correções de bugs"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Исправления ошибок"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• แก้ไขบั๊ก"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Hata düzeltmeleri"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Виправлення помилок"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Bug 修复"
-          }
-        }
-      }
-    },
-    "• Improved performance" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Improved performance"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Zlepšený výkon"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Verbesserte Leistung"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Improved performance"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Improved performance"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Rendimiento mejorado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Amélioration des performances"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Improved performance"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Prestazioni migliorate"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• 향상된 성능"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Verbeterde prestaties"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Poprawiona wydajność"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Desempenho melhorado"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Улучшена производительность"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• ปรับปรุงประสิทธิภาพ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Geliştirilmiş performans"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Покращено продуктивність"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• 提升性能"
-          }
-        }
-      }
-    },
-    "• New feature 1" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• New feature 1"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Nová funkce 1"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Neue Funktion 1"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• New feature 1"
-          }
-        },
-        "en-GB" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• New feature 1"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Nueva funcionalidad 1"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Nouvelle fonctionnalité 1"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• New feature 1"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Nuova funzionalità 1"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• 새 기능 1"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Nieuwe functie 1"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Nowa funkcja 1"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Novo recurso 1"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Новая функция 1"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• ฟีเจอร์ใหม่ 1"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "• Yeni özellik 1"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• Нова функція 1"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "• 新功能1"
           }
         }
       }
