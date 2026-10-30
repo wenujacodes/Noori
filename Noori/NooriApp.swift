@@ -507,7 +507,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Initialize idle animations (load bundled + built-in face)
 
-        applySelectedAppIcon()
         installTopMenuItemsIfNeeded()
 
         Defaults.publisher(.focusMonitoringMode, options: [])

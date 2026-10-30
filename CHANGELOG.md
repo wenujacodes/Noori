@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Removed
+- App icon picker in Appearance settings (custom app icons).
 
 ## [1.0.0]
 

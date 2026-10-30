@@ -32,47 +32,6 @@ let temporaryDirectory = FileManager.default.urls(for: .cachesDirectory, in: .us
 let spacing: CGFloat = 16
 
 
-struct CustomAppIcon: Codable, Hashable, Equatable, Defaults.Serializable, Identifiable {
-    let id: UUID
-    var name: String
-    var fileName: String
-    var addedAt: Date
-
-    init(id: UUID = UUID(), name: String, fileName: String, addedAt: Date = .now) {
-        self.id = id
-        self.name = name
-        self.fileName = fileName
-        self.addedAt = addedAt
-    }
-
-    static let iconDirectory: URL = {
-        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let dir = base.appendingPathComponent("Noori", isDirectory: true)
-            .appendingPathComponent("AppIcons", isDirectory: true)
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir
-    }()
-
-    var fileURL: URL {
-        Self.iconDirectory.appendingPathComponent(fileName)
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 enum ThirdPartyDDCProvider: String, CaseIterable, Codable, Defaults.Serializable, Identifiable {
     case betterDisplay
     case lunar
@@ -367,8 +326,6 @@ extension Defaults.Keys {
     static let visualizerBarCount = Key<Int>("visualizerBarCount", default: 4)
     static let enableWaveformScrubber = Key<Bool>("enableWaveformScrubber", default: true)
     static let colorExtractionMode = Key<ColorExtractionMode>("colorExtractionMode", default: .vibrant)
-    static let customAppIcons = Key<[CustomAppIcon]>("customAppIcons", default: [])
-    static let selectedAppIconID = Key<String?>("selectedAppIconID", default: nil)
     
         // MARK: Gestures
     static let enableGestures = Key<Bool>("enableGestures", default: true)
