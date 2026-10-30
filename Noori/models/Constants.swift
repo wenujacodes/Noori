@@ -474,9 +474,8 @@ extension Defaults.Keys {
     
     // MARK: Caps Lock Indicator
     static let enableCapsLockIndicator = Key<Bool>("enableCapsLockIndicator", default: true)
-    static let capsLockIndicatorUseGreenColor = Key<Bool>("capsLockIndicatorUseGreenColor", default: false) // Legacy toggle
-    static let capsLockIndicatorTintMode = Key<CapsLockIndicatorTintMode>("capsLockIndicatorTintMode", default: .white)
-    static let didMigrateCapsLockTintMode = Key<Bool>("didMigrateCapsLockTintMode", default: false)
+    static let capsLockIndicatorTintMode = Key<CapsLockIndicatorTintMode>("capsLockIndicatorTintMode", default: .green)
+    static let didMigrateCapsLockTintModeToGreen = Key<Bool>("didMigrateCapsLockTintModeToGreen", default: false)
     static let showCapsLockLabel = Key<Bool>("showCapsLockLabel", default: false)
     
     // MARK: ImageService
@@ -520,12 +519,15 @@ extension Defaults.Keys {
         normalizeMusicAuxControls()
     }
 
+    /// Green is the default Caps Lock color. Earlier builds saved White for every user on
+    /// first launch, so switch a saved White to Green once; later choices are kept.
     static func migrateCapsLockTintMode() {
-        guard Defaults[.didMigrateCapsLockTintMode] == false else { return }
+        guard Defaults[.didMigrateCapsLockTintModeToGreen] == false else { return }
 
-        let legacyGreen = Defaults[.capsLockIndicatorUseGreenColor]
-        Defaults[.capsLockIndicatorTintMode] = legacyGreen ? .green : .white
-        Defaults[.didMigrateCapsLockTintMode] = true
+        if Defaults[.capsLockIndicatorTintMode] == .white {
+            Defaults[.capsLockIndicatorTintMode] = .green
+        }
+        Defaults[.didMigrateCapsLockTintModeToGreen] = true
     }
 
     static func migrateMusicControlSlots() {
