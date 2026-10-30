@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- GitHub logo on the About page now follows the text color instead of always being white.
 
 ### Removed
 - "Enable blur effect behind album art" setting; the blur is always shown.

@@ -1528,10 +1528,11 @@ struct About: View {
                     } label: {
                         VStack(spacing: 5) {
                             Image("Github")
+                                .renderingMode(.template)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 18)
-                                .shadow(color: .black.opacity(0.15), radius: 2, y: 1)
+                                .foregroundStyle(.primary)
                             Text("GitHub")
                                 .foregroundStyle(.primary)
                         }
