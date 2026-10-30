@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
 - Caps Lock indicator color now defaults to Green (White and Accent are still available).
