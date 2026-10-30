@@ -536,7 +536,6 @@ struct GeneralSettings: View {
         } header: {
             HStack {
                 Text("Gesture control")
-                customBadge(text: "Beta")
             }
         } footer: {
             Text("Two-finger swipe up on notch to close, two-finger swipe down on notch to open when **Open notch on hover** option is disabled")
@@ -1343,7 +1342,6 @@ struct Media: View {
                 Defaults.Toggle(key: .showShuffleAndRepeat) {
                     HStack {
                         Text("Enable customizable controls")
-                        customBadge(text: "Beta")
                     }
                 }
                 if showShuffleAndRepeat {
@@ -1431,7 +1429,6 @@ struct Media: View {
                 Defaults.Toggle(key: .enableRealTimeWaveform) {
                     HStack {
                         Text("Enable real-time waveform")
-                        customBadge(text: "Beta")
                     }
                 }
                 
@@ -1458,7 +1455,6 @@ struct Media: View {
             Picker(selection: $hideNotchOption, label:
                     HStack {
                 Text("Hide Noori Options")
-                customBadge(text: "Beta")
             }) {
                 Text("Always hide in fullscreen").tag(HideNotchOption.always)
                 Text("Hide only when NowPlaying app is in fullscreen").tag(HideNotchOption.nowPlayingOnly)
@@ -2043,7 +2039,6 @@ struct Appearance: View {
         } header: {
             HStack {
                 Text("Notch Width")
-                customBadge(text: "Beta")
             }
         }
     }
