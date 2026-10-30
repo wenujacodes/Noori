@@ -150,7 +150,6 @@ struct ContentView: View {
     @Namespace var albumArtNamespace
 
     @Default(.useMusicVisualizer) var useMusicVisualizer
-    @Default(.useModernCloseAnimation) var useModernCloseAnimation
 
     private func runAfter(_ delay: TimeInterval, _ action: @escaping @Sendable @MainActor () -> Void) {
         guard delay >= 0 else { return }
@@ -408,25 +407,14 @@ struct ContentView: View {
 
     private var configuredMainLayout: some View {
         mainLayoutBase
-            .conditionalModifier(!useModernCloseAnimation) { view in
-                let hoverAnimation = Animation.bouncy.speed(1.2)
-                let notchStateAnimation = Animation.spring.speed(1.2)
-                return view
-                    .animation(hoverAnimation, value: isHovering)
-                    .animation(notchStateAnimation, value: vm.notchState)
-                    .animation(.smooth, value: gestureProgress)
-                    .transition(.blurReplace.animation(.interactiveSpring(dampingFraction: 1.2)))
-            }
-            .conditionalModifier(useModernCloseAnimation) { view in
-                let hoverAnimation = Animation.bouncy.speed(1.2)
-                let openAnimation = Animation.spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0)
-                let closeAnimation = Animation.spring(response: 0.45, dampingFraction: 1.0, blendDuration: 0)
-                let notchAnimation = vm.notchState == .open ? openAnimation : closeAnimation
-                return view
-                    .animation(hoverAnimation, value: isHovering)
-                    .animation(notchAnimation, value: vm.notchState)
-                    .animation(.smooth, value: gestureProgress)
-            }
+            .animation(Animation.bouncy.speed(1.2), value: isHovering)
+            .animation(
+                vm.notchState == .open
+                    ? Animation.spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0)
+                    : Animation.spring(response: 0.45, dampingFraction: 1.0, blendDuration: 0),
+                value: vm.notchState
+            )
+            .animation(.smooth, value: gestureProgress)
             .conditionalModifier(interactionsEnabled) { view in
                 view
                     .contentShape(resolvedClipShape)

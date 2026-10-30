@@ -1952,9 +1952,6 @@ struct Appearance: View {
                 Defaults.Toggle(key: .cornerRadiusScaling) {
                     Text("Corner radius scaling")
                 }
-                Defaults.Toggle(key: .useModernCloseAnimation) {
-                    Text("Use simpler close animation")
-                }
             } header: {
                 Text("General")
             }
