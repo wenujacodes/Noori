@@ -1288,6 +1288,7 @@ struct Media: View {
     @Default(.enableWaveformScrubber) private var enableWaveformScrubber
     @Default(.colorExtractionMode) private var colorExtractionMode
     @Default(.parallaxEffectIntensity) private var parallaxEffectIntensity
+    @Default(.sliderColor) private var sliderColor
 
     
     @ObservedObject private var musicManager = MusicManager.shared
@@ -1423,6 +1424,25 @@ struct Media: View {
                 }
             } header: {
                 Text("Media playback live activity")
+            }
+
+            Section {
+                Defaults.Toggle(key: .coloredSpectrogram) {
+                    Text("Enable colored spectrograms")
+                }
+                Defaults.Toggle(key: .playerColorTinting) {
+                    Text("Enable colored spectograms")
+                }
+                Defaults.Toggle(key: .lightingEffect) {
+                    Text("Enable blur effect behind album art")
+                }
+                Picker("Slider color", selection: $sliderColor) {
+                    ForEach(SliderColorEnum.allCases, id: \.self) { option in
+                        Text(option.localizedName)
+                    }
+                }
+            } header: {
+                Text("Appearance")
             }
 
             Section {
@@ -1907,7 +1927,6 @@ struct LiveActivitiesSettings: View {
 
 struct Appearance: View {
     @ObservedObject var coordinator = NooriViewCoordinator.shared
-    @Default(.sliderColor) var sliderColor
     @Default(.useMusicVisualizer) var useMusicVisualizer
     @Default(.openNotchWidth) var openNotchWidth
     @Default(.closedNotchWidth) var closedNotchWidth
@@ -1973,26 +1992,6 @@ struct Appearance: View {
             }
 
             notchWidthControls()
-
-
-            Section {
-                Defaults.Toggle(key: .coloredSpectrogram) {
-                    Text("Enable colored spectrograms")
-                }
-                Defaults.Toggle(key: .playerColorTinting) {
-                    Text("Enable colored spectograms")
-                }
-                Defaults.Toggle(key: .lightingEffect) {
-                    Text("Enable blur effect behind album art")
-                }
-                Picker("Slider color", selection: $sliderColor) {
-                    ForEach(SliderColorEnum.allCases, id: \.self) { option in
-                        Text(option.localizedName)
-                    }
-                }
-            } header: {
-                Text("Media")
-            }
         }
         .navigationTitle("Appearance")
     }
