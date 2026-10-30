@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Removed
+- "Enable blur effect behind album art" setting; the blur is always shown.
 - "Beta" badges in Settings.
 - App icon picker in Appearance settings (custom app icons).
 

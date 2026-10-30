@@ -865,9 +865,7 @@ struct MinimalisticAlbumArtView: View {
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            if Defaults[.lightingEffect] {
-                albumArtBackground
-            }
+            albumArtBackground
             albumArtButton
         }
     }

@@ -311,7 +311,6 @@ extension Defaults.Keys {
     
         // MARK: Appearance
     static let showEmojis = Key<Bool>("showEmojis", default: false)
-    static let lightingEffect = Key<Bool>("lightingEffect", default: true)
     static let accentColor = Key<Color>("accentColor", default: Color.blue)
     static let enableShadow = Key<Bool>("enableShadow", default: true)
     static let cornerRadiusScaling = Key<Bool>("cornerRadiusScaling", default: true)
