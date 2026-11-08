@@ -31,8 +31,12 @@ class LockScreenManager: ObservableObject {
     private weak var viewModel: NooriViewModel?
 
     @Published var isLocked: Bool = false
-    /// Kept for the music HUD logic in ContentView; Noori no longer delays it after unlock.
+    /// True for a moment after unlock so the music live activity waits until the
+    /// lock indicator has shrunk away, then grows in instead of popping in.
     @Published var shouldDelayPostUnlockMusicHUD: Bool = false
+    private var unlockMusicTask: Task<Void, Never>?
+    /// Matches the lock indicator's open-lock hold plus its hide animation.
+    private let unlockMusicDelay: Duration = .milliseconds(750)
 
     private var lockStatePollTask: Task<Void, Never>?
 
@@ -50,6 +54,7 @@ class LockScreenManager: ObservableObject {
         DistributedNotificationCenter.default().removeObserver(self)
         NSWorkspace.shared.notificationCenter.removeObserver(self)
         lockStatePollTask?.cancel()
+        unlockMusicTask?.cancel()
     }
 
     func configure(viewModel: NooriViewModel) {
@@ -61,6 +66,8 @@ class LockScreenManager: ObservableObject {
     @objc private func screenLocked() {
         guard !isLocked else { return }
         Logger.log("LockScreenManager: Screen locked", category: .lifecycle)
+        unlockMusicTask?.cancel()
+        shouldDelayPostUnlockMusicHUD = false
         isLocked = true
         viewModel?.closeForLockScreen()
 
@@ -77,8 +84,18 @@ class LockScreenManager: ObservableObject {
     @objc private func screenUnlocked() {
         guard isLocked else { return }
         Logger.log("LockScreenManager: Screen unlocked", category: .lifecycle)
+        shouldDelayPostUnlockMusicHUD = true
         isLocked = false
         LockScreenIndicatorWindowManager.shared.showUnlockedAndHide()
+        unlockMusicTask?.cancel()
+        unlockMusicTask = Task { [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(for: self.unlockMusicDelay)
+            guard !Task.isCancelled, !self.isLocked else { return }
+            withAnimation(NooriMotion.notchOpen) {
+                self.shouldDelayPostUnlockMusicHUD = false
+            }
+        }
         stopLockStatePolling()
     }
 

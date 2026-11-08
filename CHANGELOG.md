@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Lock icon on the lock screen: when the Mac is locked, the notch widens slightly and shows a lock on its left side. On unlock the lock opens, then the notch shrinks back.
+- Lock icon on the lock screen: when the Mac is locked, the notch widens slightly and shows a lock on its left side. Hovering it gives a small bounce and a haptic tap (it doesn't open). On unlock the lock opens, the notch shrinks back, and only then does the music live activity grow in (it used to pop in instantly).
 - The volume HUD bar turns red while the sound is muted and stays at the current volume level, instead of being replaced by the word "muted".
 - Search in Settings is back: a search field at the top of the sidebar with suggestions; picking one opens its tab, scrolls to the setting and highlights it. The search list only covers settings that exist in Noori.
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.

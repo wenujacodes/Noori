@@ -27,6 +27,7 @@ struct LockScreenIndicatorView: View {
     @ObservedObject var model: LockScreenIndicatorModel
     let notchSize: CGSize
     let isNooriMode: Bool
+    @State private var isHovering = false
 
     static func indicatorSize(for notchSize: CGSize) -> CGFloat {
         max(0, notchSize.height - 12)
@@ -76,7 +77,17 @@ struct LockScreenIndicatorView: View {
                   ))
         )
         .scaleEffect(x: model.isShown ? 1 : collapsedScale, y: 1, anchor: .center)
+        // Hover only gives feedback (slight grow + haptic); it never opens the notch.
+        .scaleEffect(isHovering ? 1.04 : 1, anchor: .top)
         .opacity(model.isShown ? 1 : 0)
+        .onHover { hovering in
+            withAnimation(NooriMotion.hover) {
+                isHovering = hovering
+            }
+            if hovering {
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
+            }
+        }
         .padding(.top, isNooriMode ? nooriTopOffset : 0)
         .frame(width: totalWidth, height: notchSize.height + (isNooriMode ? nooriTopOffset : 0), alignment: .top)
     }
@@ -197,7 +208,7 @@ final class LockScreenIndicatorWindowManager {
         window.isOpaque = false
         window.backgroundColor = .clear
         window.isReleasedWhenClosed = false
-        window.ignoresMouseEvents = true
+        window.ignoresMouseEvents = false
         window.hasShadow = false
         window.level = NSWindow.Level(rawValue: Int(CGShieldingWindowLevel()))
         window.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
