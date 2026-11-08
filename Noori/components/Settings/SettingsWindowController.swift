@@ -22,12 +22,16 @@
  */
 
 import AppKit
+import QuartzCore
 import SwiftUI
 import Sparkle
 
 class SettingsWindowController: NSWindowController {
     static let shared = SettingsWindowController()
     private var updaterController: SPUStandardUpdaterController?
+    /// True while the window fades out after the close button or ⌘W.
+    private var isFadingOut = false
+    private let closeFadeDuration: TimeInterval = 0.2
     
     private init() {
         let window = NSWindow(
@@ -138,8 +142,22 @@ extension SettingsWindowController: NSWindowDelegate {
         relinquishFocus()
     }
     
+    /// macOS closes normal windows instantly; fade out first, then hide the
+    /// window (it's reused next time, so it's ordered out, not closed).
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        return true
+        guard !isFadingOut else { return false }
+        isFadingOut = true
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = closeFadeDuration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            sender.animator().alphaValue = 0
+        }, completionHandler: { [weak self] in
+            sender.orderOut(nil)
+            sender.alphaValue = 1
+            self?.isFadingOut = false
+            self?.relinquishFocus()
+        })
+        return false
     }
     
     func windowDidBecomeKey(_ notification: Notification) {

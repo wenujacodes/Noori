@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The Settings window fades out when you close it (close button or ⌘W) instead of vanishing instantly.
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
 - In the open notch the two time labels follow the slider color (grey for White, the album color for Match album art, the accent color for Accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
 - The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.
@@ -98,6 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
+- The Settings window fades out when you close it (close button or ⌘W) instead of vanishing instantly.
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
 - In the open notch the two time labels follow the slider color (grey for White, the album color for Match album art, the accent color for Accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
 - The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.
