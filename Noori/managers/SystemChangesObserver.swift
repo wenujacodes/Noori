@@ -52,6 +52,12 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
     }
 
     private var volumeEnabled = false
+    /// The last volume shown (or seen at start), so the HUD only appears when the
+    /// volume really changes, not when the audio system reports its current level.
+    private var lastVolumeState: (volume: Float, muted: Bool)?
+    /// Same for brightness and keyboard backlight: both report their current level when they start.
+    private var lastBrightness: Float?
+    private var lastBacklight: Float?
     private var brightnessEnabled = false
     private var keyboardBacklightEnabled = false
 
@@ -66,8 +72,11 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         self.brightnessEnabled = brightnessEnabled
         self.keyboardBacklightEnabled = keyboardBacklightEnabled
 
+        // Remember the current level so the first report after launch doesn't show a HUD.
+        lastVolumeState = (volumeController.currentVolume, volumeController.isMuted)
         volumeController.onVolumeChange = { [weak self] volume, muted in
             guard let self, self.volumeEnabled else { return }
+            guard self.volumeStateChanged(volume: volume, muted: muted) else { return }
             let value = muted ? 0 : volume
             Task { @MainActor in
                 self.sendVolumeNotification(value: value, isMuted: muted)
@@ -82,14 +91,17 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         }
         volumeController.start()
 
+        lastBrightness = brightnessController.currentBrightness
         brightnessController.onBrightnessChange = { [weak self] brightness in
             guard let self, self.brightnessEnabled else { return }
+            guard Self.levelChanged(brightness, from: &self.lastBrightness) else { return }
             self.sendBrightnessNotification(value: brightness)
         }
         brightnessController.start()
 
         configureKeyboardBacklightCallback()
         if keyboardBacklightEnabled {
+            lastBacklight = keyboardBacklightController.currentLevel
             keyboardBacklightController.start()
         }
 
@@ -125,6 +137,7 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
 
         if backlightStateChanged {
             if keyboardBacklightEnabled {
+                lastBacklight = keyboardBacklightController.currentLevel
                 keyboardBacklightController.start()
             } else {
                 keyboardBacklightController.stop()
@@ -167,7 +180,27 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         
         let baseStep = volumeStep(for: step)
         let delta = direction == .up ? baseStep : -baseStep
+        let before = volumeController.currentVolume
         volumeController.adjust(by: delta)
+
+        // Already at 0% or 100%: the volume doesn't change, so no change is reported.
+        // Still show the HUD so the key press gets feedback.
+        let after = volumeController.currentVolume
+        if abs(after - before) < 0.0005 {
+            let muted = volumeController.isMuted
+            Task { @MainActor in
+                self.sendVolumeNotification(value: muted ? 0 : after, isMuted: muted)
+            }
+        }
+    }
+
+    /// True (and remembered) when the volume or mute state differs from the last one seen.
+    private func volumeStateChanged(volume: Float, muted: Bool) -> Bool {
+        if let last = lastVolumeState, last.muted == muted, abs(last.volume - volume) < 0.0005 {
+            return false
+        }
+        lastVolumeState = (volume, muted)
+        return true
     }
 
     func mediaKeyInterceptorDidToggleMute(_ interceptor: MediaKeyInterceptor) {
@@ -189,11 +222,32 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
 
         let baseStep = brightnessStep(for: step)
         let delta = direction == .up ? baseStep : -baseStep
+        let before = isBacklight ? keyboardBacklightController.currentLevel : brightnessController.currentBrightness
         if isBacklight {
             keyboardBacklightController.adjust(by: delta)
         } else {
             brightnessController.adjust(by: delta)
         }
+
+        // Already at 0% or 100%: nothing changes, so nothing is reported.
+        // Still show the HUD so the key press gets feedback.
+        let atLimit = direction == .up ? before >= 0.999 : before <= 0.001
+        if atLimit {
+            if isBacklight {
+                sendKeyboardBacklightNotification(value: before)
+            } else {
+                sendBrightnessNotification(value: before)
+            }
+        }
+    }
+
+    /// True (and remembered) when a level differs from the last one seen.
+    private static func levelChanged(_ value: Float, from last: inout Float?) -> Bool {
+        if let previous = last, abs(previous - value) < 0.0005 {
+            return false
+        }
+        last = value
+        return true
     }
 
     // MARK: - HUD Dispatch
@@ -265,6 +319,7 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         if keyboardBacklightEnabled {
             keyboardBacklightController.onBacklightChange = { [weak self] value in
                 guard let self, self.keyboardBacklightEnabled else { return }
+                guard Self.levelChanged(value, from: &self.lastBacklight) else { return }
                 self.sendKeyboardBacklightNotification(value: value)
             }
         } else {

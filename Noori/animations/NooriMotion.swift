@@ -13,11 +13,11 @@ import SwiftUI
 /// The few motions Noori uses everywhere, so the notch moves consistently,
 /// the way built-in macOS UI does. Prefer these over one-off timings.
 enum NooriMotion {
-    /// The notch expanding: grows a little past full size, then settles back.
-    static let notchOpen = Animation.spring(duration: 0.5, bounce: 0.3)
+    /// The notch expanding: a quick spring with a light bounce.
+    static let notchOpen = Animation.spring(response: 0.42, dampingFraction: 0.8)
 
-    /// The notch collapsing: shrinks a little past closed size, then settles back.
-    static let notchClose = Animation.spring(duration: 0.45, bounce: 0.25)
+    /// The notch collapsing: the same speed, settling without a bounce.
+    static let notchClose = Animation.spring(response: 0.45, dampingFraction: 1.0)
 
     /// Picks the open or close motion for a notch state change.
     static func notch(opening: Bool) -> Animation {
@@ -35,38 +35,4 @@ enum NooriMotion {
 
     /// Following a scroll or swipe gesture.
     static let gesture = Animation.smooth
-
-    /// Open-notch content growing out of the notch, like Dynamic Island: it starts
-    /// a little smaller, anchored to the top edge, and expands on the same spring as
-    /// the notch so it feels attached to it. On close it shrinks back up into the notch.
-    /// Opacity only covers the first/last moment so it never looks like a crossfade.
-    /// It is blurred while moving and sharp once settled.
-    static var notchContent: AnyTransition {
-        .asymmetric(
-            insertion: .scale(scale: 0.8, anchor: .top)
-                .combined(with: motionBlur)
-                .animation(notchOpen)
-                .combined(with: .opacity.animation(.easeOut(duration: 0.12))),
-            removal: .scale(scale: 0.85, anchor: .top)
-                .combined(with: motionBlur)
-                .animation(notchClose)
-                .combined(with: .opacity.animation(.easeIn(duration: 0.12).delay(0.05)))
-        )
-    }
-
-    /// Blurred at the start of an opening / end of a closing, sharp when settled.
-    private static var motionBlur: AnyTransition {
-        .modifier(
-            active: MotionBlurModifier(radius: 12),
-            identity: MotionBlurModifier(radius: 0)
-        )
-    }
-}
-
-private struct MotionBlurModifier: ViewModifier {
-    let radius: CGFloat
-
-    func body(content: Content) -> some View {
-        content.blur(radius: radius)
-    }
 }

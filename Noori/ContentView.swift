@@ -641,7 +641,7 @@ struct ContentView: View {
                           }
                       }
                       .id(coordinator.currentView)
-                      .transition(NooriMotion.notchContent)
+                      .transition(.opacity)
                   }
               }
               .zIndex(1)

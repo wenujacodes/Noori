@@ -166,18 +166,22 @@ struct NotchHomeView: View {
 
     
     var body: some View {
-        // The fade in/out is handled once, by the open-notch container in ContentView.
         Group {
             if !coordinator.firstLaunch {
                 mainContent
             }
         }
+        .transition(.opacity.combined(with: .blurReplace))
     }
 
     private var mainContent: some View {
         HStack(alignment: .top, spacing: 20) {
             MinimalisticMusicPlayerView(albumArtNamespace: albumArtNamespace)
         }
+        .transition(.opacity.animation(NooriMotion.appear)
+            .combined(with: .blurReplace.animation(NooriMotion.appear))
+            .combined(with: .move(edge: .top)))
+        .blur(radius: vm.notchState == .closed ? 30 : 0)
     }
 
 }

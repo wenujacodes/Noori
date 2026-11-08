@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
-- Opening and closing the notch now feels like Dynamic Island: the album art and visualizer no longer jump between the closed and open notch, the open content grows out of the notch with a short blur while it moves (instead of fading), and the notch bounces slightly past its open or closed size before settling. The album art hover tilt is also smoother.
+- The album art and visualizer no longer jump between the closed and open notch, and the album art hover tilt is smoother.
+- The volume, brightness and keyboard backlight HUDs no longer appear when Noori starts; they only show when the level changes.
 - Notch, HUD and live activity animations now share a small set of motions (`NooriMotion`), so they move consistently. Opening the notch uses the same spring everywhere instead of three slightly different ones.
 - The song progress bar in the open notch now updates 4 times a second instead of every display frame, cutting CPU use while music plays with the notch open from about 27% to about 8%.
 - The hidden-notch hover check (for "hide until hover" on screens without a notch) now only runs while the notch is hidden, instead of waking the CPU 20 times a second all the time.
