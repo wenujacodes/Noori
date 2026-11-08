@@ -194,10 +194,7 @@ struct ContentView: View {
     }
 
     private var bodyHoverAreaPadding: CGFloat {
-        if vm.notchState == .open && Defaults[.extendHoverArea] {
-            return 0
-        }
-        return vm.effectiveClosedNotchHeight == 0 ? zeroHeightHoverPadding : 0
+        vm.effectiveClosedNotchHeight == 0 ? zeroHeightHoverPadding : 0
     }
 
     private var notchBottomPadding: CGFloat {

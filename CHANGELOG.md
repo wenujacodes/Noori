@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - App icon picker in Appearance settings (custom app icons).
 - "Hello" animation that opened the notch on first launch.
 - Welcome sound that played on first launch.
+- "Extend hover area" setting, which had almost no effect.
 - The onboarding window (welcome screen, media player picker and finish screen), including its "Focus detection mode" popup. First-run defaults are still applied on first launch, and Focus detection uses the Standard mode.
 
 ## [1.0.0]

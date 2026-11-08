@@ -548,9 +548,6 @@ struct GeneralSettings: View {
     @ViewBuilder
     func NotchBehaviour() -> some View {
         Section {
-            Defaults.Toggle(key: .extendHoverArea) {
-                Text("Extend hover area")
-            }
             Defaults.Toggle(key: .enableHaptics) {
                 Text("Enable haptics")
             }
