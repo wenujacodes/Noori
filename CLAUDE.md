@@ -75,7 +75,6 @@ All app code lives in `Noori/`. The Xcode project uses **synchronized folder gro
 | `helpers/`, `extensions/`, `utils/`, `private/` | AppleScript runner, permission stores, private display/brightness APIs (`CGSSpace`, DisplayServices, CoreBrightness), SMC/IOReport. |
 | `audio/`, `components/Music/` | Music visualizer: `AudioVisualizerView` shows the animated bars from `MusicVisualizer.swift` (no real-time audio capture). |
 | `Localizable.xcstrings` | The string catalog the app builds (in `Noori/`). The root-level `Localizable.xcstrings` is **not** in the build; it's kept for its extra languages. |
-| `LottieAnimations/`, `BluetoothHUDAnimations/` | Animation assets (`.mov` files are Git LFS). |
 | `NooriSamples/` | Screenshots (not part of the app; they show the old Atoll UI). |
 
 ## Conventions

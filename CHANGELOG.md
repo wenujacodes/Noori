@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub logo on the About page now follows the text color instead of always being white.
 
 ### Removed
+- 3D (animated video) icons in the Bluetooth device HUD and the "HUD icon style" setting; the HUD always uses the device symbol. The 8 AirPods/Beats animation videos were deleted.
 - Unused `sparkle` and `spotlight` images.
 - Divider lines above the credit line on the About page.
 - Blurred glow behind the album art, along with its "Enable blur effect behind album art" setting.

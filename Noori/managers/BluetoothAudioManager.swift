@@ -2705,11 +2705,6 @@ enum BluetoothAudioDeviceType {
         case .generic: return "Bluetooth Device"
         }
     }
-
-    /// Inline HUD only: base filename (no extension) for a looping .mov animation.
-    var inlineHUDAnimationBaseName: String {
-        String(describing: self)
-    }
 }
 
 extension BluetoothAudioDeviceType {

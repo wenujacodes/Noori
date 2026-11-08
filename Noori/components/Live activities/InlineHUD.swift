@@ -23,63 +23,7 @@
 
 import SwiftUI
 import AppKit
-import AVFoundation
 import Defaults
-
-// MARK: - Inline HUD looping .mov icon
-
-private final class LoopingPlayerController {
-    let player: AVQueuePlayer
-    private var looper: AVPlayerLooper?
-
-    init(url: URL) {
-        let item = AVPlayerItem(url: url)
-        self.player = AVQueuePlayer()
-        self.player.isMuted = true
-        self.player.actionAtItemEnd = .none
-        self.looper = AVPlayerLooper(player: self.player, templateItem: item)
-        self.player.play()
-    }
-
-    deinit {
-        player.pause()
-        looper = nil
-    }
-}
-
-private struct LoopingVideoIcon: NSViewRepresentable {
-    let url: URL
-    let size: CGSize
-
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView(frame: NSRect(origin: .zero, size: size))
-        view.wantsLayer = true
-
-        let layer = AVPlayerLayer()
-        layer.videoGravity = .resizeAspect
-        layer.frame = view.bounds
-
-        view.layer?.addSublayer(layer)
-
-        context.coordinator.attach(layer: layer, url: url)
-        return view
-    }
-
-    func updateNSView(_ nsView: NSView, context: Context) {
-        // No-op; the animation loops via AVPlayerLooper.
-    }
-
-    func makeCoordinator() -> Coordinator { Coordinator() }
-
-    final class Coordinator {
-        private var controller: LoopingPlayerController?
-
-        func attach(layer: AVPlayerLayer, url: URL) {
-            controller = LoopingPlayerController(url: url)
-            layer.player = controller?.player
-        }
-    }
-}
 
 struct AirPodsListeningModeSymbol: View {
     let mode: AirPodsListeningMode
@@ -110,7 +54,6 @@ struct InlineHUD: View {
     @Default(.useCircularBluetoothBatteryIndicator) var useCircularBluetoothBatteryIndicator
     @Default(.showBluetoothBatteryPercentageText) var showBluetoothBatteryPercentageText
     @Default(.showBluetoothDeviceNameMarquee) var showBluetoothDeviceNameMarquee
-    @Default(.useBluetoothHUD3DIcon) var useBluetoothHUD3DIcon
     @Default(.showCapsLockLabel) var showCapsLockLabel
     @Default(.capsLockIndicatorTintMode) var capsLockTintMode
     @ObservedObject var bluetoothManager = BluetoothAudioManager.shared
@@ -271,12 +214,6 @@ struct InlineHUD: View {
                                 AirPodsListeningModeSymbol(mode: listeningMode)
                                     .contentTransition(.interpolate)
                                     .frame(width: 20, height: 15, alignment: .center)
-                            } else if useBluetoothHUD3DIcon,
-                               let deviceType = bluetoothManager.lastConnectedDevice?.deviceType,
-                               let url = Bundle.main.url(forResource: deviceType.inlineHUDAnimationBaseName, withExtension: "mov", subdirectory: "BluetoothHUDAnimations")
-                                      ?? Bundle.main.url(forResource: deviceType.inlineHUDAnimationBaseName, withExtension: "mov") {
-                                LoopingVideoIcon(url: url, size: CGSize(width: 20, height: 20))
-                                    .frame(width: 20, height: 20, alignment: .center)
                             } else {
                                 Image(systemName: icon.isEmpty ? "dot.radiowaves.left.and.right" : icon)
                                     .symbolRenderingMode(.hierarchical)
