@@ -154,13 +154,53 @@ struct ProgressSection: View {
     }
 }
 
+/// Mute state for the volume HUD. While muted the HUD value is 0, so this keeps
+/// the real level to draw the bar in red instead of hiding it.
+@MainActor
+final class VolumeMuteState: ObservableObject {
+    static let shared = VolumeMuteState()
+    @Published var isMuted = false
+    @Published var level: CGFloat = 0
+
+    var showsMutedBar: Bool { isMuted && level > 0 }
+
+    func update(isMuted: Bool, level: CGFloat) {
+        if self.isMuted != isMuted { self.isMuted = isMuted }
+        if self.level != level { self.level = level }
+    }
+}
+
+/// Red volume bar shown while the output is muted.
+struct MutedVolumeBar: View {
+    @ObservedObject private var muteState = VolumeMuteState.shared
+    @Default(.inlineHUD) private var inlineHUD
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(.tertiary)
+                Capsule()
+                    .fill(Color.red)
+                    .frame(width: geo.size.width * max(0, min(muteState.level, 1)))
+            }
+        }
+        .frame(height: inlineHUD ? 5 : 6)
+        .frame(maxHeight: .infinity)
+    }
+}
+
 struct VolumeProgressSection: View {
     @Binding var value: CGFloat
     var showPercentages: Bool
+    @ObservedObject private var muteState = VolumeMuteState.shared
     
     var body: some View {
         Group {
-            if value.isZero {
+            if value.isZero && muteState.showsMutedBar {
+                MutedVolumeBar()
+                    .transition(.opacity)
+            } else if value.isZero {
                 Text("muted")
                     .font(.caption)
                     .fontWeight(.medium)

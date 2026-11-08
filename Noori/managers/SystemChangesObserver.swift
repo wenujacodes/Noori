@@ -257,6 +257,7 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         // The CoreAudio volume write wakes the native OSD; suppress it immediately
         // so only our notch HUD shows (parity with brightness). No-op unless active.
         SystemOSDManager.suppressNativeOSDNow()
+        VolumeMuteState.shared.update(isMuted: isMuted, level: CGFloat(volumeController.currentVolume))
 
         if HUDSuppressionCoordinator.shared.shouldSuppressVolumeHUD {
             return

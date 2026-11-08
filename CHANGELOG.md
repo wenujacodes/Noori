@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- The volume HUD bar turns red while the sound is muted and stays at the current volume level, instead of being replaced by the word "muted".
 - Search in Settings is back: a search field at the top of the sidebar with suggestions; picking one opens its tab, scrolls to the setting and highlights it. The search list only covers settings that exist in Noori.
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 

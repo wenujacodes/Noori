@@ -56,6 +56,7 @@ struct InlineHUD: View {
     @Default(.showCapsLockLabel) var showCapsLockLabel
     @Default(.capsLockIndicatorTintMode) var capsLockTintMode
     @ObservedObject var bluetoothManager = BluetoothAudioManager.shared
+    @ObservedObject private var volumeMuteState = VolumeMuteState.shared
     
     @State private var displayName: String = ""
 
@@ -351,7 +352,10 @@ struct InlineHUD: View {
                     Group {
                         if type == .volume {
                             Group {
-                                if value.isZero {
+                                if value.isZero && volumeMuteState.showsMutedBar {
+                                    MutedVolumeBar()
+                                        .transition(.opacity)
+                                } else if value.isZero {
                                     Text("muted")
                                         .font(.caption)
                                         .fontWeight(.medium)
