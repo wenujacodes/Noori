@@ -791,6 +791,8 @@ struct ContentView: View {
                         } else if Defaults[.showSongMetadataInClosedNotch] && isNonNotchScreen && !musicManager.songTitle.isEmpty {
                             MarqueeText(
                                 .constant("\(musicManager.songTitle) • \(musicManager.artistName)"),
+                                font: .system(size: 11, weight: .medium),
+                                nsFont: .subheadline,
                                 textColor: Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray,
                                 minDuration: 3,
                                 frameWidth: max(0, effectiveCenterWidth - 16)
