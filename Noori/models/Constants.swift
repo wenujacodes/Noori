@@ -480,8 +480,7 @@ extension Defaults.Keys {
     static let didClearLegacyURLCacheV1 = Key<Bool>("didClearLegacyURLCacheV1", default: false)
     
     
-    // MARK: Lyrics Feature
-    static let enableLyrics = Key<Bool>("enableLyrics", default: false)
+    // MARK: Live Canvas
     static let showLiveCanvasInNoori = Key<Bool>("showLiveCanvasInNoori", default: false)
     
     

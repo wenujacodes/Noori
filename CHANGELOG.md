@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Hello" animation that opened the notch on first launch.
 - Welcome sound that played on first launch.
 - "Extend hover area" setting, which had almost no effect.
+- Lyrics feature (fetching from LRCLIB, the lyrics line in the player, and the "Enable lyrics" setting). The lyrics button stays in the music controls as a placeholder for a future version and does nothing for now.
 - "Corner radius scaling" setting; the open notch now always uses the larger, scaled corners.
 - The onboarding window (welcome screen, media player picker and finish screen), including its "Focus detection mode" popup. First-run defaults are still applied on first launch, and Focus detection uses the Standard mode.
 

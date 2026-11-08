@@ -24,8 +24,6 @@ import Defaults
 import AppKit
 #endif
 
-// Lyrics are shown/hidden only via Defaults[.enableLyrics] in settings. Inline display is used in the player views.
-
 struct MinimalisticMusicPlayerView: View {
     @EnvironmentObject var vm: NooriViewModel
     let albumArtNamespace: Namespace.ID
@@ -37,7 +35,6 @@ struct MinimalisticMusicPlayerView: View {
     @State private var hudValue: Double = 0
     @State private var hudDragging: Bool = false
     @State private var hudLastDragged: Date = .distantPast
-    @Default(.enableLyrics) private var enableLyrics
     private let seekInterval: TimeInterval = 10
     private let skipMagnitude: CGFloat = 8
 
@@ -63,7 +60,6 @@ struct MinimalisticMusicPlayerView: View {
             .padding(.vertical, shouldUseNooriMode(for: vm.screen) ? 14 : 0)
             .frame(maxWidth: .infinity)
             .frame(height: calculateDynamicHeight())
-            .animation(.smooth(duration: 0.3), value: dynamicHeightSignature)
         } else {
             VStack(spacing: 0) {
                 if shouldUseNooriMode(for: vm.screen) {
@@ -134,79 +130,15 @@ struct MinimalisticMusicPlayerView: View {
                         .padding(.top, 4)
                 }
 
-                if enableLyrics {
-                    lyricsView
-                        .padding(.top, 10)
-                }
-
             }
             .padding(.horizontal, shouldUseNooriMode(for: vm.screen) ? -4 : 12)
             .padding(.top, shouldUseNooriMode(for: vm.screen) ? 14 : (batteryOffNotchMode ? 10 : 6))
             .padding(.bottom, shouldUseNooriMode(for: vm.screen) ? 14 : (batteryOffNotchMode ? 10 : minimalisticBaselineBottomPadding))
             .frame(maxWidth: .infinity)
             .frame(height: calculateDynamicHeight(), alignment: .top)
-            .animation(.smooth(duration: 0.3), value: dynamicHeightSignature)
         }
     }
 
-    // MARK: - TypingLyricView
-
-    struct TypingLyricView: View {
-        let text: String
-        let color: Color
-        let id: Int
-        let playbackRate: Double
-        let isPlaying: Bool
-        @State private var displayed: String = ""
-        @State private var lastText: String = ""
-        @State private var animationTask: Task<Void, Never>?
-
-        var body: some View {
-            Text(displayed)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(color)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 4)
-                .padding(.top, 4)
-                .id(id)
-                .onChange(of: text) { _, newText in
-                    animateTyping(newText)
-                }
-                .onChange(of: isPlaying) { _, playing in
-                    if !playing {
-                        animationTask?.cancel()
-                    } else if displayed != text {
-                        animateTyping(text)
-                    }
-                }
-                .onAppear {
-                    animateTyping(text)
-                }
-                .onDisappear {
-                    animationTask?.cancel()
-                }
-        }
-
-        private func animateTyping(_ newText: String) {
-            animationTask?.cancel()
-            displayed = ""
-            lastText = newText
-            let chars = Array(newText)
-
-            animationTask = Task {
-                for (i, c) in chars.enumerated() {
-                    if Task.isCancelled { return }
-                    try? await Task.sleep(for: .milliseconds(Int(30 / max(playbackRate, 0.1))))
-                    if Task.isCancelled { return }
-                    if lastText == newText {
-                        displayed += String(c)
-                    }
-                }
-            }
-        }
-    }
 
 
 
@@ -218,12 +150,6 @@ struct MinimalisticMusicPlayerView: View {
 
 
 
-
-    private var dynamicHeightSignature: Int {
-        var signature = 0
-        if enableLyrics { signature += 1 }
-        return signature
-    }
 
     /// True when the battery indicator is hidden and we are in notch mode (not DI).
     private var batteryOffNotchMode: Bool {
@@ -239,10 +165,6 @@ struct MinimalisticMusicPlayerView: View {
             height += 6 + 4          // progress bar top padding + bar
             height += 54 + 2         // controls + top padding
 
-            if enableLyrics {
-                height += 10 + 34 // lyrics padding + estimated height
-            }
-
             height += isNoori ? 14 : 15 // top padding
             height += isNoori ? 14 : minimalisticBaselineBottomPadding
             return height
@@ -254,10 +176,6 @@ struct MinimalisticMusicPlayerView: View {
         var height: CGFloat = 26 // reduced header (text only; art overlaps upward)
         height += 4 + 4          // progress bar top padding + bar
         height += 54 + 2         // controls + top padding
-
-        if enableLyrics {
-            height += 10 + 34
-        }
 
         height += 10 // top padding
         height += 10 // bottom padding
@@ -341,35 +259,6 @@ struct MinimalisticMusicPlayerView: View {
 
 
 
-    private var lyricsView: some View {
-        let line = musicManager.currentLyrics.trimmingCharacters(in: .whitespacesAndNewlines)
-        let transition: AnyTransition = .asymmetric(
-            insertion: .move(edge: .bottom).combined(with: .opacity),
-            removal: .move(edge: .top).combined(with: .opacity)
-        )
-
-        return HStack(spacing: 6) {
-            if !line.isEmpty {
-                Image(systemName: "music.note")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.7))
-                    .symbolRenderingMode(.monochrome)
-
-                Text(line)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.88))
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.trailing, 6)
-                    .id(line)
-                    .transition(transition)
-            }
-        }
-        .padding(.horizontal, 6)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .animation(.smooth(duration: 0.32), value: line)
-    }
     
 
 
@@ -691,14 +580,8 @@ struct MinimalisticMusicPlayerView: View {
         case .airPlay:
             MinimalisticAirPlayButton()
         case .lyrics:
-            controlButton(
-                icon: enableLyrics ? "quote.bubble.fill" : "quote.bubble",
-                isActive: enableLyrics,
-                activeColor: brandAccentColor,
-                symbolEffect: .replace
-            ) {
-                enableLyrics.toggle()
-            }
+            // Placeholder: the lyrics feature was removed; the button is kept for a future version.
+            controlButton(icon: "quote.bubble", isActive: false) {}
         }
     }
 

@@ -1380,9 +1380,6 @@ struct Media: View {
                 Toggle("Enable sneak peek", isOn: $enableSneakPeek)
                 Toggle("Show sneak peek on playback changes", isOn: $showSneakPeekOnTrackChange)
                     .disabled(!enableSneakPeek)
-                Defaults.Toggle(key: .enableLyrics) {
-                    Text("Enable lyrics")
-                }
                 Defaults.Toggle(key: .showLiveCanvasInNoori) {
                     Text("Show live canvas in Noori")
                 }
@@ -1907,7 +1904,7 @@ struct LiveActivitiesSettings: View {
             } header: {
                 Text("Media Live Activity")
             } footer: {
-                Text("Use the Media tab to configure sneak peek and lyrics.")
+                Text("Use the Media tab to configure sneak peek.")
             }
 
         }
