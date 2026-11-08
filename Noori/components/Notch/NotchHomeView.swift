@@ -337,10 +337,15 @@ struct MusicSliderView: View {
         }
     }
 
+    /// The time labels follow the slider color: grey for a white slider, the
+    /// album color for "Match album art", the accent color for "Accent color".
     private var timeLabelColor: Color {
-        Defaults[.playerColorTinting]
-            ? Color(nsColor: color).ensureMinimumBrightness(factor: 0.6)
-            : .gray
+        switch Defaults[.sliderColor] {
+        case .white:
+            return .gray
+        case .albumArt, .accent:
+            return sliderTint
+        }
     }
 
     private var trailingTimeText: String {

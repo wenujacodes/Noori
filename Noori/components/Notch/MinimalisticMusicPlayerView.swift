@@ -503,16 +503,19 @@ struct MinimalisticMusicPlayerView: View {
         pressEffect: MinimalisticSquircircleButton.PressEffect = .none,
         symbolEffect: MinimalisticSquircircleButton.SymbolEffectStyle = .none,
         trigger: SkipTrigger? = nil,
+        isSecondary: Bool = false,
         action: @escaping () -> Void
     ) -> some View {
         let resolvedActiveColor = activeColor ?? brandAccentColor
+        // Extra buttons (shuffle, repeat, …) are grey so the main three stand out.
+        let restingColor: Color = isSecondary ? .gray : .white.opacity(0.85)
         return MinimalisticSquircircleButton(
             icon: icon,
             fontSize: size,
             fontWeight: .medium,
             frameSize: CGSize(width: 36, height: 36),
             cornerRadius: 14,
-            foregroundColor: isActive ? resolvedActiveColor : .white.opacity(0.85),
+            foregroundColor: isActive ? resolvedActiveColor : restingColor,
             pressEffect: pressEffect,
             symbolEffectStyle: symbolEffect,
             externalTriggerToken: trigger?.token,
@@ -583,11 +586,11 @@ struct MinimalisticMusicPlayerView: View {
                 action: { musicManager.seek(by: seekInterval) }
             )
         case .shuffle:
-            controlButton(icon: "shuffle", isActive: musicManager.isShuffled) {
+            controlButton(icon: "shuffle", isActive: musicManager.isShuffled, isSecondary: true) {
                 musicManager.toggleShuffle()
             }
         case .repeatMode:
-            controlButton(icon: repeatIcon, isActive: musicManager.repeatMode != .off, symbolEffect: .replace) {
+            controlButton(icon: repeatIcon, isActive: musicManager.repeatMode != .off, symbolEffect: .replace, isSecondary: true) {
                 musicManager.toggleRepeat()
             }
         case .mediaOutput:
@@ -596,7 +599,7 @@ struct MinimalisticMusicPlayerView: View {
             MinimalisticAirPlayButton()
         case .lyrics:
             // Placeholder: the lyrics feature was removed; the button is kept for a future version.
-            controlButton(icon: "quote.bubble", isActive: false) {}
+            controlButton(icon: "quote.bubble", isActive: false, isSecondary: true) {}
         }
     }
 
@@ -630,7 +633,7 @@ struct MinimalisticMusicPlayerView: View {
                 fontWeight: .medium,
                 frameSize: CGSize(width: 36, height: 36),
                 cornerRadius: 14,
-                foregroundColor: .white.opacity(0.85),
+                foregroundColor: .gray,
                 symbolEffectStyle: .replace
             ) {
                 isPopoverPresented.toggle()
@@ -690,7 +693,7 @@ struct MinimalisticMusicPlayerView: View {
                 fontWeight: .medium,
                 frameSize: CGSize(width: 36, height: 36),
                 cornerRadius: 14,
-                foregroundColor: .white.opacity(0.85),
+                foregroundColor: .gray,
                 symbolEffectStyle: .replace
             ) {
                 isPopoverPresented.toggle()
