@@ -1263,8 +1263,7 @@ class MusicManager: ObservableObject {
             videoArtworkURL = nil
             return
         }
-        // Se il player non è Apple Music, non toccare videoArtworkURL:
-        // SpotifyController gestisce il canvas in modo autonomo tramite liveArtworkURL.
+        // Only Apple Music provides animated artwork.
         guard bundleIdentifier == "com.apple.Music" else {
             return
         }

@@ -1767,10 +1767,6 @@ struct Media: View {
                 }
             }
 
-            if mediaController == .spotify {
-                SpotifyAuthSettingsSection()
-            }
-
             Section {
                 Defaults.Toggle(key: .showShuffleAndRepeat) {
                     HStack {
