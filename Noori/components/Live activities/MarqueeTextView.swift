@@ -163,8 +163,8 @@ struct MusicExplicitBadge: View {
     var height: CGFloat = 14
     var horizontalPadding: CGFloat = 4
     var minWidth: CGFloat? = nil
-    var foregroundColor: Color = .white.opacity(0.92)
-    var backgroundColor: Color = .white.opacity(0.18)
+    var foregroundColor: Color = .black
+    var backgroundColor: Color = .white
     var cornerRadius: CGFloat? = nil
     var body: some View {
         Text(label)
@@ -218,8 +218,8 @@ struct MusicTitleMarqueeView: View {
         badgeLabel: String = "E",
         badgeFontSize: CGFloat? = nil,
         badgeHeight: CGFloat? = nil,
-        badgeForegroundColor: Color = .white.opacity(0.92),
-        badgeBackgroundColor: Color = .white.opacity(0.18),
+        badgeForegroundColor: Color = .black,
+        badgeBackgroundColor: Color = .white,
         badgeHorizontalPadding: CGFloat = 4,
         badgeMinWidth: CGFloat? = nil,
         badgeCornerRadius: CGFloat? = nil,

@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The explicit "E" badge is now a bright white square with a black E (it was a faint grey square).
+- The artist name in the open notch is a little bigger (11 pt medium instead of 10 pt regular) so it's easier to read.
 - The song sneak peek (on song change or hover) still hides after 3 seconds, but when the title or artist is too long and scrolls, it stays until the name has scrolled through once.
 - Long song titles and artist names start scrolling after half a second instead of three, and the artist name now stops at the same edge as the title instead of running under the visualizer.
 - Opening the notch is a little faster (about 15%), including the blur-in of the title and controls. Closing is unchanged.
@@ -85,5 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
+- The explicit "E" badge is now a bright white square with a black E (it was a faint grey square).
+- The artist name in the open notch is a little bigger (11 pt medium instead of 10 pt regular) so it's easier to read.
 - The song sneak peek (on song change or hover) still hides after 3 seconds, but when the title or artist is too long and scrolls, it stays until the name has scrolled through once.
 - First Noori release, forked from Atoll 2.3.3 and renamed to Noori.

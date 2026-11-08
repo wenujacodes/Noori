@@ -189,8 +189,8 @@ struct MinimalisticMusicPlayerView: View {
         MusicTitleMarqueeView(
             text: musicManager.artistName,
             isExplicit: false,
-            font: .system(size: 10, weight: .regular),
-            nsFont: .caption1,
+            font: .system(size: 11, weight: .medium),
+            nsFont: .subheadline,
             textColor: Defaults[.playerColorTinting]
                 ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.6)
                 : .gray,
