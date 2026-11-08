@@ -14,6 +14,5 @@
 #ifndef Noori_Bridging_Header_h
 #define Noori_Bridging_Header_h
 
-#import "audio/AudioBridge.h"
 
 #endif /* Noori_Bridging_Header_h */

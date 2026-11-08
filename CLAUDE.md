@@ -9,7 +9,7 @@ Guidance for Claude Code when working in this repository.
 Removed on purpose to keep the app light (see commits after `f96db6e`): Terminal, Downloads, Color Picker, Clipboard, Notes, Screen Assistant, LLM Usage, Webcam Mirror, Stats, Lock Screen widgets, Calendar/Reminders, Timer, Shelf, and Atoll's extension system. The full pre-removal code is on the `extensions-source` branch for reference. Don't re-add these without the owner asking.
 
 - Noori is a fork of **Atoll** 2.3.3 (`Ebullioscopic/Atoll`), which derives from **boring.notch**. GPL-3.0. Repo: `wenujacodes/Noori`. Owner: Wenuja Liyanamana.
-- Language: Swift / SwiftUI + AppKit, with a small C++/Obj-C++ audio layer (`Noori/audio/`) and one Metal shader (`Noori/metal/visualizer.metal`).
+- Language: Swift / SwiftUI + AppKit, plus one Metal shader (`Noori/metal/visualizer.metal`, not referenced by Swift code).
 - Size: ~160 Swift files, ~42k lines.
 - Version: `VERSION` file and `MARKETING_VERSION` in the project (currently 1.0.0).
 
@@ -50,13 +50,13 @@ xcodebuild build \
 - No root Swift package; dependencies are SPM packages referenced from `Noori.xcodeproj` (resolve with `xcodebuild -resolvePackageDependencies -project Noori.xcodeproj -scheme Noori`).
 - Product is `Noori.app`. Debug bundle id `com.wenujacodes.Noori.dev` (icon `AppIconDev`); Release `com.wenujacodes.Noori`.
 - Prebuilt `Frameworks/MediaRemoteAdapter.framework` (source: `mediaremote-adapter/`) provides Now Playing info; `Contents/Helpers/NowPlayingTestClient` is copied into the app and used by `MediaChecker.swift`.
-- Bridging header: `Noori/Noori-Bridging-Header.h` (exposes `audio/AudioBridge.h`).
+- Bridging header: `Noori/Noori-Bridging-Header.h` (currently empty; the C++ audio bridge was removed with the real-time waveform).
 - Swift language mode is 5.0 (`SWIFT_VERSION = 5.0`) even though the toolchain must be 6.1+.
 
 ### Tests
 
 - `python3 -m unittest tests.test_privacy_configuration` — static checks on the Apple Events entitlement/usage string in `project.pbxproj` (exact strings/counts). Run after touching entitlements or `INFOPLIST_KEY_*UsageDescription` settings.
-- Remaining permissions: Apple Events (Spotify, Music), Bluetooth, audio capture (visualizer), Accessibility (HUD key interception). Camera, calendar, reminders, location, screen capture and folder permissions were removed with their features.
+- Remaining permissions: Apple Events (Spotify, Music), Bluetooth, Accessibility (HUD key interception). Camera, calendar, reminders, location, screen capture, audio capture and folder permissions were removed with their features.
 - `NooriUITests/` exists but isn't run automatically (the notch UI can't be driven headlessly).
 
 ## Project layout
@@ -73,7 +73,7 @@ All app code lives in `Noori/`. The Xcode project uses **synchronized folder gro
 | `components/` | SwiftUI views by feature (`Notch/`, `Music/`, `Live activities/`, `OSD/`, `Focus/`, `Privacy/`, `Recording/`, `Settings/`, …). There is no onboarding window; first-run setup is `applyDefaultSetup()` in `NooriApp.swift`. The notch has a single Home view and only the compact (former "minimalistic") layout; there is no wide layout, tab bar, or menu bar icon. Settings, Restart and Quit are in the notch's right-click menu. |
 | `MediaControllers/` | Per-player controllers behind `MediaControllerProtocol` (Apple Music, Spotify, YouTube Music, Amazon Music, Now Playing). |
 | `helpers/`, `extensions/`, `utils/`, `private/` | AppleScript runner, permission stores, private display/brightness APIs (`CGSSpace`, DisplayServices, CoreBrightness), SMC/IOReport. |
-| `audio/`, `metal/` | Real-time audio tap + FFT visualizer (C++ via Obj-C++ bridge) and Metal shader. |
+| `audio/`, `components/Music/` | Music visualizer: `AudioVisualizerView` shows the animated bars from `MusicVisualizer.swift` (no real-time audio capture). |
 | `Localizable.xcstrings` | The string catalog the app builds (in `Noori/`). The root-level `Localizable.xcstrings` is **not** in the build; it's kept for its extra languages. |
 | `LottieAnimations/`, `BluetoothHUDAnimations/` | Animation assets (`.mov` files are Git LFS). |
 | `NooriSamples/` | Screenshots (not part of the app; they show the old Atoll UI). |
