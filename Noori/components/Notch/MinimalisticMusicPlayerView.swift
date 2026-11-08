@@ -852,12 +852,7 @@ struct MinimalisticMusicPlayerView: View {
 struct MinimalisticAlbumArtView: View {
     @ObservedObject var musicManager = MusicManager.shared
     @ObservedObject var vm: NooriViewModel
-    @Default(.showLiveCanvasInNoori) private var showLiveCanvasInNoori
     let albumArtNamespace: Namespace.ID
-
-    private var usesLiveCanvasArtwork: Bool {
-        showLiveCanvasInNoori && musicManager.videoArtworkURL != nil
-    }
 
     private var albumArtCornerRadius: CGFloat {
         musicManager.albumArt.size.width / musicManager.albumArt.size.height > 1.0 ? 4 : 12
@@ -865,36 +860,8 @@ struct MinimalisticAlbumArtView: View {
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            albumArtBackground
             albumArtButton
         }
-    }
-    
-    private var albumArtBackground: some View {
-        Color.clear
-            .aspectRatio(1, contentMode: .fit)
-            .background(
-                NooriArtworkSourceView(
-                    cornerRadius: albumArtCornerRadius,
-                    contentMode: .fill
-                )
-            )
-            .clipped()
-            .clipShape(RoundedRectangle(cornerRadius: albumArtCornerRadius))
-            .scaleEffect(x: 1.04, y: 1.05)
-            .rotationEffect(.degrees(92))
-            .blur(radius: 14)
-            .opacity(
-                usesLiveCanvasArtwork
-                    ? (musicManager.isPlaying ? 0.35 : 0.12)
-                    : min(0.28, 1 - max(musicManager.albumArt.getBrightness(), 0.3))
-            )
-            .shadow(
-                color: Color(nsColor: musicManager.avgColor).opacity(usesLiveCanvasArtwork ? 0.14 : 0.08),
-                radius: usesLiveCanvasArtwork ? 6 : 4,
-                x: 0,
-                y: 0
-            )
     }
     
     private var albumArtButton: some View {

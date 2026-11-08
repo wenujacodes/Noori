@@ -82,7 +82,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let mediaControlsStateCoordinator = MediaControlsStateCoordinator.shared
     var closeNotchWorkItem: DispatchWorkItem?
     private var previousScreens: [NSScreen]?
-    private var onboardingWindowController: NSWindowController?
     private var cancellables = Set<AnyCancellable>()
     private var windowsHiddenForLock = false
     private var optionalShortcutHandlersRegistered = false
@@ -732,12 +731,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             adjustWindowPosition(changeAlpha: true)
         }
         
-        // Skip onboarding window and welcome sound under UI testing.
-        if coordinator.firstLaunch && !AppRuntimeEnvironment.isUITesting {
-            DispatchQueue.main.async {
-                self.showOnboardingWindow()
-            }
-            playWelcomeSound()
+        // First-run setup (there is no onboarding window).
+        if coordinator.firstLaunch {
+            applyDefaultSetup()
+            coordinator.firstLaunch = false
         }
         
         previousScreens = NSScreen.screens
@@ -759,14 +756,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let focusSubmenu = NSMenu(title: "Focus")
 
         let withoutDevTools = NSMenuItem(
-            title: "Use without DevTools",
+            title: FocusMonitoringMode.withoutDevTools.displayName,
             action: #selector(selectFocusWithoutDevTools),
             keyEquivalent: ""
         )
         withoutDevTools.target = self
 
         let useDevTools = NSMenuItem(
-            title: "Use DevTools",
+            title: FocusMonitoringMode.useDevTools.displayName,
             action: #selector(selectFocusUseDevTools),
             keyEquivalent: ""
         )
@@ -1035,11 +1032,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func playWelcomeSound() {
-        let audioPlayer = AudioPlayer()
-        audioPlayer.play(fileName: "dynamic", fileExtension: "m4a")
-    }
-    
     func deviceHasNotch() -> Bool {
         if #available(macOS 12.0, *) {
             for screen in NSScreen.screens {
@@ -1150,42 +1142,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     
     
-    private func showOnboardingWindow() {
-        if onboardingWindowController == nil {
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 400, height: 600),
-                styleMask: [.titled, .fullSizeContentView],
-                backing: .buffered,
-                defer: false
-            )
-            window.center()
-            window.title = "Onboarding"
-            window.titlebarAppearsTransparent = true
-            window.titleVisibility = .hidden
-            window.contentView = NSHostingView(rootView: OnboardingView(
-                onFinish: {
-                    window.orderOut(nil)
-                    NSApp.setActivationPolicy(.accessory)
-                    window.close()
-                    NSApp.deactivate()
-                },
-                onOpenSettings: {
-                    window.close()
-                    SettingsWindowController.shared.showWindow()
-                }
-            ))
-            window.isRestorable = false
-            window.identifier = NSUserInterfaceItemIdentifier("OnboardingWindow")
+    /// First-run setup: haptics on, and a display style that matches the Mac's screen.
+    private func applyDefaultSetup() {
+        Defaults[.enableHaptics] = true
 
-            ScreenCaptureVisibilityManager.shared.register(window, scope: .panelsOnly)
-
-            onboardingWindowController = NSWindowController(window: window)
-        }
-
-        NSApp.setActivationPolicy(.regular)
-        NSApp.activate(ignoringOtherApps: true)
-        onboardingWindowController?.window?.makeKeyAndOrderFront(nil)
-        onboardingWindowController?.window?.orderFrontRegardless()
+        // Notch Macs keep the standard notch; Macs without one get the Noori pill.
+        let hasNotch = (NSScreen.main?.safeAreaInsets.top ?? 0) > 0
+        Defaults[.externalDisplayStyle] = hasNotch ? .notch : .noori
     }
 }
 

@@ -261,9 +261,9 @@ enum FocusMonitoringMode: String, CaseIterable, Identifiable, Defaults.Serializa
     var displayName: String {
         switch self {
         case .withoutDevTools:
-            return "Use without DevTools"
+            return "Standard (needs Full Disk Access)"
         case .useDevTools:
-            return "Use DevTools"
+            return "Faster, via system logs (needs Developer Tools permission)"
         }
     }
 }
@@ -487,13 +487,9 @@ extension Defaults.Keys {
     static let showLiveCanvasInNoori = Key<Bool>("showLiveCanvasInNoori", default: false)
     
     
-    // Helper to determine the default media controller based on macOS version
+    // Default media controller for new installs.
     static var defaultMediaController: MediaControllerType {
-        if #available(macOS 15.4, *) {
-            return .appleMusic
-        } else {
-            return .nowPlaying
-        }
+        .nowPlaying
     }
     
     // Migration helper to convert from legacy enableGradient Boolean to new ProgressBarStyle enum
