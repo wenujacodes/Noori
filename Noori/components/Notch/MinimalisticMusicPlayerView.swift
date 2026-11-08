@@ -292,10 +292,10 @@ struct MinimalisticMusicPlayerView: View {
     }
 
     private var progressBar: some View {
+        // 4 updates a second is visually smooth for a song progress bar;
+        // `.animation` redrew it every display frame (up to 120 times a second).
         TimelineView(
-            .animation(
-                paused: isProgressTimelinePaused
-            )
+            ProgressTimelineSchedule(interval: 0.25, paused: isProgressTimelinePaused)
         ) { timeline in
             MusicSliderView(
                 sliderValue: $sliderValue,
@@ -937,5 +937,22 @@ private struct MinimalisticSquircircleButton: View {
     enum WiggleDirection {
         case clockwise
         case counterClockwise
+    }
+}
+
+/// Timeline that ticks at a fixed interval, or once when paused.
+private struct ProgressTimelineSchedule: TimelineSchedule {
+    let interval: TimeInterval
+    let paused: Bool
+
+    func entries(from startDate: Date, mode: TimelineScheduleMode) -> AnyIterator<Date> {
+        var next: Date? = startDate
+        let step = interval
+        let isPaused = paused
+        return AnyIterator {
+            guard let current = next else { return nil }
+            next = isPaused ? nil : current.addingTimeInterval(step)
+            return current
+        }
     }
 }

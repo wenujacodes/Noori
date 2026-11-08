@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The song progress bar in the open notch now updates 4 times a second instead of every display frame, cutting CPU use while music plays with the notch open from about 27% to about 8%.
 - The hidden-notch hover check (for "hide until hover" on screens without a notch) now only runs while the notch is hidden, instead of waking the CPU 20 times a second all the time.
 - Lower idle CPU and battery use: Noori no longer launches a `pgrep` process about 7 times a second to keep the macOS volume/brightness popup hidden; it waits for that service to restart instead. Bluetooth connections use IOBluetooth notifications instead of checking every 3 seconds, the AirPods listening-mode log reader only runs while AirPods are connected, and Focus detection watches its file instead of reading it every 2 seconds.
 - The Controls page in Settings is now one scrolling page instead of two separately scrolling halves.
