@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
-- Long artist names in the open notch now scroll like the song title instead of being cut off.
+- Long artist names now scroll like the song title instead of being cut off, in the open notch and in the closed-notch sneak peek.
 - The visualizer now has 5 candles by default (was 4); it can still be changed in Settings.
 - The visualizer now has 5 candles by default (was 4); it can still be changed in Settings.
 - The visualizer now has 5 candles by default (was 4); it can still be changed in Settings.
