@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- The "Closed notch / pill width" slider in Appearance no longer shows a dense row of tick marks; it still moves in 5 px steps.
 - The brightness HUD sometimes didn't show and the macOS brightness popup appeared instead. The media key listener now runs on its own thread, so it can't be delayed by work on the main thread (like the brightness change itself) and timed out by macOS.
 - The notch no longer shifts to the right after a music sneak peek (hiding half the album art under the camera until you hovered). SwiftUI was stretching the window from its left edge to fit the wider sneak peek; Noori now sizes and re-centers the window itself.
 - Small memory leaks when reading the keyboard backlight level and audio device names.

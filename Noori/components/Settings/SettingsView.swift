@@ -2277,7 +2277,10 @@ struct Appearance: View {
             let closedWidthBinding = Binding<Double>(
                 get: { Double(closedNotchWidth) },
                 set: { newValue in
-                    let clamped = min(max(newValue, closedRange.lowerBound), closedRange.upperBound)
+                    // Snap to 5 px here instead of using the slider's `step`,
+                    // which would draw a tick mark for every step.
+                    let snapped = (newValue / 5).rounded() * 5
+                    let clamped = min(max(snapped, closedRange.lowerBound), closedRange.upperBound)
                     let value = CGFloat(clamped)
                     if closedNotchWidth != value {
                         closedNotchWidth = value
@@ -2297,8 +2300,7 @@ struct Appearance: View {
                 
                 Slider(
                     value: closedWidthBinding,
-                    in: closedRange,
-                    step: 5
+                    in: closedRange
                 ) {
                     HStack {
                         Text("Closed notch / pill width")
