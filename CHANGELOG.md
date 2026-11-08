@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- Long song titles and artist names start scrolling after half a second instead of three, and the artist name now stops at the same edge as the title instead of running under the visualizer.
 - Opening the notch is a little faster (about 15%), including the blur-in of the title and controls. Closing is unchanged.
 - Long artist names now scroll like the song title instead of being cut off, in the open notch and in the closed-notch sneak peek.
 - The visualizer now has 5 candles by default (was 4); it can still be changed in Settings.

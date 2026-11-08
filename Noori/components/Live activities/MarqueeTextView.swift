@@ -201,7 +201,7 @@ struct MusicTitleMarqueeView: View {
         nsFont: NSFont.TextStyle = .body,
         textColor: Color = .primary,
         backgroundColor: Color = .clear,
-        minDuration: Double = 3.0,
+        minDuration: Double = 0.5,
         frameWidth: CGFloat = 200,
         alignment: Alignment = .leading,
         badgeSpacing: CGFloat = 6,

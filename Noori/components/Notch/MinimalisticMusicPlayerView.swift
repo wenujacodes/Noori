@@ -237,11 +237,11 @@ struct MinimalisticMusicPlayerView: View {
                 }
 
                 // ── Center: Title + Artist (below the notch) ──
+                // The visualizer sits beside the text and has a 12-pt right spacer;
+                // title and artist both stop before it.
+                let textAreaWidth = max(0, totalWidth - albumArtSize - 10 - (useMusicVisualizer ? (visualizerWidth + 12 + 10) : 0))
                 VStack(alignment: .leading, spacing: 1) {
                     if !musicManager.songTitle.isEmpty {
-                        // In the U-shaped layout the visualizer sits in a 48-pt wide zone
-                        // (matching the time text) and has a 12-pt right spacer inside it.
-                        let textAreaWidth = max(0, totalWidth - albumArtSize - 10 - (useMusicVisualizer ? (visualizerWidth + 12 + 10) : 0))
                         MusicTitleMarqueeView(
                             text: musicManager.songTitle,
                             isExplicit: musicManager.isCurrentTrackExplicit,
@@ -253,8 +253,7 @@ struct MinimalisticMusicPlayerView: View {
                         )
                     }
 
-                    // The artist row sits below the visualizer, so it can use the full width.
-                    artistLine(width: max(0, totalWidth - albumArtSize - 10 - 12))
+                    artistLine(width: textAreaWidth)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fadesWithNotchContent()
