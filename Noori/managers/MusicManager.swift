@@ -27,10 +27,9 @@ import Defaults
 import Foundation
 import SwiftUI
 
-let defaultImage: NSImage = .init(
-    systemSymbolName: "heart.fill",
-    accessibilityDescription: "Album Art"
-)!
+/// Shown until the first song's artwork arrives: empty, so nothing odd
+/// (like a placeholder icon) flashes before the real cover.
+let defaultImage: NSImage = .init(size: NSSize(width: 1, height: 1))
 
 private struct ITunesExplicitnessSearchResponse: Decodable {
     let results: [ITunesExplicitnessTrack]
@@ -744,15 +743,19 @@ class MusicManager: ObservableObject {
         let shouldAutoPeekOnTrackChange = Defaults[.showSneakPeekOnTrackChange]
 
         if hasContentChange {
-            self.triggerFlipAnimation()
+            // No flip for the very first cover after launch; it just appears.
+            if self.albumArt !== defaultImage {
+                self.triggerFlipAnimation()
+            }
 
             if artworkChanged, let artwork = state.artwork {
                 self.updateArtwork(artwork)
             } else if state.artwork == nil {
-                // Try to use app icon if no artwork but track changed
+                // Try to use app icon if no artwork but track changed. Wait a bit
+                // first: the artwork often arrives in a separate update right after,
+                // and that cancels this, so the app icon doesn't flash first.
                 if let appIconImage = AppIconAsNSImage(for: state.bundleIdentifier) {
-                    self.usingAppIconForArtwork = true
-                    self.updateAlbumArt(newAlbumArt: appIconImage)
+                    self.updateAlbumArt(newAlbumArt: appIconImage, isAppIcon: true, delay: 1.0)
                 }
             }
             self.artworkData = state.artwork
@@ -1024,7 +1027,6 @@ class MusicManager: ObservableObject {
 
             if let artworkImage = NSImage(data: artworkData) {
                 DispatchQueue.main.async { [weak self] in
-                    self?.usingAppIconForArtwork = false
                     self?.updateAlbumArt(newAlbumArt: artworkImage)
                 }
             }
@@ -1049,17 +1051,25 @@ class MusicManager: ObservableObject {
 
     private var workItem: DispatchWorkItem?
 
-    func updateAlbumArt(newAlbumArt: NSImage) {
+    func updateAlbumArt(newAlbumArt: NSImage, isAppIcon: Bool = false, delay: TimeInterval = 0.4) {
         workItem?.cancel()
+        // The first cover after launch shows right away, without the delay.
+        let isFirstCover = albumArt === defaultImage && !isAppIcon
         workItem = DispatchWorkItem { [weak self] in
-            withAnimation(.smooth) {
-                self?.albumArt = newAlbumArt
+            guard let self else { return }
+            self.usingAppIconForArtwork = isAppIcon
+            withAnimation(isFirstCover ? nil : .smooth) {
+                self.albumArt = newAlbumArt
                 if Defaults[.coloredSpectrogram] {
-                    self?.calculateAverageColor()
+                    self.calculateAverageColor()
                 }
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: workItem!)
+        if isFirstCover {
+            workItem?.perform()
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem!)
+        }
     }
 
     // MARK: - Playback Position Estimation

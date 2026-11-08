@@ -17,7 +17,8 @@ enum NooriMotion {
     /// The single bounce at the end comes from `notchOpenBounce` (shape only).
     static let notchOpen = Animation.spring(response: 0.42, dampingFraction: 1.0)
 
-    /// The notch collapsing: the same speed, settling without a bounce.
+    /// The notch collapsing: the same speed, without overshooting (which would
+    /// uncover the real notch). The close bounce comes from `notchCloseBounceGap`.
     static let notchClose = Animation.spring(response: 0.45, dampingFraction: 1.0)
 
     /// Picks the open or close motion for a notch state change.
@@ -27,7 +28,6 @@ enum NooriMotion {
 
     /// The single bounce of the black notch shape when it opens: at its peak it is
     /// 3% wider and 4% taller. Only the shape bounces; the content inside stays put.
-    /// Closing has no bounce.
     static let notchOpenBounce = CGSize(width: 1.025, height: 1.035)
     /// The swell waits while the notch grows fast, rises to peak as it reaches
     /// full size (about 0.35s in), then eases back, so opening and bounce read
@@ -35,6 +35,13 @@ enum NooriMotion {
     static let notchBounceWait: TimeInterval = 0.1
     static let notchBounceRise: TimeInterval = 0.25
     static let notchBounceFall: TimeInterval = 0.45
+
+    /// Closing bounce: how far outside the closed notch the shape stops (points
+    /// on each side, and below) before settling onto the exact size, once.
+    static let notchCloseBounceGap = CGSize(width: 6, height: 3)
+    /// How long it holds that gap while closing, then how long it takes to settle.
+    static let notchCloseBounceHold: TimeInterval = 0.3
+    static let notchCloseBounceSettle: TimeInterval = 0.35
 
     /// The closed notch reacting to the pointer (hover lift).
     static let hover = Animation.bouncy.speed(1.2)
@@ -58,10 +65,10 @@ enum NooriMotion {
             identity: NotchContentFadeModifier(opacity: 1)
         )
         // Opening: the controls finish fading in exactly as the notch reaches
-        // full size, not before. Closing: they fade out quickly, first.
+        // full size, not before. Closing: they blur and fade out as the notch shrinks.
         return .asymmetric(
             insertion: fade.animation(.easeOut(duration: contentFadeInDuration).delay(contentFadeInDelay)),
-            removal: fade.animation(.easeIn(duration: 0.12))
+            removal: fade.animation(.easeOut(duration: contentFadeOutDuration))
         )
     }
 
@@ -69,6 +76,10 @@ enum NooriMotion {
     static let contentFadeInDelay: TimeInterval = 0.15
     /// ...and are fully shown when it reaches full size (about 0.4s in).
     static let contentFadeInDuration: TimeInterval = 0.25
+    /// How long the title and controls take to blur and fade out on close.
+    static let contentFadeOutDuration: TimeInterval = 0.25
+    /// How blurred the title and controls are when fully faded out.
+    static let contentFadeBlur: CGFloat = 10
 }
 
 private struct NotchContentFadeModifier: ViewModifier, Animatable {
@@ -90,15 +101,27 @@ extension EnvironmentValues {
 }
 
 private struct FadesWithNotchContentModifier: ViewModifier {
-    @Environment(\.notchContentOpacity) private var opacity
+    /// Fade-in progress while opening (from the `notchContentFade` transition).
+    @Environment(\.notchContentOpacity) private var openingOpacity
+    /// Closing is read from the notch state instead: views on their way out
+    /// stop receiving the transition's value, so they would stay sharp.
+    @EnvironmentObject private var vm: NooriViewModel
 
     func body(content: Content) -> some View {
-        content.opacity(opacity)
+        let isClosing = vm.notchState == .closed
+        let opacity = isClosing ? 0 : openingOpacity
+        content
+            .blur(radius: (1 - opacity) * NooriMotion.contentFadeBlur)
+            .opacity(opacity)
+            .animation(
+                isClosing ? .easeOut(duration: NooriMotion.contentFadeOutDuration) : nil,
+                value: isClosing
+            )
     }
 }
 
 extension View {
-    /// Open-notch content that fades in and out with the notch.
+    /// Open-notch content that fades and blurs in and out with the notch.
     /// Leave it off views that glide in from the closed notch (album art, visualizer).
     func fadesWithNotchContent() -> some View {
         modifier(FadesWithNotchContentModifier())
