@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Lock icon on the lock screen: when the Mac is locked, the notch widens slightly and shows a lock on its left side. Hovering it gives a small bounce and a haptic tap (it doesn't open). On unlock the lock opens, the notch shrinks back, and only then does the music live activity grow in (it used to pop in instantly).
+- Lock icon on the lock screen: when the Mac is locked, the notch widens slightly and shows a lock on its left side. Hovering it gives a small bounce and a haptic tap (it doesn't open). On unlock the lock opens; if a song is playing, the lock pill then fades straight into the music pill, otherwise it shrinks back into the notch.
 - The volume HUD bar turns red while the sound is muted and stays at the current volume level, instead of being replaced by the word "muted".
 - Search in Settings is back: a search field at the top of the sidebar with suggestions; picking one opens its tab, scrolls to the setting and highlights it. The search list only covers settings that exist in Noori.
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- Scrolling song titles and artist names no longer jump sideways when a scroll loop ends (the text was measured 10 pt too wide).
 - Battery HUDs (charging, low battery, full battery) had a flat bottom with square corners: the window was sized exactly to the HUD, so its rounded bottom (and the hover growth) got cut off. The window now stays at least its normal size.
 - Long song titles now start scrolling on their own: restarts no longer leave several scroll loops running that kept snapping the text back to the start.
 - Song titles slightly too long for the open notch now scroll instead of running under the visualizer: the title's width is measured in the font it's drawn with.

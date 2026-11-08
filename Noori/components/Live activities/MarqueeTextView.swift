@@ -88,7 +88,10 @@ struct MarqueeText: View {
             .background(backgroundColor)
             .modifier(MeasureSizeModifier())
             .onPreferenceChange(SizePreferenceKey.self) { size in
-                self.textSize = CGSize(width: size.width / 2, height: NSFont.preferredFont(forTextStyle: nsFont).pointSize)
+                // The measured row is text + 20 pt gap + text, so one copy is
+                // (width - 20) / 2. Halving the whole row over-measured by 10 pt,
+                // and the loop's snap back to the start jumped sideways.
+                self.textSize = CGSize(width: max(0, (size.width - 20) / 2), height: NSFont.preferredFont(forTextStyle: nsFont).pointSize)
                 resetAndStart()
             }
             .onChange(of: text) { _, _ in
