@@ -18,6 +18,7 @@
  */
 
 import Foundation
+import ApplicationServices
 import Defaults
 import Combine
 
@@ -28,6 +29,7 @@ class SystemHUDManager {
     private weak var coordinator: NooriViewCoordinator?
     private var isSetupComplete = false
     private var isSystemOperationInProgress = false
+    private var keyInterceptionRetryTimer: Timer?
     
     private init() {
         // Set up observer for settings changes
@@ -192,16 +194,26 @@ class SystemHUDManager {
         changesObserver = nil
         
         changesObserver = SystemChangesObserver(coordinator: coordinator)
+        stopKeyInterceptionRetry()
 
         let flags = resolvedControlFlags()
-        changesObserver?.startObserving(
+        let keysCaught = changesObserver?.startObserving(
             volumeEnabled: flags.volume,
             brightnessEnabled: flags.brightness,
             keyboardBacklightEnabled: flags.backlight
-        )
-        
-        // Force disable system HUD to ensure no duplicates
-        SystemOSDManager.disableSystemHUD()
+        ) ?? false
+
+        if keysCaught {
+            // Noori handles the media keys, so hide the native OSD to avoid duplicates.
+            SystemOSDManager.disableSystemHUD()
+        } else {
+            // Without the key tap (no Accessibility permission yet) Noori can't show
+            // brightness HUDs, so keep the native OSD visible and retry until permission arrives.
+            if SystemOSDManager.isSuppressingNativeOSD {
+                SystemOSDManager.enableSystemHUD()
+            }
+            startKeyInterceptionRetry()
+        }
         
         print("System observer started (HUD: \(Defaults[.enableSystemHUD]), ThirdPartyDDC: \(Defaults[.enableThirdPartyDDCIntegration]), Provider: \(Defaults[.thirdPartyDDCProvider].displayName), ExternalVolumeListener: \(Defaults[.enableExternalVolumeControlListener]))")
         isSystemOperationInProgress = false
@@ -212,6 +224,7 @@ class SystemHUDManager {
         guard !isSystemOperationInProgress else { return }
         
         isSystemOperationInProgress = true
+        stopKeyInterceptionRetry()
         changesObserver?.stopObserving()
         changesObserver = nil
         
@@ -222,7 +235,38 @@ class SystemHUDManager {
         isSystemOperationInProgress = false
     }
     
+    // MARK: - Key interception retry
+
+    /// Polls for Accessibility permission and installs the key tap once it is granted,
+    /// so users don't have to restart Noori after allowing access.
+    @MainActor
+    private func startKeyInterceptionRetry() {
+        guard keyInterceptionRetryTimer == nil else { return }
+        // Scheduled on the main run loop, so the callback already runs on the main actor.
+        // Uses the shared instance instead of capturing self (this manager is a singleton).
+        keyInterceptionRetryTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            MainActor.assumeIsolated {
+                SystemHUDManager.shared.retryKeyInterceptionIfPermitted()
+            }
+        }
+    }
+
+    @MainActor
+    private func retryKeyInterceptionIfPermitted() {
+        guard AXIsProcessTrusted(), let observer = changesObserver else { return }
+        guard observer.retryKeyInterception() else { return }
+        stopKeyInterceptionRetry()
+        SystemOSDManager.disableSystemHUD()
+        NSLog("✅ Accessibility granted; Noori now handles the media keys")
+    }
+
+    private func stopKeyInterceptionRetry() {
+        keyInterceptionRetryTimer?.invalidate()
+        keyInterceptionRetryTimer = nil
+    }
+
     deinit {
+        keyInterceptionRetryTimer?.invalidate()
         cancellables.removeAll()
         Task { @MainActor in
             await stopSystemObserver()

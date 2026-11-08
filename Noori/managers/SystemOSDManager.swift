@@ -87,6 +87,11 @@ class SystemOSDManager {
 
     // MARK: - Public API
 
+    /// True while Noori is hiding the native macOS OSD.
+    public static var isSuppressingNativeOSD: Bool {
+        suppressionState.withLock { $0.active }
+    }
+
     /// Re-enables the system HUD by restarting OSDUIHelper
     public static func enableSystemHUD() {
         let generation = suppressionState.withLock { state -> UInt64 in

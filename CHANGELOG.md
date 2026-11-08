@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- Brightness and volume keys no longer show nothing when Accessibility permission is missing: Noori keeps the macOS popups visible until it can handle the keys, and starts handling them as soon as permission is granted, without a restart.
 - GitHub logo on the About page now follows the text color instead of always being white.
 
 ### Removed

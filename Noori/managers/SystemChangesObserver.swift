@@ -59,7 +59,9 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
         self.coordinator = coordinator
     }
 
-    func startObserving(volumeEnabled: Bool, brightnessEnabled: Bool, keyboardBacklightEnabled: Bool) {
+    /// Returns true when the media key tap is running (needs Accessibility permission).
+    @discardableResult
+    func startObserving(volumeEnabled: Bool, brightnessEnabled: Bool, keyboardBacklightEnabled: Bool) -> Bool {
         self.volumeEnabled = volumeEnabled
         self.brightnessEnabled = brightnessEnabled
         self.keyboardBacklightEnabled = keyboardBacklightEnabled
@@ -101,6 +103,12 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
             interceptBrightness: brightnessEnabled,
             interceptCommandModifiedBrightness: keyboardBacklightEnabled
         )
+        return tapStarted
+    }
+
+    /// Tries to install the media key tap again, e.g. after Accessibility was granted.
+    func retryKeyInterception() -> Bool {
+        mediaKeyInterceptor.start()
     }
 
     func update(volumeEnabled: Bool, brightnessEnabled: Bool, keyboardBacklightEnabled: Bool) {
