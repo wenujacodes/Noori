@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The Controls page in Settings is now one scrolling page instead of two separately scrolling halves.
 - Caps Lock indicator color now defaults to Green (White and Accent are still available).
 - Moved the media appearance options (spectrograms, color tinting, slider color) from the Appearance tab to the Media tab.
 - The simpler close animation is now always used; its toggle was removed from Appearance settings.

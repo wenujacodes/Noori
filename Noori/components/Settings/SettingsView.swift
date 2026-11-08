@@ -824,20 +824,9 @@ struct Charge: View {
 
 
 private struct HUDAndOSDSettingsView: View {
-    private var paneBackgroundColor: Color {
-        Color(nsColor: .controlBackgroundColor)
-    }
-
     var body: some View {
-        VStack(spacing: 20) {
-            HUD()
-
-            // Third-party display integrations
-            ExternalDisplayIntegrationsSection()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(paneBackgroundColor)
-        .navigationTitle("Controls")
+        // HUD includes the step size and display integration sections in its single Form.
+        HUD()
     }
 }
 
@@ -917,7 +906,8 @@ private struct ExternalDisplayIntegrationsSection: View {
     }
 
     var body: some View {
-        Form {
+        // Sections only; shown inside the Controls page Form.
+        Group {
             Section {
                 Stepper(value: $volumeStepPercent, in: 1...25) {
                     HStack {
@@ -1256,6 +1246,9 @@ struct HUD: View {
                     Text("Appearance")
                 }
             }
+
+            // Step size and third-party display integrations
+            ExternalDisplayIntegrationsSection()
         }
         .navigationTitle("Controls")
         .onAppear {
