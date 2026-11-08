@@ -228,7 +228,6 @@ struct DraggableProgressBar: View {
     
     @State private var isDragging = false
     @Default(.progressBarStyle) private var progressBarStyle
-    @Default(.useColorCodedVolumeDisplay) private var useColorCodedVolumeDisplay
     @Default(.useColorCodedBatteryDisplay) private var useColorCodedBatteryDisplay
     @Default(.useSmoothColorGradient) private var useSmoothColorGradient
     @Default(.systemEventIndicatorUseAccent) private var useAccentColor
@@ -325,7 +324,7 @@ struct DraggableProgressBar: View {
         guard progressBarStyle != .segmented else { return false }
         switch colorMode {
         case .volume:
-            return useColorCodedVolumeDisplay
+            return false // The volume bar is always white.
         case .battery:
             return useColorCodedBatteryDisplay
         }

@@ -3942,46 +3942,6 @@
         }
       }
     },
-    "Color-coded volume display" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "색상별 음량 표시"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kleurgecodeerde volumeweergave"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Цветное отображение громкости"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แสดงระดับเสียงตามรหัสสี"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Renk kodlu ses seviyesi ekranı"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "彩色音量显示"
-          }
-        }
-      }
-    },
     "Coming soon" : {
       "comment" : "merge:ko:alt='출시 예정'",
       "localizations" : {

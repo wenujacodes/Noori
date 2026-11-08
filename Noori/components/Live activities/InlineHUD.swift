@@ -47,7 +47,6 @@ struct InlineHUD: View {
     @Binding var gestureProgress: CGFloat
     
     @Default(.useColorCodedBatteryDisplay) var useColorCodedBatteryDisplay
-    @Default(.useColorCodedVolumeDisplay) var useColorCodedVolumeDisplay
     @Default(.useSmoothColorGradient) var useSmoothColorGradient
     @Default(.progressBarStyle) var progressBarStyle
     @Default(.showProgressPercentages) var showProgressPercentages
