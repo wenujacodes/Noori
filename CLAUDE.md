@@ -48,7 +48,7 @@ xcodebuild build \
 ```
 
 - No root Swift package; dependencies are SPM packages referenced from `Noori.xcodeproj` (resolve with `xcodebuild -resolvePackageDependencies -project Noori.xcodeproj -scheme Noori`).
-- Product is `Noori.app`. Debug bundle id `com.wenujacodes.Noori.dev` (icon `AppIconDev`); Release `com.wenujacodes.Noori`.
+- Product is `Noori.app`. Debug bundle id `com.wenujacodes.Noori.dev`; Release `com.wenujacodes.Noori`. Both use the `AppIcon` set, which is currently empty (macOS shows its default app icon until a Noori icon is added).
 - Prebuilt `Frameworks/MediaRemoteAdapter.framework` (source: `mediaremote-adapter/`) provides Now Playing info; `Contents/Helpers/NowPlayingTestClient` is copied into the app and used by `MediaChecker.swift`.
 - No bridging header (removed with the C++ audio bridge).
 - Swift language mode is 5.0 (`SWIFT_VERSION = 5.0`) even though the toolchain must be 6.1+.

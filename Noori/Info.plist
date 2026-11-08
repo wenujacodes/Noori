@@ -8,7 +8,7 @@
 		<true/>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Noori uses Apple Music to fetch animated artwork for the lock screen wallpaper.</string>
+	<string>Noori uses Apple Music to fetch animated album artwork for the music player.</string>
 	<key>SUEnableDownloaderService</key>
 	<true/>
 	<key>SUEnableInstallerLauncherService</key>

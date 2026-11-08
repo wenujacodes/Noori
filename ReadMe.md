@@ -3,12 +3,12 @@
 Noori turns the MacBook notch into a lightweight, focused surface for media, live activities, and system controls. It stays out of the way until needed, then expands with responsive, native SwiftUI animations.
 
 ## Highlights
-- Media controls for Apple Music, Spotify, Cider, and more, with lyrics, a live audio visualizer, and animated album art.
+- Media controls for Apple Music, Spotify, Cider, and more, with an animated visualizer and animated album art.
 - Live Activities for media playback, battery and charging, Focus, screen recording, privacy indicators, and Caps Lock.
 - Device HUDs for Bluetooth headphones and AirPods, including battery levels.
 - Custom volume, brightness, and keyboard backlight HUDs that replace the system ones.
 - Battery status and notifications right in the notch.
-- Customization for layouts, animations, hover behavior, and keyboard shortcuts.
+- Customization for animations, hover behavior, and keyboard shortcuts.
 
 ## Other Features
 - Gesture controls for opening/closing the notch and media navigation.
@@ -21,8 +21,8 @@ Noori turns the MacBook notch into a lightweight, focused surface for media, liv
 ## Requirements
 - macOS 14.0 or later (optimised for macOS 15+).
 - MacBook with a notch (14/16‑inch MBP across Apple silicon generations).
-- Xcode 16.3+ (Swift 6.1+) to build from source. On Xcode 26 or later, also install the Metal Toolchain (Xcode → Settings → Components).
-- Permissions as needed: Accessibility (custom HUDs), Bluetooth (device HUDs), Automation (Spotify and Apple Music control), and Audio Capture (music visualizer).
+- Xcode 16.3+ (Swift 6.1+) to build from source.
+- Permissions as needed: Accessibility (custom HUDs), Bluetooth (device HUDs), and Automation (Spotify and Apple Music control).
 
 ## Installation
 1) Download the latest DMG [here](https://github.com/wenujacodes/Noori/releases/latest).
