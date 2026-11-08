@@ -386,9 +386,11 @@ struct ContentView: View {
             .frame(alignment: .top)
             .padding(.horizontal, notchHorizontalPadding)
             .padding([.horizontal, .bottom], vm.notchState == .open ? 12 : 0)
+            .background(.black)
             .clipShape(resolvedClipShape)
-            // The black shape is drawn separately so it can bounce
-            // without moving or stretching the content inside it.
+            // The bounces are extra black shapes behind the notch, drawn only while
+            // a bounce plays, so the content inside never moves or stretches and
+            // the notch at rest renders exactly as a plain clipped black shape.
             .background {
                 let isOpen = vm.notchState == .open
                 resolvedClipShape
@@ -396,11 +398,13 @@ struct ContentView: View {
                     .keyframeAnimator(initialValue: CGFloat(0), trigger: notchOpenCount) { shape, swell in
                         // Only while open, so a close mid-bounce isn't stretched.
                         let amount = isOpen ? swell : 0
-                        shape.scaleEffect(
-                            x: 1 + (NooriMotion.notchOpenBounce.width - 1) * amount,
-                            y: 1 + (NooriMotion.notchOpenBounce.height - 1) * amount,
-                            anchor: .top
-                        )
+                        shape
+                            .scaleEffect(
+                                x: 1 + (NooriMotion.notchOpenBounce.width - 1) * amount,
+                                y: 1 + (NooriMotion.notchOpenBounce.height - 1) * amount,
+                                anchor: .top
+                            )
+                            .opacity(amount > 0.001 ? 1 : 0)
                     } keyframes: { _ in
                         // One smooth swell: waits while the notch grows fast, peaks
                         // as it reaches full size, then settles back softly.
@@ -408,6 +412,11 @@ struct ContentView: View {
                         CubicKeyframe(1, duration: NooriMotion.notchBounceRise)
                         SpringKeyframe(0, duration: NooriMotion.notchBounceFall, spring: .smooth)
                     }
+            }
+            .background {
+                let isOpen = vm.notchState == .open
+                resolvedClipShape
+                    .fill(.black)
                     .keyframeAnimator(initialValue: CGFloat(0), trigger: notchCloseCount) { shape, gap in
                         // Closing: the shape stops a few points bigger than the closed
                         // notch, then settles onto it once. It never shrinks past the
@@ -416,6 +425,7 @@ struct ContentView: View {
                         shape
                             .padding(.horizontal, -NooriMotion.notchCloseBounceGap.width * amount)
                             .padding(.bottom, -NooriMotion.notchCloseBounceGap.height * amount)
+                            .opacity(amount > 0.001 ? 1 : 0)
                     } keyframes: { _ in
                         // Hold back while closing, so it stops short of the closed size,
                         // then glide onto the exact closed size in one smooth move.

@@ -42,9 +42,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- Battery HUDs (charging, low battery, full battery) had a flat bottom with square corners: the window was sized exactly to the HUD, so its rounded bottom (and the hover growth) got cut off. The window now stays at least its normal size.
 - Long song titles now start scrolling on their own: restarts no longer leave several scroll loops running that kept snapping the text back to the start.
 - Song titles slightly too long for the open notch now scroll instead of running under the visualizer: the title's width is measured in the font it's drawn with.
-- The "Closed notch / pill width" slider in Appearance no longer shows a dense row of tick marks; it still moves in 5 px steps.
+- The "Closed notch / pill width" slider in Appearance now moves in 10 px steps, so its tick marks match the other sliders instead of forming a dense row.
 - The brightness HUD sometimes didn't show and the macOS brightness popup appeared instead. The media key listener now runs on its own thread, so it can't be delayed by work on the main thread (like the brightness change itself) and timed out by macOS.
 - The notch no longer shifts to the right after a music sneak peek (hiding half the album art under the camera until you hovered). SwiftUI was stretching the window from its left edge to fit the wider sneak peek; Noori now sizes and re-centers the window itself.
 - Small memory leaks when reading the keyboard backlight level and audio device names.

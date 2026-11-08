@@ -365,7 +365,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     height += 70
                 }
                 
-                return addShadowPadding(to: CGSize(width: width, height: height), isMinimalistic: true)
+                // Never smaller than the normal window: sizing it exactly to the HUD
+                // cut off its rounded bottom (and the hover growth), leaving square corners.
+                let batterySize = addShadowPadding(to: CGSize(width: width, height: height), isMinimalistic: true)
+                let base = addShadowPadding(
+                    to: minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: vm.screen)),
+                    isMinimalistic: true
+                )
+                return CGSize(
+                    width: max(base.width, batterySize.width),
+                    height: max(base.height, batterySize.height)
+                )
             }
         }
         
