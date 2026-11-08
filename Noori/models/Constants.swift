@@ -286,7 +286,7 @@ extension Defaults.Keys {
     static let hideNooriFromScreenCapture = Key<Bool>("hideNooriFromScreenCapture", default: false)
     
         // MARK: Behavior
-    static let minimumHoverDuration = Key<TimeInterval>("minimumHoverDuration", default: 0.3)
+    static let minimumHoverDuration = Key<TimeInterval>("minimumHoverDuration", default: 0.2)
     static let enableHaptics = Key<Bool>("enableHaptics", default: true)
     static let openNotchOnHover = Key<Bool>("openNotchOnHover", default: true)
     static let externalDisplayStyle = Key<ExternalDisplayStyle>(

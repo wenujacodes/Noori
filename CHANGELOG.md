@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The default minimum hover duration to open the notch is now 0.2s (was 0.3s); it can still be changed in Settings.
 - After launch, the notch shows the current song's cover right away instead of a heart placeholder (or the player's app icon) first, and without a flip.
 - The album art and visualizer stay sharp when the notch opens and closes; the title and controls blur and fade.
 - The album art and visualizer glide smoothly from the closed notch into the open player instead of jumping, and the album art no longer flashes black while the notch opens. The album art hover tilt is smoother.
