@@ -81,6 +81,7 @@ final class MediaKeyInterceptor {
     weak var delegate: MediaKeyInterceptorDelegate?
     var configuration: MediaKeyConfiguration = .disabled {
         didSet {
+            stateLock.withLock { tapConfiguration = configuration }
             updateTapState()
         }
     }
@@ -88,6 +89,14 @@ final class MediaKeyInterceptor {
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
     private var isTapEnabled = false
+    /// The tap runs on its own thread, not the main one. If it waited for the
+    /// main thread (busy with animations or slow brightness calls), macOS would
+    /// time it out and pass that key press to the native OSD instead.
+    private var tapThread: Thread?
+    private var tapRunLoop: CFRunLoop?
+    /// Guards the state shared between the main thread and the tap thread.
+    private let stateLock = NSLock()
+    private var tapConfiguration: MediaKeyConfiguration = .disabled
 #if canImport(ApplicationServices)
     private var didRequestAccessibilityPrompt = false
 #endif
@@ -95,7 +104,8 @@ final class MediaKeyInterceptor {
     private let eventTapLocations: [CGEventTapLocation] = [.cghidEventTap, .cgSessionEventTap]
 
     private var shouldEnableTap: Bool {
-        configuration.interceptVolume
+        let configuration = stateLock.withLock { tapConfiguration }
+        return configuration.interceptVolume
             || configuration.interceptBrightness
             || configuration.interceptCommandModifiedBrightness
     }
@@ -150,13 +160,33 @@ final class MediaKeyInterceptor {
         }
 
         eventTap = tap
-        runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
-        if let source = runLoopSource {
-            CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
+        guard let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0) else {
+            CFMachPortInvalidate(tap)
+            eventTap = nil
+            NSLog("❌ Failed to create media key run loop source")
+            return false
         }
+        runLoopSource = source
+
+        let ready = DispatchSemaphore(value: 0)
+        var threadRunLoop: CFRunLoop?
+        let thread = Thread {
+            let runLoop = CFRunLoopGetCurrent()
+            CFRunLoopAddSource(runLoop, source, .commonModes)
+            threadRunLoop = runLoop
+            ready.signal()
+            CFRunLoopRun()
+        }
+        thread.name = "Noori.MediaKeyTap"
+        thread.qualityOfService = .userInteractive
+        thread.start()
+        ready.wait()
+        tapThread = thread
+        tapRunLoop = threadRunLoop
+
         CGEvent.tapEnable(tap: tap, enable: true)
-        isTapEnabled = true
-        NSLog("✅ Media key event tap installed (HID)")
+        stateLock.withLock { isTapEnabled = true }
+        NSLog("✅ Media key event tap installed (HID, own thread)")
         return true
     }
 
@@ -165,28 +195,40 @@ final class MediaKeyInterceptor {
             CGEvent.tapEnable(tap: tap, enable: false)
             CFMachPortInvalidate(tap)
         }
-        if let source = runLoopSource {
-            CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
+        if let runLoop = tapRunLoop {
+            if let source = runLoopSource {
+                CFRunLoopRemoveSource(runLoop, source, .commonModes)
+            }
+            CFRunLoopStop(runLoop)
         }
+        tapRunLoop = nil
+        tapThread = nil
         eventTap = nil
         runLoopSource = nil
-        isTapEnabled = false
+        stateLock.withLock { isTapEnabled = false }
     }
 
     private func updateTapState() {
         guard let tap = eventTap else { return }
         let shouldEnable = shouldEnableTap
-        if shouldEnable != isTapEnabled {
-            CGEvent.tapEnable(tap: tap, enable: shouldEnable)
+        let changed = stateLock.withLock { () -> Bool in
+            guard shouldEnable != isTapEnabled else { return false }
             isTapEnabled = shouldEnable
+            return true
+        }
+        if changed {
+            CGEvent.tapEnable(tap: tap, enable: shouldEnable)
         }
     }
 
+    /// Runs on the tap thread: keep it fast and only read `configuration`
+    /// through `stateLock`. Real work is sent to the main thread.
     private func handleEvent(cgEvent: CGEvent, type: CGEventType) -> Unmanaged<CGEvent>? {
+        let configuration = stateLock.withLock { tapConfiguration }
         if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
             if shouldEnableTap, let eventTap {
                 CGEvent.tapEnable(tap: eventTap, enable: true)
-                isTapEnabled = true
+                stateLock.withLock { isTapEnabled = true }
                 SystemOSDManager.suppressNativeOSDNow()
                 NSLog(
                     "Media key event tap was disabled by %@; re-enabled",
@@ -213,7 +255,7 @@ final class MediaKeyInterceptor {
 
         guard keyState else {
             // Swallow key-up events only when intercepting, otherwise let them pass through
-            if shouldHandle(keyCode: Int32(keyCode), modifiers: modifiers) {
+            if shouldHandle(keyCode: Int32(keyCode), modifiers: modifiers, configuration: configuration) {
                 return nil
             }
             return Unmanaged.passUnretained(cgEvent)
@@ -233,11 +275,11 @@ final class MediaKeyInterceptor {
             dispatchMuteCommand()
             return nil
         case NX_KEYTYPE_BRIGHTNESS_UP:
-            guard shouldHandleBrightness(modifiers: modifiers) else { return Unmanaged.passUnretained(cgEvent) }
+            guard shouldHandleBrightness(modifiers: modifiers, configuration: configuration) else { return Unmanaged.passUnretained(cgEvent) }
             dispatchBrightnessCommand(.up, step: step, isRepeat: isRepeat, modifiers: modifiers)
             return nil
         case NX_KEYTYPE_BRIGHTNESS_DOWN:
-            guard shouldHandleBrightness(modifiers: modifiers) else { return Unmanaged.passUnretained(cgEvent) }
+            guard shouldHandleBrightness(modifiers: modifiers, configuration: configuration) else { return Unmanaged.passUnretained(cgEvent) }
             dispatchBrightnessCommand(.down, step: step, isRepeat: isRepeat, modifiers: modifiers)
             return nil
         default:
@@ -291,7 +333,11 @@ final class MediaKeyInterceptor {
         }
     }
 
-    private func shouldHandle(keyCode: Int32, modifiers: NSEvent.ModifierFlags) -> Bool {
+    private func shouldHandle(
+        keyCode: Int32,
+        modifiers: NSEvent.ModifierFlags,
+        configuration: MediaKeyConfiguration
+    ) -> Bool {
         switch keyCode {
         case NX_KEYTYPE_SOUND_UP, NX_KEYTYPE_SOUND_DOWN, NX_KEYTYPE_MUTE:
             return configuration.interceptVolume
@@ -302,7 +348,10 @@ final class MediaKeyInterceptor {
         }
     }
 
-    private func shouldHandleBrightness(modifiers: NSEvent.ModifierFlags) -> Bool {
+    private func shouldHandleBrightness(
+        modifiers: NSEvent.ModifierFlags,
+        configuration: MediaKeyConfiguration
+    ) -> Bool {
         if configuration.interceptBrightness {
             return true
         }
