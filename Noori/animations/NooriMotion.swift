@@ -15,7 +15,7 @@ import SwiftUI
 enum NooriMotion {
     /// The notch expanding: a quick spring that settles without overshooting.
     /// The single bounce at the end comes from `notchOpenBounce` (shape only).
-    static let notchOpen = Animation.spring(response: 0.42, dampingFraction: 1.0)
+    static let notchOpen = Animation.spring(response: 0.36, dampingFraction: 1.0)
 
     /// The notch collapsing: the same speed, without overshooting (which would
     /// uncover the real notch). The close bounce comes from `notchCloseBounceGap`.
@@ -30,11 +30,11 @@ enum NooriMotion {
     /// 3% wider and 4% taller. Only the shape bounces; the content inside stays put.
     static let notchOpenBounce = CGSize(width: 1.025, height: 1.035)
     /// The swell waits while the notch grows fast, rises to peak as it reaches
-    /// full size (about 0.35s in), then eases back, so opening and bounce read
+    /// full size (about 0.3s in), then eases back, so opening and bounce read
     /// as one continuous motion.
-    static let notchBounceWait: TimeInterval = 0.1
-    static let notchBounceRise: TimeInterval = 0.25
-    static let notchBounceFall: TimeInterval = 0.45
+    static let notchBounceWait: TimeInterval = 0.08
+    static let notchBounceRise: TimeInterval = 0.22
+    static let notchBounceFall: TimeInterval = 0.4
 
     /// Closing bounce: how far outside the closed notch the shape stops (points
     /// on each side, and below) before settling onto the exact size, once.
@@ -73,9 +73,9 @@ enum NooriMotion {
     }
 
     /// The controls start fading in once the notch is part-way open...
-    static let contentFadeInDelay: TimeInterval = 0.15
-    /// ...and are fully shown when it reaches full size (about 0.4s in).
-    static let contentFadeInDuration: TimeInterval = 0.25
+    static let contentFadeInDelay: TimeInterval = 0.12
+    /// ...and are fully shown when it reaches full size (about 0.33s in).
+    static let contentFadeInDuration: TimeInterval = 0.21
     /// How long the title and controls take to blur and fade out on close.
     static let contentFadeOutDuration: TimeInterval = 0.25
     /// How blurred the title and controls are when fully faded out.
