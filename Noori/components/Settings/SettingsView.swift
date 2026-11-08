@@ -250,9 +250,6 @@ struct SettingsView: View {
                 .padding(.horizontal, 12)
                 .padding(.top, 12)
 
-                Divider()
-                    .padding(.horizontal, 12)
-
                 List(selection: selectionBinding) {
                     ForEach(groupedFilteredTabs, id: \.group) { section in
                         Section {
