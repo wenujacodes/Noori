@@ -138,8 +138,6 @@ struct ContentView: View {
     @State private var isHovering: Bool = false
     /// Counts notch openings; each change plays the open bounce once.
     @State private var notchOpenCount: Int = 0
-    /// Counts notch closings; each change plays the close bounce once.
-    @State private var notchCloseCount: Int = 0
     @State private var lastHapticTime: Date = Date()
     @State private var hoverClickMonitor: Any?
     @State private var hoverClickLocalMonitor: Any?
@@ -413,26 +411,6 @@ struct ContentView: View {
                         SpringKeyframe(0, duration: NooriMotion.notchBounceFall, spring: .smooth)
                     }
             }
-            .background {
-                let isOpen = vm.notchState == .open
-                resolvedClipShape
-                    .fill(.black)
-                    .keyframeAnimator(initialValue: CGFloat(0), trigger: notchCloseCount) { shape, gap in
-                        // Closing: the shape stops a few points bigger than the closed
-                        // notch, then settles onto it once. It never shrinks past the
-                        // closed size, so the real notch is never uncovered.
-                        let amount = isOpen ? 0 : gap
-                        shape
-                            .padding(.horizontal, -NooriMotion.notchCloseBounceGap.width * amount)
-                            .padding(.bottom, -NooriMotion.notchCloseBounceGap.height * amount)
-                            .opacity(amount > 0.001 ? 1 : 0)
-                    } keyframes: { _ in
-                        // Hold back while closing, so it stops short of the closed size,
-                        // then glide onto the exact closed size in one smooth move.
-                        CubicKeyframe(1, duration: NooriMotion.notchCloseBounceHold)
-                        SpringKeyframe(0, duration: NooriMotion.notchCloseBounceSettle, spring: .smooth)
-                    }
-            }
             .compositingGroup()
             .shadow(
                 color: ((vm.notchState == .open || isHovering) && Defaults[.enableShadow])
@@ -547,7 +525,7 @@ struct ContentView: View {
             configuredMainLayout
         }
         .onChange(of: vm.notchState) { _, newState in
-            if newState == .open { notchOpenCount &+= 1 } else { notchCloseCount &+= 1 }
+            if newState == .open { notchOpenCount &+= 1 }
         }
         .frame(
             maxWidth: (dynamicNotchSize.width + (vm.notchState == .open ? 24 : 0) + (isNooriMode ? nooriShadowInset * 2 : 0)).rounded(),

@@ -17,8 +17,8 @@ enum NooriMotion {
     /// The single bounce at the end comes from `notchOpenBounce` (shape only).
     static let notchOpen = Animation.spring(response: 0.32, dampingFraction: 1.0)
 
-    /// The notch collapsing: the same speed, without overshooting (which would
-    /// uncover the real notch). The close bounce comes from `notchCloseBounceGap`.
+    /// The notch collapsing: a smooth spring with no overshoot or bounce
+    /// (overshooting would uncover the real notch).
     static let notchClose = Animation.spring(response: 0.45, dampingFraction: 1.0)
 
     /// Picks the open or close motion for a notch state change.
@@ -35,13 +35,6 @@ enum NooriMotion {
     static let notchBounceWait: TimeInterval = 0.07
     static let notchBounceRise: TimeInterval = 0.2
     static let notchBounceFall: TimeInterval = 0.4
-
-    /// Closing bounce: how far outside the closed notch the shape stops (points
-    /// on each side, and below) before settling onto the exact size, once.
-    static let notchCloseBounceGap = CGSize(width: 6, height: 3)
-    /// How long it holds that gap while closing, then how long it takes to settle.
-    static let notchCloseBounceHold: TimeInterval = 0.3
-    static let notchCloseBounceSettle: TimeInterval = 0.35
 
     /// The closed notch reacting to the pointer (hover lift).
     static let hover = Animation.bouncy.speed(1.2)

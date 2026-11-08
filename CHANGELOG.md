@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.
 - Opening the notch is a little faster again (open spring 0.32 s, was 0.36 s), with the content fade-in and bounce shortened to match.
 - The album cover flip on a song change is slower and smoother (0.75 s with a smooth curve, was 0.45 s ease-in-out).
 - The song name and artist in the small notch (sneak peek and the song line on screens without a notch) use the same 11 pt medium font as the open notch's artist name.
@@ -91,6 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
+- The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.
 - Opening the notch is a little faster again (open spring 0.32 s, was 0.36 s), with the content fade-in and bounce shortened to match.
 - The album cover flip on a song change is slower and smoother (0.75 s with a smooth curve, was 0.45 s ease-in-out).
 - The song name and artist in the small notch (sneak peek and the song line on screens without a notch) use the same 11 pt medium font as the open notch's artist name.
