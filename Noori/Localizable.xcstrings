@@ -4019,22 +4019,6 @@
         }
       }
     },
-    "Color extraction" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Color extraction"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Извлечение цвета"
-          }
-        }
-      }
-    },
     "Color-coded battery display" : {
       "localizations" : {
         "ko" : {
@@ -9447,22 +9431,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "布局预览"
-          }
-        }
-      }
-    },
-    "Legacy" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Legacy"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Классический"
           }
         }
       }
@@ -19069,22 +19037,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "版本信息"
-          }
-        }
-      }
-    },
-    "Vibrant" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vibrant"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Яркий"
           }
         }
       }

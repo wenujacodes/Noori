@@ -1251,7 +1251,6 @@ struct Media: View {
     @Default(.showStandardMediaControls) private var showStandardMediaControls
     @Default(.autoHideInactiveNotchMediaPlayer) private var autoHideInactiveNotchMediaPlayer
     @Default(.visualizerBarCount) private var visualizerBarCount
-    @Default(.colorExtractionMode) private var colorExtractionMode
     @Default(.sliderColor) private var sliderColor
 
     
@@ -1398,11 +1397,6 @@ struct Media: View {
                     Text("4").tag(4)
                     Text("5").tag(5)
                     Text("6").tag(6)
-                }
-                
-                Picker("Color extraction", selection: $colorExtractionMode) {
-                    Text("Legacy").tag(ColorExtractionMode.legacy)
-                    Text("Vibrant").tag(ColorExtractionMode.vibrant)
                 }
 
             } header: {

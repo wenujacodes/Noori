@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - The album art parallax (3D tilt on hover) effect and its intensity setting.
+- The "Vibrant" color extraction mode and the Color extraction setting; the visualizer and tinting always use the original (Legacy) album art color.
 - 3D (animated video) icons in the Bluetooth device HUD and the "HUD icon style" setting; the HUD always uses the device symbol. The 8 AirPods/Beats animation videos were deleted.
 - Unused `sparkle` and `spotlight` images.
 - Divider lines above the credit line on the About page.
