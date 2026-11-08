@@ -335,8 +335,8 @@ extension Defaults.Keys {
         // MARK: Media playback
     static let coloredSpectrogram = Key<Bool>("coloredSpectrogram", default: true)
     static let enableRealTimeWaveform = Key<Bool>("enableRealTimeWaveform", default: false)
-    static let enableSneakPeek = Key<Bool>("enableSneakPeek", default: false)
-    static let sneakPeekStyles = Key<SneakPeekStyle>("sneakPeekStyles", default: .standard)
+    static let enableSneakPeek = Key<Bool>("enableSneakPeek", default: true)
+    static let sneakPeekStyles = Key<SneakPeekStyle>("sneakPeekStyles", default: .inline)
     static let showSneakPeekOnTrackChange = Key<Bool>("showSneakPeekOnTrackChange", default: true)
     static let enableFullscreenMediaDetection = Key<Bool>("enableFullscreenMediaDetection", default: true)
     static let parallaxEffectIntensity = Key<Double>("parallaxEffectIntensity", default: 6.0)
