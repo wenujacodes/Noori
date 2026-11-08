@@ -90,7 +90,9 @@ All app code lives in `Noori/`. The Xcode project uses **synchronized folder gro
 
 ## Updates / release
 
-- Sparkle is still integrated with a single stable feed: `SUFeedURL` in `Noori/Info.plist` (`https://raw.githubusercontent.com/wenujacodes/Noori/main/Updates/appcast.xml`, doesn't exist yet). There are no update channels. Atoll's `SUPublicEDKey` was removed; before shipping updates, generate your own EdDSA key with Sparkle's `generate_keys` and add `SUPublicEDKey` to `Noori/Info.plist`.
+- Sparkle is integrated with a single stable feed: `SUFeedURL` in `Noori/Info.plist` points to `Updates/appcast.xml` on `main` (raw.githubusercontent.com). `SUPublicEDKey` is Noori's own EdDSA key; the private key is in the owner's login Keychain under the account **Noori** (`generate_keys --account Noori`). Never sign with another key.
+- Releasing: `scripts/release.sh <version> [--publish]` sets the version and the next build number (newest build in the appcast + 1; `BUILD=<n>` overrides), builds Release, zips to `dist/`, signs the zip and adds it to `Updates/appcast.xml` with downloads from the GitHub release `v<version>`; `--publish` creates that release with `gh`. Then commit and push the version bump and the appcast.
+- There's no Developer ID certificate yet, so builds are ad-hoc signed (or `SIGN_IDENTITY=...`) and not notarized: users get the "unidentified developer" prompt on first install.
 - No CI/release workflows yet (Atoll's were removed).
 
 ## Knowledge graph (graphify)

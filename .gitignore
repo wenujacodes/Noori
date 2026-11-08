@@ -169,3 +169,8 @@ graphify-out/
 
 # Claude Code local settings (machine-specific paths)
 .claude/
+
+# Release output (scripts/release.sh)
+/dist/
+/build/
+!scripts/*.sh

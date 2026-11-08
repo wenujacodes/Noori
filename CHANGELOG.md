@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Sparkle updates are set up: Noori has its own update signing key, an update feed (`Updates/appcast.xml`) and a release script (`scripts/release.sh <version>`) that picks the next build number itself, then builds, zips, signs and adds the version to the feed.
 - Lock icon on the lock screen: when the Mac is locked, the notch widens slightly and shows a lock on its left side. Hovering it gives a small bounce and a haptic tap (it doesn't open). On unlock the lock opens and the pill shrinks back into the notch; if a song is playing, the music pill then grows out smoothly.
 - The volume HUD bar turns red while the sound is muted and stays at the current volume level, instead of being replaced by the word "muted".
 - Search in Settings is back: a search field at the top of the sidebar with suggestions; picking one opens its tab, scrolls to the setting and highlights it. The search list only covers settings that exist in Noori.
@@ -68,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub logo on the About page now follows the text color instead of always being white.
 
 ### Removed
+- The Apple Music permission text, which was only used for the removed animated artwork.
 - Live canvas (Apple Music animated album art) and its "Show live canvas in Noori" setting. The album cover is always the still artwork.
 - The "HUD Tests" buttons (test charging / low / full battery HUD) in the Battery settings.
 - The "Show power status icons" battery option; the charging/plug icon on the battery always shows.
