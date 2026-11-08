@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved the media appearance options (spectrograms, color tinting, slider color) from the Appearance tab to the Media tab.
 - The simpler close animation is now always used; its toggle was removed from Appearance settings.
 - Renamed the Focus detection options in the Focus menu to "Standard (needs Full Disk Access)" and "Faster, via system logs (needs Developer Tools permission)", replacing the confusing "Use DevTools" wording.
+- Keyboard shortcuts are now off by default (they can be turned on in Settings).
 - Color extraction now defaults to Legacy (Vibrant is still available in Settings).
 - Sneak peek is now on by default, with the Inline style (both can be changed in Settings).
 - Launch at Login is now turned on for new installs (it can be turned off in Settings).

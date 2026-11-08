@@ -418,7 +418,7 @@ extension Defaults.Keys {
 
     
     // MARK: Keyboard Shortcuts
-    static let enableShortcuts = Key<Bool>("enableShortcuts", default: true)
+    static let enableShortcuts = Key<Bool>("enableShortcuts", default: false)
     
     // MARK: System HUD Feature
     static let enableSystemHUD = Key<Bool>("enableSystemHUD", default: true)
