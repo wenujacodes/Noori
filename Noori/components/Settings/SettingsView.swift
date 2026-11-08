@@ -624,7 +624,6 @@ struct SettingsView: View {
 
             // Battery (Charge)
             SettingsSearchEntry(tab: .battery, title: "Show power status notifications", keywords: ["notifications", "power"], highlightID: SettingsTab.battery.highlightID(for: "Show power status notifications")),
-            SettingsSearchEntry(tab: .battery, title: "Show power status icons", keywords: ["power icons", "charging icon"], highlightID: SettingsTab.battery.highlightID(for: "Show power status icons")),
             SettingsSearchEntry(tab: .battery, title: "Play low battery alert sound", keywords: ["low battery", "alert", "sound"], highlightID: SettingsTab.battery.highlightID(for: "Play low battery alert sound")),
             SettingsSearchEntry(tab: .battery, title: "Charging HUD", keywords: ["battery", "charging", "temporary activity"], highlightID: SettingsTab.battery.highlightID(for: "Charging HUD")),
             SettingsSearchEntry(tab: .battery, title: "Low battery HUD", keywords: ["battery", "low", "temporary activity"], highlightID: SettingsTab.battery.highlightID(for: "Low battery HUD")),
@@ -1081,14 +1080,6 @@ struct Charge: View {
                     .settingsHighlight(id: highlightID("Play low battery alert sound"))
                 } header: {
                     Text("General")
-                }
-                Section {
-                    Defaults.Toggle(key: .showPowerStatusIcons) {
-                        Text("Show power status icons")
-                    }
-                    .settingsHighlight(id: highlightID("Show power status icons"))
-                } header: {
-                    Text("Battery Information")
                 }
                 Section {
                     Defaults.Toggle(key: .showChargingBatteryHUD) {

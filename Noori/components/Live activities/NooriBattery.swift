@@ -22,7 +22,6 @@ import Defaults
 
 /// A view that displays the battery status with an icon and charging indicator.
 struct BatteryView: View {
-    @Default(.showPowerStatusIcons) var showPowerStatusIcons
     var levelBattery: Float
     var isPluggedIn: Bool
     var isCharging: Bool
@@ -82,7 +81,7 @@ struct BatteryView: View {
                 .padding(.leading, 2)
 
             if showPercentInside {
-                let showsStatusGlyph = iconStatus != "" && (isForNotification || showPowerStatusIcons)
+                let showsStatusGlyph = iconStatus != ""
                 let bodyHeight = (batteryWidth - 2.75) - 18
                 let glyphColor: Color = isCharging ? .white : .black
                 let statusSymbol: String? = {
@@ -105,7 +104,7 @@ struct BatteryView: View {
                 }
                 .frame(width: batteryWidth - 7, height: bodyHeight, alignment: .center)
                 .padding(.leading, 2)
-            } else if iconStatus != "" && (isForNotification || showPowerStatusIcons) {
+            } else if iconStatus != "" {
                 ZStack {
                     Image(iconStatus)
                         .resizable()
