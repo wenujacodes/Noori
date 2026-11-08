@@ -19,9 +19,6 @@ import SwiftUI
 final class LockScreenIndicatorModel: ObservableObject {
     @Published var isLocked = true
     @Published var isShown = false
-    /// False when the lock pill fades straight into the music pill on unlock
-    /// instead of shrinking back into the notch.
-    @Published var collapsesOnHide = true
 }
 
 /// The closed notch, widened a little, with a lock icon on its left side.
@@ -79,7 +76,7 @@ struct LockScreenIndicatorView: View {
                     bottomCornerRadius: cornerRadiusInsets.closed.bottom
                   ))
         )
-        .scaleEffect(x: (model.isShown || !model.collapsesOnHide) ? 1 : collapsedScale, y: 1, anchor: .center)
+        .scaleEffect(x: model.isShown ? 1 : collapsedScale, y: 1, anchor: .center)
         // Hover only gives feedback (slight grow + haptic); it never opens the notch.
         .scaleEffect(isHovering ? 1.04 : 1, anchor: .top)
         .opacity(model.isShown ? 1 : 0)
@@ -126,7 +123,6 @@ final class LockScreenIndicatorWindowManager {
         guard let context = context() else { return }
 
         model.isLocked = true
-        model.collapsesOnHide = true
         model.isShown = false
         present(notchSize: context.notchSize, isNooriMode: context.isNooriMode, on: context.screen)
 
@@ -137,12 +133,10 @@ final class LockScreenIndicatorWindowManager {
         }
     }
 
-    /// Opens the lock, then hides. With `intoMusic` the pill only fades, so the
-    /// music pill drawn underneath shows through as if the lock pill became it.
-    func showUnlockedAndHide(intoMusic: Bool = false) {
+    /// Opens the lock, then shrinks the pill back into the notch.
+    func showUnlockedAndHide() {
         guard let window, window.isVisible else { return }
         hideTask?.cancel()
-        model.collapsesOnHide = !intoMusic
 
         withAnimation(NooriMotion.change) {
             model.isLocked = false

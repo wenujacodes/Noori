@@ -85,18 +85,6 @@ class LockScreenManager: ObservableObject {
         guard isLocked else { return }
         Logger.log("LockScreenManager: Screen unlocked", category: .lifecycle)
         unlockMusicTask?.cancel()
-        let music = MusicManager.shared
-        let musicActive = coordinator.musicLiveActivityEnabled
-            && (music.isPlaying || !music.isPlayerIdle)
-        if musicActive {
-            // Show the music pill right away under the lock pill, which then fades
-            // out over it, so the lock pill turns into the music pill.
-            shouldDelayPostUnlockMusicHUD = false
-            isLocked = false
-            LockScreenIndicatorWindowManager.shared.showUnlockedAndHide(intoMusic: true)
-            stopLockStatePolling()
-            return
-        }
         shouldDelayPostUnlockMusicHUD = true
         isLocked = false
         LockScreenIndicatorWindowManager.shared.showUnlockedAndHide()

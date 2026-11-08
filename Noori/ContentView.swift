@@ -453,6 +453,9 @@ struct ContentView: View {
             .animation(NooriMotion.hover, value: isHovering)
             .animation(NooriMotion.notch(opening: vm.notchState == .open), value: vm.notchState)
             .animation(NooriMotion.gesture, value: gestureProgress)
+            // After unlock the music pill comes back once the lock pill has
+            // closed; animate the notch body with it so it grows instead of jumping.
+            .animation(NooriMotion.notchOpen, value: lockScreenManager.shouldDelayPostUnlockMusicHUD)
             .conditionalModifier(interactionsEnabled) { view in
                 view
                     .contentShape(resolvedClipShape)
