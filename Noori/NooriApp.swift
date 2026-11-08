@@ -447,6 +447,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
 
         LockScreenManager.shared.configure(viewModel: vm)
+        LockScreenIndicatorWindowManager.shared.configure(viewModel: vm)
         
         // Migrate legacy progress bar settings
         Defaults.Keys.migrateProgressBarStyle()

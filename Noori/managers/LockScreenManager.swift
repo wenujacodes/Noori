@@ -70,6 +70,7 @@ class LockScreenManager: ObservableObject {
         if coordinator.sneakPeek.show {
             coordinator.toggleSneakPeek(status: false, type: coordinator.sneakPeek.type)
         }
+        LockScreenIndicatorWindowManager.shared.showLocked()
         startLockStatePolling()
     }
 
@@ -77,6 +78,7 @@ class LockScreenManager: ObservableObject {
         guard isLocked else { return }
         Logger.log("LockScreenManager: Screen unlocked", category: .lifecycle)
         isLocked = false
+        LockScreenIndicatorWindowManager.shared.showUnlockedAndHide()
         stopLockStatePolling()
     }
 
