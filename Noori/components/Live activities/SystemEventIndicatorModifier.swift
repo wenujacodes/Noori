@@ -172,7 +172,7 @@ struct VolumeProgressSection: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .animation(.smooth(duration: 0.2), value: value.isZero)
+        .animation(NooriMotion.change, value: value.isZero)
     }
 }
 
@@ -255,13 +255,13 @@ struct DraggableProgressBar: View {
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { gesture in
-                            withAnimation(.smooth(duration: 0.3)) {
+                            withAnimation(NooriMotion.appear) {
                                 isDragging = true
                                 updateValue(gesture: gesture, in: geo)
                             }
                         }
                         .onEnded { _ in
-                            withAnimation(.smooth(duration: 0.3)) {
+                            withAnimation(NooriMotion.appear) {
                                 isDragging = false
                             }
                         }

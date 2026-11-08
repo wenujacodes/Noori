@@ -33,7 +33,7 @@ struct NooriHeader: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .opacity(vm.notchState == .closed ? 0 : 1)
             .blur(radius: vm.notchState == .closed ? 20 : 0)
-            .animation(.smooth.delay(0.1), value: vm.notchState)
+            .animation(NooriMotion.appear.delay(0.1), value: vm.notchState)
             .zIndex(2)
             .padding(8)
 
@@ -54,7 +54,7 @@ struct NooriHeader: View {
             .frame(maxWidth: .infinity, alignment: .trailing)
             .opacity(vm.notchState == .closed ? 0 : 1)
             .blur(radius: vm.notchState == .closed ? 20 : 0)
-            .animation(.smooth.delay(0.1), value: vm.notchState)
+            .animation(NooriMotion.appear.delay(0.1), value: vm.notchState)
             .zIndex(2)
         }
         .foregroundColor(.gray)

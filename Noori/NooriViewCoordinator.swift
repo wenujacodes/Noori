@@ -173,7 +173,7 @@ class NooriViewCoordinator: ObservableObject {
             updated.accentColor = accentColor
             updated.styleOverride = styleOverride
             updated.targetScreenName = targetScreen?.localizedName
-            withAnimation(.smooth(duration: 0.3)) {
+            withAnimation(NooriMotion.appear) {
                 self.sneakPeek = updated
             }
         }
@@ -220,7 +220,7 @@ class NooriViewCoordinator: ObservableObject {
         autoHideDuration: TimeInterval? = nil
     ) {
         Task { @MainActor in
-            withAnimation(.smooth) {
+            withAnimation(NooriMotion.appear) {
                 self.expandingView.show = status
                 self.expandingView.type = type
                 self.expandingView.value = value

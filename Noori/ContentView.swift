@@ -401,14 +401,9 @@ struct ContentView: View {
 
     private var configuredMainLayout: some View {
         mainLayoutBase
-            .animation(Animation.bouncy.speed(1.2), value: isHovering)
-            .animation(
-                vm.notchState == .open
-                    ? Animation.spring(response: 0.42, dampingFraction: 0.8, blendDuration: 0)
-                    : Animation.spring(response: 0.45, dampingFraction: 1.0, blendDuration: 0),
-                value: vm.notchState
-            )
-            .animation(.smooth, value: gestureProgress)
+            .animation(NooriMotion.hover, value: isHovering)
+            .animation(NooriMotion.notch(opening: vm.notchState == .open), value: vm.notchState)
+            .animation(NooriMotion.gesture, value: gestureProgress)
             .conditionalModifier(interactionsEnabled) { view in
                 view
                     .contentShape(resolvedClipShape)
@@ -653,7 +648,7 @@ struct ContentView: View {
               .allowsHitTesting(vm.notchState == .open)
               .blur(radius: abs(gestureProgress) > 0.3 ? min(abs(gestureProgress), 8) : 0)
               .opacity(abs(gestureProgress) > 0.3 ? min(abs(gestureProgress * 2), 0.8) : 1)
-              .animation(.smooth(duration: 0.3), value: coordinator.currentView)
+              .animation(NooriMotion.appear, value: coordinator.currentView)
           }
       }
 
@@ -750,7 +745,7 @@ struct ContentView: View {
                         }
                         return
                     }
-                    withAnimation(.smooth(duration: 0.16)) {
+                    withAnimation(NooriMotion.change) {
                         isHoveringClosedMusicWaveformControl = hovering
                     }
                 }
@@ -759,7 +754,7 @@ struct ContentView: View {
         }
         .frame(width: notchWidth, height: notchContentHeight)
         .frame(height: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0), alignment: .center)
-        .animation(.smooth(duration: 0.25), value: secondary?.id)
+        .animation(NooriMotion.appear, value: secondary?.id)
     }
 
     private func resolveMusicSecondaryLiveActivity(isMusicPairingEligible: Bool = true) -> MusicSecondaryLiveActivity? {
@@ -927,8 +922,8 @@ struct ContentView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.trailing, trailingInset)
-                .animation(.smooth(duration: 0.16), value: isHoveringClosedMusicWaveformControl)
-                .animation(.smooth(duration: 0.2), value: musicManager.isPlaying)
+                .animation(NooriMotion.change, value: isHoveringClosedMusicWaveformControl)
+                .animation(NooriMotion.change, value: musicManager.isPlaying)
         }
     }
 
@@ -943,7 +938,7 @@ struct ContentView: View {
 
     // MARK: - Private Methods
     private func openNotch() {
-        withAnimation(.bouncy.speed(1.2)) {
+        withAnimation(NooriMotion.notchOpen) {
             vm.open()
         }
     }
@@ -1087,14 +1082,14 @@ struct ContentView: View {
         } else {
             stopHoverClickMonitor()
             if isHoveringClosedMusicWaveformControl {
-                withAnimation(.smooth(duration: 0.16)) {
+                withAnimation(NooriMotion.change) {
                     isHoveringClosedMusicWaveformControl = false
                 }
             }
         }
 
         if hovering {
-            withAnimation(.bouncy.speed(1.2)) {
+            withAnimation(NooriMotion.hover) {
                 isHovering = true
             }
 
@@ -1125,7 +1120,7 @@ struct ContentView: View {
                 guard !Task.isCancelled else { return }
 
                 await MainActor.run {
-                    withAnimation(.bouncy.speed(1.2)) {
+                    withAnimation(NooriMotion.hover) {
                         self.isHovering = false
                     }
 
@@ -1199,12 +1194,12 @@ struct ContentView: View {
     private func handleOpenScrollGesture(translation: CGFloat, phase: NSEvent.Phase) {
         guard vm.notchState == .closed else { return }
 
-        withAnimation(.smooth) {
+        withAnimation(NooriMotion.gesture) {
             gestureProgress = (translation / Defaults[.gestureSensitivity]) * 20
         }
 
         if phase == .ended {
-            withAnimation(.smooth) {
+            withAnimation(NooriMotion.gesture) {
                 gestureProgress = .zero
             }
         }
@@ -1213,7 +1208,7 @@ struct ContentView: View {
             if Defaults[.enableHaptics] {
                 triggerHapticIfAllowed()
             }
-            withAnimation(.smooth) {
+            withAnimation(NooriMotion.gesture) {
                 gestureProgress = .zero
             }
             openNotch()
@@ -1223,18 +1218,18 @@ struct ContentView: View {
     private func handleCloseScrollGesture(translation: CGFloat, phase: NSEvent.Phase) {
         guard vm.notchState == .open, !vm.isScrollGestureActive else { return }
 
-        withAnimation(.smooth) {
+        withAnimation(NooriMotion.gesture) {
             gestureProgress = (translation / Defaults[.gestureSensitivity]) * -20
         }
 
         if phase == .ended {
-            withAnimation(.smooth) {
+            withAnimation(NooriMotion.gesture) {
                 gestureProgress = .zero
             }
         }
 
         if translation > Defaults[.gestureSensitivity] {
-            withAnimation(.smooth) {
+            withAnimation(NooriMotion.gesture) {
                 gestureProgress = .zero
                 isHovering = false
             }

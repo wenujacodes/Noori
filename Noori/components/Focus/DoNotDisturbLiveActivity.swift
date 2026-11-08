@@ -280,7 +280,7 @@ struct DoNotDisturbLiveActivity: View {
                         .animation(.none, value: iconScale)
                 }
             }
-            .animation(.smooth(duration: 0.3), value: iconWingWidth)
+            .animation(NooriMotion.appear, value: iconWingWidth)
     }
 
     private var labelWing: some View {
@@ -311,7 +311,7 @@ struct DoNotDisturbLiveActivity: View {
                     .padding(.horizontal, 4)
                 }
             }
-            .animation(.smooth(duration: 0.3), value: shouldShowLabel)
+            .animation(NooriMotion.appear, value: shouldShowLabel)
     }
 
     private var labelColor: Color {
@@ -419,7 +419,7 @@ struct DoNotDisturbLiveActivity: View {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
             isExpanded = true
         }
-        withAnimation(.smooth(duration: 0.2)) {
+        withAnimation(NooriMotion.change) {
             showInactiveIcon = true
         }
 
@@ -437,7 +437,7 @@ struct DoNotDisturbLiveActivity: View {
                 withAnimation(.interpolatingSpring(stiffness: 180, damping: 18)) {
                     iconScale = 1.0
                 }
-                withAnimation(.smooth(duration: 0.2)) {
+                withAnimation(NooriMotion.change) {
                     showInactiveIcon = false
                 }
             }
@@ -446,7 +446,7 @@ struct DoNotDisturbLiveActivity: View {
         collapseTask?.cancel()
         collapseTask = Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(focusToastMode ? ToastTiming.inactiveDisplay : 320))
-            withAnimation(.smooth(duration: 0.32)) {
+            withAnimation(NooriMotion.appear) {
                 isExpanded = false
                 if focusToastMode {
                     showInactiveIcon = false
@@ -458,7 +458,7 @@ struct DoNotDisturbLiveActivity: View {
         guard !focusToastMode else { return }
         cleanupTask = Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(650))
-            withAnimation(.smooth(duration: 0.2)) {
+            withAnimation(NooriMotion.change) {
                 showInactiveIcon = false
             }
         }
@@ -470,7 +470,7 @@ struct DoNotDisturbLiveActivity: View {
 
         collapseTask = Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(ToastTiming.activeDisplay))
-            withAnimation(.smooth(duration: 0.32)) {
+            withAnimation(NooriMotion.appear) {
                 isExpanded = false
                 showInactiveIcon = false
             }

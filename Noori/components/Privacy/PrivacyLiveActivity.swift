@@ -101,17 +101,17 @@ struct PrivacyLiveActivity: View {
         }
         .frame(height: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0))
         .onAppear {
-            withAnimation(.smooth(duration: 0.4)) {
+            withAnimation(NooriMotion.appear) {
                 isExpanded = true
             }
         }
         .onChange(of: privacyManager.hasAnyIndicator) { _, newValue in
             if !newValue {
-                withAnimation(.smooth(duration: 0.4)) {
+                withAnimation(NooriMotion.appear) {
                     isExpanded = false
                 }
             } else {
-                withAnimation(.smooth(duration: 0.4)) {
+                withAnimation(NooriMotion.appear) {
                     isExpanded = true
                 }
             }
