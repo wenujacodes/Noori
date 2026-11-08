@@ -483,6 +483,7 @@
       }
     },
     "%0.1f" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
