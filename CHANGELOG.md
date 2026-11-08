@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The Settings window fades out when you close it (close button or ⌘W) instead of vanishing instantly.
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
-- In the open notch the two time labels follow the slider color (grey for White, the album color for Match album art, the accent color for Accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
+- In the open notch the two time labels use the slider color (white, the album color, or the accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
 - The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.
 - Opening the notch is a little faster again (open spring 0.32 s, was 0.36 s), with the content fade-in and bounce shortened to match.
 - The album cover flip on a song change is slower and smoother (0.75 s with a smooth curve, was 0.45 s ease-in-out).
@@ -101,7 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The Settings window fades out when you close it (close button or ⌘W) instead of vanishing instantly.
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
-- In the open notch the two time labels follow the slider color (grey for White, the album color for Match album art, the accent color for Accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
+- In the open notch the two time labels use the slider color (white, the album color, or the accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
 - The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.
 - Opening the notch is a little faster again (open spring 0.32 s, was 0.36 s), with the content fade-in and bounce shortened to match.
 - The album cover flip on a song change is slower and smoother (0.75 s with a smooth curve, was 0.45 s ease-in-out).
