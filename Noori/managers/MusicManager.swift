@@ -504,7 +504,7 @@ class MusicManager: ObservableObject {
 
     @Published var flipAngle: Double = 0
     @Published var lastFlipDirection: SkipDirection = .forward
-    private let flipAnimationDuration: TimeInterval = 0.45
+    private let flipAnimationDuration: TimeInterval = 0.75
     private var flipCooldownActive: Bool = false
 
     @Published var isTransitioning: Bool = false
@@ -944,7 +944,7 @@ class MusicManager: ObservableObject {
         // Direction: positive rotation = next (page turn forward),
         //            negative rotation = previous (page turn backward).
         let delta: Double = lastFlipDirection == .forward ? 180 : -180
-        withAnimation(.easeInOut(duration: flipAnimationDuration)) {
+        withAnimation(.smooth(duration: flipAnimationDuration)) {
             flipAngle += delta
         }
 
