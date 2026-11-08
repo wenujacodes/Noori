@@ -512,13 +512,24 @@ struct ContentView: View {
     private func installRootLifecycleHandlers<Content: View>(on view: Content) -> some View {
         view
             .onAppear {
-                startHiddenEdgeHoverPolling()
+                if shouldUseHiddenEdgeHoverPolling {
+                    startHiddenEdgeHoverPolling()
+                }
                 // Deterministic teardown for borderless panels (`.onDisappear` is
                 // unreliable); the window-cleanup path calls this before closing.
                 vm.onViewTeardown = { performViewTeardown() }
             }
             .onDisappear {
                 performViewTeardown()
+            }
+            // Only poll while the notch is hidden off-screen; otherwise the loop
+            // would wake the CPU 20 times a second for nothing.
+            .onChange(of: shouldUseHiddenEdgeHoverPolling) { _, shouldPoll in
+                if shouldPoll {
+                    startHiddenEdgeHoverPolling()
+                } else {
+                    stopHiddenEdgeHoverPolling()
+                }
             }
     }
 
@@ -998,12 +1009,10 @@ struct ContentView: View {
         guard hiddenEdgeHoverPollingTask == nil else { return }
 
         hiddenEdgeHoverPollingTask = Task { @MainActor in
-            while !Task.isCancelled {
-                if self.shouldUseHiddenEdgeHoverPolling {
-                    let hovering = self.hiddenHoverActivationContainsMouse()
-                    if hovering != self.isHovering {
-                        self.handleHover(hovering)
-                    }
+            while !Task.isCancelled && self.shouldUseHiddenEdgeHoverPolling {
+                let hovering = self.hiddenHoverActivationContainsMouse()
+                if hovering != self.isHovering {
+                    self.handleHover(hovering)
                 }
 
                 try? await Task.sleep(for: .milliseconds(50))
