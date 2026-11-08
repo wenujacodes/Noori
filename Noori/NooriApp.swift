@@ -21,6 +21,7 @@ import AVFoundation
 import Combine
 import Defaults
 import KeyboardShortcuts
+import LaunchAtLogin
 import Sparkle
 import SwiftUI
 import SkyLightWindow
@@ -82,7 +83,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let mediaControlsStateCoordinator = MediaControlsStateCoordinator.shared
     var closeNotchWorkItem: DispatchWorkItem?
     private var previousScreens: [NSScreen]?
-    private var onboardingWindowController: NSWindowController?
     private var cancellables = Set<AnyCancellable>()
     private var windowsHiddenForLock = false
     private var optionalShortcutHandlersRegistered = false
@@ -123,60 +123,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     
-    /// Setup observers for music player state changes to restart AudioTap capture
-    private func setupAudioTapMusicObservers() {
-        // Listen for app launches to restart capture when music apps are opened
-        let targetBundleIDs = [
-            "com.apple.Music",
-            "com.spotify.client",
-            "com.amazon.music",
-            "sh.cider.genten.mac",
-            "com.apple.Safari",
-            "com.tidal.desktop",
-            "tv.plex.plexamp",
-            "com.roon.Roon",
-            "com.audirvana.Audirvana-Studio",
-            "com.vox.vox",
-            "com.coppertino.Vox",
-        ]
-        
-        NSWorkspace.shared.notificationCenter.addObserver(
-            forName: NSWorkspace.didLaunchApplicationNotification,
-            object: nil,
-            queue: .main
-        ) { notification in
-            guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
-                  let bundleID = app.bundleIdentifier,
-                  targetBundleIDs.contains(bundleID) else { return }
-            
-            // A target music app was launched, restart capture to include it
-            if Defaults[.enableRealTimeWaveform] {
-                print("🎵 [AudioTap] Music app launched: \(bundleID), restarting capture...")
-                // Give the app a moment to fully launch
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    AudioTap.shared.restartCapture()
-                }
-            }
-        }
-        
-        // Also observe app terminations to restart capture
-        NSWorkspace.shared.notificationCenter.addObserver(
-            forName: NSWorkspace.didTerminateApplicationNotification,
-            object: nil,
-            queue: .main
-        ) { notification in
-            guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
-                  let bundleID = app.bundleIdentifier,
-                  targetBundleIDs.contains(bundleID) else { return }
-            
-            // A target music app was terminated, restart capture to update the list
-            if Defaults[.enableRealTimeWaveform] {
-                print("🎵 [AudioTap] Music app terminated: \(bundleID), restarting capture...")
-                AudioTap.shared.restartCapture()
-            }
-        }
-    }
-    
     func applicationWillTerminate(_ notification: Notification) {
 
         // Guarantee the native OSD is usable after we exit: if we were
@@ -188,9 +134,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Cancel any pending window size updates
         windowSizeUpdateWorkItem?.cancel()
         NotificationCenter.default.removeObserver(self)
-        
-        // Stop AudioTap capture
-        AudioTap.shared.stopCapture()
 
         // Restore Lunar's native OSD if integration was active
         LunarManager.shared.appWillTerminate()
@@ -539,28 +482,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             PrivacyIndicatorManager.shared.startMonitoring()
         }
         
-        // Setup Real-time Audio Waveform capture if enabled
-        if Defaults[.enableRealTimeWaveform] {
-            Task {
-                await AudioTap.shared.startCapture()
-            }
-            setupAudioTapMusicObservers()
-        }
-        
-        // Observe enableRealTimeWaveform changes
-        Defaults.publisher(.enableRealTimeWaveform, options: [])
-            .sink { [weak self] change in
-                if change.newValue {
-                    Task {
-                        await AudioTap.shared.startCapture()
-                    }
-                    self?.setupAudioTapMusicObservers()
-                } else {
-                    AudioTap.shared.stopCapture()
-                }
-            }
-            .store(in: &cancellables)
-        
         // Observe tab changes - use immediate resize to keep the notch pinned
         // Deferred to next run loop tick because @Published fires on willSet,
         // so coordinator.currentView still holds the OLD value at emission time.
@@ -732,12 +653,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             adjustWindowPosition(changeAlpha: true)
         }
         
-        // Skip onboarding window and welcome sound under UI testing.
-        if coordinator.firstLaunch && !AppRuntimeEnvironment.isUITesting {
-            DispatchQueue.main.async {
-                self.showOnboardingWindow()
-            }
-            playWelcomeSound()
+        // First-run setup (there is no onboarding window).
+        if coordinator.firstLaunch {
+            applyDefaultSetup()
+            coordinator.firstLaunch = false
         }
         
         previousScreens = NSScreen.screens
@@ -759,14 +678,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let focusSubmenu = NSMenu(title: "Focus")
 
         let withoutDevTools = NSMenuItem(
-            title: "Use without DevTools",
+            title: FocusMonitoringMode.withoutDevTools.displayName,
             action: #selector(selectFocusWithoutDevTools),
             keyEquivalent: ""
         )
         withoutDevTools.target = self
 
         let useDevTools = NSMenuItem(
-            title: "Use DevTools",
+            title: FocusMonitoringMode.useDevTools.displayName,
             action: #selector(selectFocusUseDevTools),
             keyEquivalent: ""
         )
@@ -1035,11 +954,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func playWelcomeSound() {
-        let audioPlayer = AudioPlayer()
-        audioPlayer.play(fileName: "dynamic", fileExtension: "m4a")
-    }
-    
     func deviceHasNotch() -> Bool {
         if #available(macOS 12.0, *) {
             for screen in NSScreen.screens {
@@ -1150,42 +1064,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     
     
-    private func showOnboardingWindow() {
-        if onboardingWindowController == nil {
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 400, height: 600),
-                styleMask: [.titled, .fullSizeContentView],
-                backing: .buffered,
-                defer: false
-            )
-            window.center()
-            window.title = "Onboarding"
-            window.titlebarAppearsTransparent = true
-            window.titleVisibility = .hidden
-            window.contentView = NSHostingView(rootView: OnboardingView(
-                onFinish: {
-                    window.orderOut(nil)
-                    NSApp.setActivationPolicy(.accessory)
-                    window.close()
-                    NSApp.deactivate()
-                },
-                onOpenSettings: {
-                    window.close()
-                    SettingsWindowController.shared.showWindow()
-                }
-            ))
-            window.isRestorable = false
-            window.identifier = NSUserInterfaceItemIdentifier("OnboardingWindow")
+    /// First-run setup: launch at login and haptics on, and a display style that matches the Mac's screen.
+    private func applyDefaultSetup() {
+        // On by default; the user can turn it off in Settings.
+        LaunchAtLogin.isEnabled = true
+        Defaults[.enableHaptics] = true
 
-            ScreenCaptureVisibilityManager.shared.register(window, scope: .panelsOnly)
-
-            onboardingWindowController = NSWindowController(window: window)
-        }
-
-        NSApp.setActivationPolicy(.regular)
-        NSApp.activate(ignoringOtherApps: true)
-        onboardingWindowController?.window?.makeKeyAndOrderFront(nil)
-        onboardingWindowController?.window?.orderFrontRegardless()
+        // Notch Macs keep the standard notch; Macs without one get the Noori pill.
+        let hasNotch = (NSScreen.main?.safeAreaInsets.top ?? 0) > 0
+        Defaults[.externalDisplayStyle] = hasNotch ? .notch : .noori
     }
 }
 

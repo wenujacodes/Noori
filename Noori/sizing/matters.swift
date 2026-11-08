@@ -64,7 +64,6 @@ func currentRecommendedMinimumNotchWidth() -> CGFloat {
 }
 
 private let minimalisticBaseOpenNotchSize: CGSize = .init(width: 420, height: 180)
-private let minimalisticLyricsExtraHeight: CGFloat = 40
 /// Bottom padding of the minimalistic player in standard notch mode.
 let minimalisticBaselineBottomPadding: CGFloat = 3
 let notchShadowPaddingStandard: CGFloat = 18
@@ -79,10 +78,6 @@ func minimalisticOpenNotchSize(isNooriMode: Bool) -> CGSize {
         size.height = 144 // Exact height of the minimalistic music player view
     }
 
-    if Defaults[.enableLyrics] {
-        size.height += minimalisticLyricsExtraHeight
-    }
-    
     return size
 }
 let cornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 19, bottom: 24), closed: (top: 6, bottom: 14))

@@ -268,8 +268,6 @@ private struct ScrollHintIndicator: View {
             return musicManager.isShuffled ? .red : .primary
         case .repeatMode:
             return musicManager.repeatMode == .off ? .primary : .red
-        case .lyrics:
-            return Defaults[.enableLyrics] ? .accentColor : .primary
         default:
             return .primary
         }

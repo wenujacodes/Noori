@@ -9,8 +9,6 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Noori uses Apple Music to fetch animated artwork for the lock screen wallpaper.</string>
-	<key>NSAudioCaptureUsageDescription</key>
-	<string>Noori needs audio capture permission to display the real-time music waveform visualizer.</string>
 	<key>SUEnableDownloaderService</key>
 	<true/>
 	<key>SUEnableInstallerLauncherService</key>

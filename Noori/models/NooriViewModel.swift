@@ -111,31 +111,6 @@ class NooriViewModel: NSObject, ObservableObject {
 
         setupDetectorObserver()
 
-        // Observe settings + lyrics changes to dynamically resize the notch
-        let enableLyricsPublisher = Defaults.publisher(.enableLyrics).map { $0.newValue }
-
-        enableLyricsPublisher
-            .combineLatest(MusicManager.shared.$currentLyrics)
-            .removeDuplicates { $0.0 == $1.0 && $0.1 == $1.1 }
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                let updatedTarget = self.calculateDynamicNotchSize()
-                guard self.notchState == .open else { return }
-                guard self.notchSize != updatedTarget else { return }
-                withAnimation(.smooth) {
-                    self.notchSize = updatedTarget
-                }
-                if let delegate = AppDelegate.shared {
-                    delegate.ensureWindowSize(
-                        addShadowPadding(to: updatedTarget, isMinimalistic: true),
-                        animated: true,
-                        force: false
-                    )
-                }
-            }
-            .store(in: &cancellables)
-
     }
 
     
@@ -241,18 +216,4 @@ class NooriViewModel: NSObject, ObservableObject {
         }
     }
 
-    private var helloCloseScheduled = false
-
-    func closeHello() {
-        guard !helloCloseScheduled else { return }
-        helloCloseScheduled = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [weak self] in
-            guard let self else { return }
-            self.coordinator.firstLaunch = false
-            withAnimation(self.animationLibrary.animation) {
-                self.close()
-            }
-        }
-    }
-    
 }

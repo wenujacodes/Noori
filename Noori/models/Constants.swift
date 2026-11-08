@@ -261,9 +261,9 @@ enum FocusMonitoringMode: String, CaseIterable, Identifiable, Defaults.Serializa
     var displayName: String {
         switch self {
         case .withoutDevTools:
-            return "Use without DevTools"
+            return "Standard (needs Full Disk Access)"
         case .useDevTools:
-            return "Use DevTools"
+            return "Faster, via system logs (needs Developer Tools permission)"
         }
     }
 }
@@ -289,7 +289,6 @@ extension Defaults.Keys {
     static let minimumHoverDuration = Key<TimeInterval>("minimumHoverDuration", default: 0.3)
     static let enableHaptics = Key<Bool>("enableHaptics", default: true)
     static let openNotchOnHover = Key<Bool>("openNotchOnHover", default: true)
-	static let extendHoverArea = Key<Bool>("extendHoverArea", default: false)
     static let externalDisplayStyle = Key<ExternalDisplayStyle>(
         "externalDisplayStyle",
         default: .notch
@@ -313,7 +312,6 @@ extension Defaults.Keys {
     static let showEmojis = Key<Bool>("showEmojis", default: false)
     static let accentColor = Key<Color>("accentColor", default: Color.blue)
     static let enableShadow = Key<Bool>("enableShadow", default: true)
-    static let cornerRadiusScaling = Key<Bool>("cornerRadiusScaling", default: true)
     static let tileShowLabels = Key<Bool>("tileShowLabels", default: false)
     static let sliderColor = Key<SliderColorEnum>(
         "sliderUseAlbumArtColor",
@@ -322,8 +320,7 @@ extension Defaults.Keys {
     static let playerColorTinting = Key<Bool>("playerColorTinting", default: true)
     static let useMusicVisualizer = Key<Bool>("useMusicVisualizer", default: true)
     static let visualizerBarCount = Key<Int>("visualizerBarCount", default: 4)
-    static let enableWaveformScrubber = Key<Bool>("enableWaveformScrubber", default: true)
-    static let colorExtractionMode = Key<ColorExtractionMode>("colorExtractionMode", default: .vibrant)
+    static let colorExtractionMode = Key<ColorExtractionMode>("colorExtractionMode", default: .legacy)
     
         // MARK: Gestures
     static let enableGestures = Key<Bool>("enableGestures", default: true)
@@ -336,9 +333,8 @@ extension Defaults.Keys {
     
         // MARK: Media playback
     static let coloredSpectrogram = Key<Bool>("coloredSpectrogram", default: true)
-    static let enableRealTimeWaveform = Key<Bool>("enableRealTimeWaveform", default: false)
-    static let enableSneakPeek = Key<Bool>("enableSneakPeek", default: false)
-    static let sneakPeekStyles = Key<SneakPeekStyle>("sneakPeekStyles", default: .standard)
+    static let enableSneakPeek = Key<Bool>("enableSneakPeek", default: true)
+    static let sneakPeekStyles = Key<SneakPeekStyle>("sneakPeekStyles", default: .inline)
     static let showSneakPeekOnTrackChange = Key<Bool>("showSneakPeekOnTrackChange", default: true)
     static let enableFullscreenMediaDetection = Key<Bool>("enableFullscreenMediaDetection", default: true)
     static let parallaxEffectIntensity = Key<Double>("parallaxEffectIntensity", default: 6.0)
@@ -422,7 +418,7 @@ extension Defaults.Keys {
 
     
     // MARK: Keyboard Shortcuts
-    static let enableShortcuts = Key<Bool>("enableShortcuts", default: true)
+    static let enableShortcuts = Key<Bool>("enableShortcuts", default: false)
     
     // MARK: System HUD Feature
     static let enableSystemHUD = Key<Bool>("enableSystemHUD", default: true)
@@ -482,18 +478,13 @@ extension Defaults.Keys {
     static let didClearLegacyURLCacheV1 = Key<Bool>("didClearLegacyURLCacheV1", default: false)
     
     
-    // MARK: Lyrics Feature
-    static let enableLyrics = Key<Bool>("enableLyrics", default: false)
+    // MARK: Live Canvas
     static let showLiveCanvasInNoori = Key<Bool>("showLiveCanvasInNoori", default: false)
     
     
-    // Helper to determine the default media controller based on macOS version
+    // Default media controller for new installs.
     static var defaultMediaController: MediaControllerType {
-        if #available(macOS 15.4, *) {
-            return .appleMusic
-        } else {
-            return .nowPlaying
-        }
+        .nowPlaying
     }
     
     // Migration helper to convert from legacy enableGradient Boolean to new ProgressBarStyle enum

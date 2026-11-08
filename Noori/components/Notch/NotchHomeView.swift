@@ -390,10 +390,6 @@ struct CustomSlider: View {
     var restingTrackHeight: CGFloat = 8
     var draggingTrackHeight: CGFloat = 14
     
-    @State private var isHovering: Bool = false
-    @Default(.enableRealTimeWaveform) var enableRealTimeWaveform
-    @Default(.enableWaveformScrubber) var enableWaveformScrubber
-
     var body: some View {
         GeometryReader { geometry in
             let width = geometry.size.width
@@ -402,34 +398,19 @@ struct CustomSlider: View {
 
             let progress = rangeSpan == .zero ? 0 : (value - range.lowerBound) / rangeSpan
             let filledTrackWidth = min(max(progress, 0), 1) * width
-            
-            let showScrubber = isHovering && enableRealTimeWaveform && enableWaveformScrubber
 
             ZStack(alignment: .bottomLeading) {
                 // Background track
-                if showScrubber {
-                    RealTimeWaveformScrubberView(
-                        color: color,
-                        secondaryColor: Defaults[.coloredSpectrogram] ? Color(nsColor: MusicManager.shared.secondaryColor) : nil,
-                        progress: progress,
-                        minHeight: trackHeight
-                    )
-                    .frame(height: trackHeight * 3.5)
-                    .offset(y: trackHeight * 0.2)
-                } else {
-                    Rectangle()
-                        .fill(.gray.opacity(0.3))
-                        .frame(height: trackHeight)
-                        .cornerRadius(trackHeight / 2)
-                }
+                Rectangle()
+                    .fill(.gray.opacity(0.3))
+                    .frame(height: trackHeight)
+                    .cornerRadius(trackHeight / 2)
 
                 // Filled track
-                if !showScrubber {
-                    Rectangle()
-                        .fill(color)
-                        .frame(width: filledTrackWidth, height: trackHeight)
-                        .cornerRadius(trackHeight / 2)
-                }
+                Rectangle()
+                    .fill(color)
+                    .frame(width: filledTrackWidth, height: trackHeight)
+                    .cornerRadius(trackHeight / 2)
             }
             .frame(height: max(restingTrackHeight, draggingTrackHeight), alignment: .bottom)
             .contentShape(Rectangle())
@@ -449,11 +430,6 @@ struct CustomSlider: View {
                     }
             )
             .animation(.bouncy.speed(1.4), value: dragging)
-            .onHover { hovering in
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    isHovering = hovering
-                }
-            }
         }
     }
 }

@@ -187,17 +187,11 @@ struct ContentView: View {
         guard vm.notchState == .open else {
             return activeCornerRadiusInsets.closed.bottom
         }
-        if Defaults[.cornerRadiusScaling] {
-            return activeCornerRadiusInsets.opened.top - 5
-        }
-        return activeCornerRadiusInsets.opened.bottom - 5
+        return activeCornerRadiusInsets.opened.top - 5
     }
 
     private var bodyHoverAreaPadding: CGFloat {
-        if vm.notchState == .open && Defaults[.extendHoverArea] {
-            return 0
-        }
-        return vm.effectiveClosedNotchHeight == 0 ? zeroHeightHoverPadding : 0
+        vm.effectiveClosedNotchHeight == 0 ? zeroHeightHoverPadding : 0
     }
 
     private var notchBottomPadding: CGFloat {
@@ -239,10 +233,10 @@ struct ContentView: View {
     }
 
     private var currentNotchShape: NotchShape {
-        let topRadius = (vm.notchState == .open && Defaults[.cornerRadiusScaling])
+        let topRadius = vm.notchState == .open
             ? activeCornerRadiusInsets.opened.top
             : activeCornerRadiusInsets.closed.top
-        let bottomRadius = (vm.notchState == .open && Defaults[.cornerRadiusScaling])
+        let bottomRadius = vm.notchState == .open
             ? activeCornerRadiusInsets.opened.bottom
             : activeCornerRadiusInsets.closed.bottom
         return NotchShape(topCornerRadius: topRadius, bottomCornerRadius: bottomRadius)
@@ -395,7 +389,7 @@ struct ContentView: View {
                 color: ((vm.notchState == .open || isHovering) && Defaults[.enableShadow])
                     ? .black.opacity(0.6)
                     : .clear,
-                radius: Defaults[.cornerRadiusScaling] ? 10 : 5
+                radius: 10
             )
             // Extra horizontal inset for Noori mode so the shadow
             // is not clipped by the outer frame constraint
@@ -457,16 +451,6 @@ struct ContentView: View {
                 ? -(vm.closedNotchSize.height + pillTopOffset + currentShadowPadding + 10)
                 : 0
             )
-            .onAppear(perform: {
-                if coordinator.firstLaunch {
-                    // Single open during first launch; closeHello() handles the timed close.
-                    runAfter(1) {
-                        withAnimation(vm.animation) {
-                            openNotch()
-                        }
-                    }
-                }
-            })
             .onChange(of: vm.notchState) { _, newState in
                 // Reset hover state when notch state changes
                 if newState == .closed && isHovering {
@@ -542,14 +526,6 @@ struct ContentView: View {
       func NotchLayout() -> some View {
           VStack(alignment: .leading) {
               VStack(alignment: .leading) {
-                  if coordinator.firstLaunch {
-                      Spacer()
-                      HelloAnimation().frame(width: 200, height: 80).onAppear(perform: {
-                          vm.closeHello()
-                      })
-                      .padding(.top, 40)
-                      Spacer()
-                  } else {
                         let hasMusicMetadata = !musicManager.songTitle.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty
                             || !musicManager.artistName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty
                       let hasActiveMusicSnapshot: Bool = {
@@ -643,7 +619,6 @@ struct ContentView: View {
                               }
                           }
                       }
-                  }
               }
               .conditionalModifier(shouldFixSizeForSneakPeek()) { view in
                   view

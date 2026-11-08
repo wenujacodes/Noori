@@ -548,9 +548,6 @@ struct GeneralSettings: View {
     @ViewBuilder
     func NotchBehaviour() -> some View {
         Section {
-            Defaults.Toggle(key: .extendHoverArea) {
-                Text("Extend hover area")
-            }
             Defaults.Toggle(key: .enableHaptics) {
                 Text("Enable haptics")
             }
@@ -1285,7 +1282,6 @@ struct Media: View {
     @Default(.showStandardMediaControls) private var showStandardMediaControls
     @Default(.autoHideInactiveNotchMediaPlayer) private var autoHideInactiveNotchMediaPlayer
     @Default(.visualizerBarCount) private var visualizerBarCount
-    @Default(.enableWaveformScrubber) private var enableWaveformScrubber
     @Default(.colorExtractionMode) private var colorExtractionMode
     @Default(.parallaxEffectIntensity) private var parallaxEffectIntensity
     @Default(.sliderColor) private var sliderColor
@@ -1383,9 +1379,6 @@ struct Media: View {
                 Toggle("Enable sneak peek", isOn: $enableSneakPeek)
                 Toggle("Show sneak peek on playback changes", isOn: $showSneakPeekOnTrackChange)
                     .disabled(!enableSneakPeek)
-                Defaults.Toggle(key: .enableLyrics) {
-                    Text("Enable lyrics")
-                }
                 Defaults.Toggle(key: .showLiveCanvasInNoori) {
                     Text("Show live canvas in Noori")
                 }
@@ -1443,12 +1436,6 @@ struct Media: View {
             }
 
             Section {
-                Defaults.Toggle(key: .enableRealTimeWaveform) {
-                    HStack {
-                        Text("Enable real-time waveform")
-                    }
-                }
-                
                 Picker("Visualizer candles", selection: $visualizerBarCount) {
                     Text("4").tag(4)
                     Text("5").tag(5)
@@ -1459,12 +1446,9 @@ struct Media: View {
                     Text("Legacy").tag(ColorExtractionMode.legacy)
                     Text("Vibrant").tag(ColorExtractionMode.vibrant)
                 }
-                
-                Toggle("Scrubbable real-time waveform", isOn: $enableWaveformScrubber)
+
             } header: {
                 Text("Music Visualizer")
-            } footer: {
-                Text("When enabled, the music visualizer displays real-time audio spectrum data synced to your music. Requires macOS 14.2+ and uses minimal CPU/GPU resources via the Accelerate framework.")
             }
 
             .opacity(showStandardMediaControls ? 1 : 0.5)
@@ -1910,7 +1894,7 @@ struct LiveActivitiesSettings: View {
             } header: {
                 Text("Media Live Activity")
             } footer: {
-                Text("Use the Media tab to configure sneak peek and lyrics.")
+                Text("Use the Media tab to configure sneak peek.")
             }
 
         }
@@ -1959,9 +1943,6 @@ struct Appearance: View {
             Section {
                 Defaults.Toggle(key: .enableShadow) {
                     Text("Enable window shadow")
-                }
-                Defaults.Toggle(key: .cornerRadiusScaling) {
-                    Text("Corner radius scaling")
                 }
             } header: {
                 Text("General")

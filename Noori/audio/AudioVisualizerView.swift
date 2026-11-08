@@ -18,17 +18,12 @@
 import SwiftUI
 import Defaults
 
-/// Unified audio visualizer view that switches between real-time and animated based on user preference
+/// Music visualizer: animated bars while music is playing.
 struct AudioVisualizerView: View {
     @Binding var isPlaying: Bool
-    @Default(.enableRealTimeWaveform) private var enableRealTimeWaveform
-    
+
     var body: some View {
-        if enableRealTimeWaveform {
-            RealTimeAudioSpectrumView(isPlaying: $isPlaying)
-        } else {
-            AudioSpectrumView(isPlaying: $isPlaying)
-        }
+        AudioSpectrumView(isPlaying: $isPlaying)
     }
 }
 
