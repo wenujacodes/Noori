@@ -25,126 +25,18 @@ import Combine
 import Defaults
 import SwiftUI
 import AppKit
-import AVFoundation
-
-private final class NooriArtworkLoopController {
-    let player: AVQueuePlayer
-    private var looper: AVPlayerLooper?
-    private var playbackStateCancellable: AnyCancellable?
-
-    init(url: URL) {
-        let item = AVPlayerItem(url: url)
-        player = AVQueuePlayer()
-        player.isMuted = true
-        player.actionAtItemEnd = .none
-        looper = AVPlayerLooper(player: player, templateItem: item)
-
-        if MusicManager.shared.isPlaying {
-            player.play()
-        }
-
-        playbackStateCancellable = MusicManager.shared.$isPlaying
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isPlaying in
-                guard let self else { return }
-                if isPlaying {
-                    self.player.play()
-                } else {
-                    self.player.pause()
-                }
-            }
-    }
-
-    deinit {
-        player.pause()
-        looper = nil
-        playbackStateCancellable = nil
-    }
-}
-
-private final class NooriArtworkVideoContainerView: NSView {
-    let playerLayer = AVPlayerLayer()
-
-    override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        wantsLayer = true
-        layer?.backgroundColor = NSColor.clear.cgColor
-        playerLayer.videoGravity = .resizeAspectFill
-        playerLayer.backgroundColor = NSColor.clear.cgColor
-        layer?.addSublayer(playerLayer)
-    }
-
-    required init?(coder: NSCoder) {
-        nil
-    }
-
-    override func layout() {
-        super.layout()
-        playerLayer.frame = bounds
-    }
-}
-
-private struct NooriArtworkVideoView: NSViewRepresentable {
-    let url: URL
-    let videoGravity: AVLayerVideoGravity
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-
-    func makeNSView(context: Context) -> NooriArtworkVideoContainerView {
-        let view = NooriArtworkVideoContainerView(frame: .zero)
-        context.coordinator.attach(layer: view.playerLayer, url: url, gravity: videoGravity)
-        return view
-    }
-
-    func updateNSView(_ nsView: NooriArtworkVideoContainerView, context: Context) {
-        context.coordinator.attach(layer: nsView.playerLayer, url: url, gravity: videoGravity)
-    }
-
-    final class Coordinator {
-        private var controller: NooriArtworkLoopController?
-        private var currentURL: URL?
-
-        func attach(layer: AVPlayerLayer, url: URL, gravity: AVLayerVideoGravity) {
-            layer.videoGravity = gravity
-
-            if currentURL != url || controller == nil {
-                currentURL = url
-                controller = NooriArtworkLoopController(url: url)
-            }
-
-            if layer.player !== controller?.player {
-                layer.player = controller?.player
-            }
-        }
-    }
-}
 
 struct NooriArtworkSourceView: View {
     @ObservedObject private var musicManager = MusicManager.shared
-    @Default(.showLiveCanvasInNoori) private var showLiveCanvasInNoori
 
     let cornerRadius: CGFloat
     let contentMode: ContentMode
 
-    private var liveCanvasURL: URL? {
-        guard showLiveCanvasInNoori else { return nil }
-        return musicManager.videoArtworkURL
-    }
-
     var body: some View {
-        Group {
-            if let liveCanvasURL {
-                NooriArtworkVideoView(url: liveCanvasURL, videoGravity: .resizeAspectFill)
-            } else {
-                Image(nsImage: musicManager.albumArt)
-                    .resizable()
-                    .aspectRatio(contentMode: contentMode)
-            }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        Image(nsImage: musicManager.albumArt)
+            .resizable()
+            .aspectRatio(contentMode: contentMode)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
     }
 }
 

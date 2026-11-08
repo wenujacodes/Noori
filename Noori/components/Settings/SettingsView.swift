@@ -631,9 +631,6 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .battery, title: "Charging duration", keywords: ["charging", "duration", "seconds"], highlightID: SettingsTab.battery.highlightID(for: "Charging duration")),
             SettingsSearchEntry(tab: .battery, title: "Low battery duration", keywords: ["low battery", "duration", "seconds"], highlightID: SettingsTab.battery.highlightID(for: "Low battery duration")),
             SettingsSearchEntry(tab: .battery, title: "Full battery duration", keywords: ["full battery", "duration", "seconds"], highlightID: SettingsTab.battery.highlightID(for: "Full battery duration")),
-            SettingsSearchEntry(tab: .battery, title: "Test charging HUD", keywords: ["battery", "test", "charging", "preview"], highlightID: nil),
-            SettingsSearchEntry(tab: .battery, title: "Test low battery HUD", keywords: ["battery", "test", "low", "preview"], highlightID: nil),
-            SettingsSearchEntry(tab: .battery, title: "Test full battery HUD", keywords: ["battery", "test", "full", "preview"], highlightID: nil),
             SettingsSearchEntry(tab: .battery, title: "Low battery style", keywords: ["battery", "style", "compact", "standard"], highlightID: SettingsTab.battery.highlightID(for: "Low battery style")),
             SettingsSearchEntry(tab: .battery, title: "Low battery threshold", keywords: ["battery", "threshold", "percent"], highlightID: SettingsTab.battery.highlightID(for: "Low battery threshold")),
             SettingsSearchEntry(tab: .battery, title: "Full battery style", keywords: ["battery", "style", "compact", "standard"], highlightID: SettingsTab.battery.highlightID(for: "Full battery style")),
@@ -662,10 +659,9 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .hudAndOSD, title: "Enable external volume control listener", keywords: ["external volume", "ddc volume", "betterdisplay volume", "lunar volume", "disable native volume"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Enable external volume control listener")),
 
             // Media
-            SettingsSearchEntry(tab: .media, title: "Music Source", keywords: ["media source", "controller"], highlightID: SettingsTab.media.highlightID(for: "Music Source")),
+            SettingsSearchEntry(tab: .media, title: "Music source", keywords: ["media source", "controller"], highlightID: SettingsTab.media.highlightID(for: "Music source")),
             SettingsSearchEntry(tab: .media, title: "Skip buttons", keywords: ["skip", "controls", "±10"], highlightID: SettingsTab.media.highlightID(for: "Skip buttons")),
-            SettingsSearchEntry(tab: .media, title: "Sneak Peek Style", keywords: ["sneak peek", "preview"], highlightID: SettingsTab.media.highlightID(for: "Sneak Peek Style")),
-            SettingsSearchEntry(tab: .media, title: "Show live canvas in Noori", keywords: ["canvas", "live canvas", "album art", "noori", "spotify canvas"], highlightID: SettingsTab.media.highlightID(for: "Show live canvas in Noori")),
+            SettingsSearchEntry(tab: .media, title: "Sneak peek style", keywords: ["sneak peek", "preview"], highlightID: SettingsTab.media.highlightID(for: "Sneak peek style")),
             SettingsSearchEntry(tab: .media, title: "Show Change Media Output control", keywords: ["airplay", "route picker", "media output"], highlightID: SettingsTab.media.highlightID(for: "Show Change Media Output control")),
 
             SettingsSearchEntry(tab: .media, title: "Show song title and artist in closed notch", keywords: ["song title", "artist", "closed notch"], highlightID: SettingsTab.media.highlightID(for: "Show song title and artist in closed notch")),
@@ -873,7 +869,7 @@ struct GeneralSettings: View {
                     }
                 }
             } header: {
-                Text("Notch Height")
+                Text("Notch height")
             }
 
             NotchBehaviour()
@@ -1141,33 +1137,7 @@ struct Charge: View {
                     .disabled(!showPowerStatusNotifications || !showFullBatteryHUD)
                     .opacity(sectionOpacity(showPowerStatusNotifications && showFullBatteryHUD))
                 } header: {
-                    Text("HUD Duration")
-                }
-                Section {
-                    Button {
-                        batteryStatusViewModel.triggerTestHUD(kind: .charging)
-                    } label: {
-                        Label("Test charging HUD", systemImage: "bolt.fill")
-                    }
-                    .disabled(!showPowerStatusNotifications || !showChargingBatteryHUD)
-
-                    Button {
-                        batteryStatusViewModel.triggerTestHUD(kind: .lowBattery)
-                    } label: {
-                        Label("Test low battery HUD", systemImage: "battery.25")
-                    }
-                    .disabled(!showPowerStatusNotifications || !showLowBatteryHUD)
-
-                    Button {
-                        batteryStatusViewModel.triggerTestHUD(kind: .fullBattery)
-                    } label: {
-                        Label("Test full battery HUD", systemImage: "battery.100")
-                    }
-                    .disabled(!showPowerStatusNotifications || !showFullBatteryHUD)
-                } header: {
-                    Text("HUD Tests")
-                } footer: {
-                    Text("Runs the real notch animation on the current target display. If an external screen is using Noori mode, the battery HUD is sent there first.")
+                    Text("HUD duration")
                 }
                 Section {
                     VStack(alignment: .leading, spacing: 10) {
@@ -1196,7 +1166,7 @@ struct Charge: View {
                     }
                     .settingsHighlight(id: highlightID("Low battery threshold"))
                 } header: {
-                    Text("Low Battery")
+                    Text("Low battery")
                 }
                 .disabled(!showPowerStatusNotifications || !showLowBatteryHUD)
                 .opacity(sectionOpacity(showPowerStatusNotifications && showLowBatteryHUD))
@@ -1228,7 +1198,7 @@ struct Charge: View {
                     }
                     .settingsHighlight(id: highlightID("Full charge threshold"))
                 } header: {
-                    Text("Full Battery")
+                    Text("Full battery")
                 }
                 .disabled(!showPowerStatusNotifications || !showFullBatteryHUD)
                 .opacity(sectionOpacity(showPowerStatusNotifications && showFullBatteryHUD))
@@ -1506,7 +1476,7 @@ private struct DevicesSettingsView: View {
                     Text("Show AirPods listening mode changes")
                 }
             } header: {
-                Text("Bluetooth Audio Devices")
+                Text("Bluetooth audio devices")
             } footer: {
                 Text("Displays a HUD notification when Bluetooth audio devices (headphones, AirPods, speakers) connect, showing device name and battery level.")
                     .foregroundStyle(.secondary)
@@ -1520,7 +1490,7 @@ private struct DevicesSettingsView: View {
                 .disabled(colorCodingDisabled)
                 .settingsHighlight(id: highlightID("Color-coded battery display"))
             } header: {
-                Text("Battery Indicator Styling")
+                Text("Battery indicator style")
             } footer: {
                 if progressBarStyle == .segmented {
                     Text("Color-coded fills are unavailable in Segmented mode. Switch to Hierarchical or Gradient inside Controls › Noori to adjust advanced options.")
@@ -1590,7 +1560,7 @@ struct HUD: View {
                 Section {
                     Toggle("Volume HUD", isOn: $enableVolumeHUD)
                     Toggle("Brightness HUD", isOn: $enableBrightnessHUD)
-                    Toggle("Keyboard Backlight HUD", isOn: $enableKeyboardBacklightHUD)
+                    Toggle("Keyboard backlight HUD", isOn: $enableKeyboardBacklightHUD)
                         .disabled(enableThirdPartyDDCIntegration)
                         .help(enableThirdPartyDDCIntegration ? "Disabled while external display integration is active \u{2014} brightness keys are handled by the external app." : "")
                 } header: {
@@ -1616,7 +1586,7 @@ struct HUD: View {
                 }
                 .settingsHighlight(id: highlightID("Show percentages beside progress bars"))
             } header: {
-                Text("Noori Progress Bars")
+                Text("Progress bars")
             } footer: {
                 if colorCodingDisabled {
                     Text("Color-coded fills and smooth gradients are unavailable in Segmented mode. Switch to Hierarchical or Gradient to adjust these options.")
@@ -1717,7 +1687,7 @@ struct Media: View {
     var body: some View {
         Form {
             Section {
-                Picker("Music Source", selection: $mediaController) {
+                Picker("Music source", selection: $mediaController) {
                     ForEach(availableMediaControllers) { controller in
                         Text(controller.localizedName).tag(controller)
                     }
@@ -1728,9 +1698,9 @@ struct Media: View {
                         object: nil
                     )
                 }
-                .settingsHighlight(id: highlightID("Music Source"))
+                .settingsHighlight(id: highlightID("Music source"))
             } header: {
-                Text("Media Source")
+                Text("Media source")
             } footer: {
                 if MusicManager.shared.isNowPlayingDeprecated {
                     HStack {
@@ -1787,7 +1757,7 @@ struct Media: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } header: {
-                Text("Skip button behaviour")
+                Text("Skip button behavior")
             }
             Section {
                 Toggle(
@@ -1797,19 +1767,14 @@ struct Media: View {
                 Toggle("Enable sneak peek", isOn: $enableSneakPeek)
                 Toggle("Show sneak peek on playback changes", isOn: $showSneakPeekOnTrackChange)
                     .disabled(!enableSneakPeek)
-                Defaults.Toggle(key: .showLiveCanvasInNoori) {
-                    Text("Show live canvas in Noori")
-                }
-                .settingsHighlight(id: highlightID("Show live canvas in Noori"))
-                .help("Replaces the artwork tile with the live canvas when the current app provides one, and reuses that moving canvas for the surrounding lighting effect.")
                 
-                Picker("Sneak Peek Style", selection: $sneakPeekStyles){
+                Picker("Sneak peek style", selection: $sneakPeekStyles){
                     ForEach(SneakPeekStyle.allCases) { style in
                         Text(style.localizedName).tag(style)
                     }
                 }
                 .disabled(!enableSneakPeek)
-                .settingsHighlight(id: highlightID("Sneak Peek Style"))
+                .settingsHighlight(id: highlightID("Sneak peek style"))
 
                 HStack {
                     Stepper(value: $waitInterval, in: 0...10, step: 1) {
@@ -1856,7 +1821,7 @@ struct Media: View {
                 }
 
             } header: {
-                Text("Music Visualizer")
+                Text("Music visualizer")
             }
 
             .opacity(showStandardMediaControls ? 1 : 0.5)
@@ -1991,14 +1956,14 @@ struct LiveActivitiesSettings: View {
 
                 if recordingManager.isMonitoring {
                     HStack {
-                        Text("Detection Status")
+                        Text("Detection status")
                         Spacer()
                         if recordingManager.isRecording {
                             HStack(spacing: 4) {
                                 Circle()
                                     .fill(Color.red)
                                     .frame(width: 8, height: 8)
-                                Text("Recording Detected")
+                                Text("Recording detected")
                                     .foregroundColor(.red)
                             }
                         } else {
@@ -2008,7 +1973,7 @@ struct LiveActivitiesSettings: View {
                     }
                 }
             } header: {
-                Text("Screen Recording")
+                Text("Screen recording")
             } footer: {
                 Text("Uses event-driven private API for real-time screen recording detection")
             }
@@ -2054,7 +2019,7 @@ struct LiveActivitiesSettings: View {
 
                 if doNotDisturbManager.isMonitoring {
                     HStack {
-                        Text("Focus Status")
+                        Text("Focus status")
                         Spacer()
                         if doNotDisturbManager.isDoNotDisturbActive {
                             HStack(spacing: 4) {
@@ -2071,7 +2036,7 @@ struct LiveActivitiesSettings: View {
                     }
                 } else {
                     HStack {
-                        Text("Focus Status")
+                        Text("Focus status")
                         Spacer()
                         Text("Disabled")
                             .foregroundColor(.secondary)
@@ -2104,7 +2069,7 @@ struct LiveActivitiesSettings: View {
                 .disabled(!Defaults[.enableCapsLockIndicator])
                 .settingsHighlight(id: highlightID("Caps Lock color"))
             } header: {
-                Text("Caps Lock Indicator")
+                Text("Caps Lock indicator")
             } footer: {
                 Text("Adds a notch HUD when Caps Lock is enabled, with optional label and tint controls.")
             }
@@ -2121,14 +2086,14 @@ struct LiveActivitiesSettings: View {
 
                 if privacyManager.isMonitoring {
                     HStack {
-                        Text("Camera Status")
+                        Text("Camera status")
                         Spacer()
                         if privacyManager.cameraActive {
                             HStack(spacing: 4) {
                                 Circle()
                                     .fill(Color.green)
                                     .frame(width: 8, height: 8)
-                                Text("Camera Active")
+                                Text("Camera active")
                                     .foregroundColor(.green)
                             }
                         } else {
@@ -2138,14 +2103,14 @@ struct LiveActivitiesSettings: View {
                     }
 
                     HStack {
-                        Text("Microphone Status")
+                        Text("Microphone status")
                         Spacer()
                         if privacyManager.microphoneActive {
                             HStack(spacing: 4) {
                                 Circle()
                                     .fill(Color.yellow)
                                     .frame(width: 8, height: 8)
-                                Text("Microphone Active")
+                                Text("Microphone active")
                                     .foregroundColor(.yellow)
                             }
                         } else {
@@ -2155,7 +2120,7 @@ struct LiveActivitiesSettings: View {
                     }
                 }
             } header: {
-                Text("Privacy Indicators")
+                Text("Privacy indicators")
             } footer: {
                 Text("Shows green camera icon and yellow microphone icon when in use. Uses event-driven CoreAudio and CoreMediaIO APIs.")
             }
@@ -2167,7 +2132,7 @@ struct LiveActivitiesSettings: View {
                 )
                 .settingsHighlight(id: highlightID("Enable music live activity"))
             } header: {
-                Text("Media Live Activity")
+                Text("Media live activity")
             } footer: {
                 Text("Use the Media tab to configure sneak peek.")
             }
@@ -2244,7 +2209,7 @@ struct Appearance: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } header: {
-                    Text("Display Style")
+                    Text("Display style")
                 }
             }
 
@@ -2298,7 +2263,7 @@ struct Appearance: View {
             }
         } header: {
             HStack {
-                Text("Notch Width")
+                Text("Notch width")
             }
         }
     }

@@ -45,7 +45,6 @@ struct PlaybackState {
     var repeatMode: RepeatMode = .off
     var lastUpdated: Date = Date.distantPast
     var artwork: Data?
-    var liveArtworkURL: URL?
 }
 
 extension PlaybackState: Equatable {
@@ -63,6 +62,5 @@ extension PlaybackState: Equatable {
             && lhs.isShuffled == rhs.isShuffled
             && lhs.repeatMode == rhs.repeatMode
             && lhs.artwork == rhs.artwork
-            && lhs.liveArtworkURL == rhs.liveArtworkURL
     }
 }

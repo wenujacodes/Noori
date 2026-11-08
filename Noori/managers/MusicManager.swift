@@ -487,7 +487,6 @@ class MusicManager: ObservableObject {
 
     private(set) var artworkData: Data? = nil
 
-    @Published var videoArtworkURL: URL? = nil
 
     private var liveStreamUnknownDurationCount: Int = 0
     private var liveStreamEdgeObservationCount: Int = 0
@@ -721,12 +720,6 @@ class MusicManager: ObservableObject {
             || bundleChanged
             || contentIdentifierChanged
             || contentURLChanged
-        let liveArtworkChanged = state.liveArtworkURL != self.videoArtworkURL
-
-        if liveArtworkChanged {
-            self.videoArtworkURL = state.liveArtworkURL
-        }
-
         if state.title != self.songTitle {
             self.songTitle = state.title
         }
@@ -767,12 +760,6 @@ class MusicManager: ObservableObject {
             self.lastArtworkBundleIdentifier = state.bundleIdentifier
             self.lastArtworkContentIdentifier = state.contentIdentifier
             self.lastArtworkContentURL = state.contentURL
-
-            if let liveArtworkURL = state.liveArtworkURL {
-                self.videoArtworkURL = liveArtworkURL
-            } else {
-                self.fetchVideoArtwork()
-            }
 
             self.refreshExplicitFlag(for: state)
 
@@ -1252,31 +1239,6 @@ class MusicManager: ObservableObject {
                 } else {
                     await self?.activeController?.updatePlaybackInfo()
                 }
-            }
-        }
-    }
-
-    // MARK: - Video Artwork
-
-    func fetchVideoArtwork() {
-        guard Defaults[.showLiveCanvasInNoori] else {
-            videoArtworkURL = nil
-            return
-        }
-        // Only Apple Music provides animated artwork.
-        guard bundleIdentifier == "com.apple.Music" else {
-            return
-        }
-
-        let title = songTitle
-        let artist = artistName
-
-        Task {
-            let url = await AnimatedArtworkManager.shared.fetchAnimatedArtworkURL(
-                title: title, artist: artist
-            )
-            await MainActor.run {
-                self.videoArtworkURL = url
             }
         }
     }

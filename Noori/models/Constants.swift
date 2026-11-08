@@ -468,7 +468,6 @@ extension Defaults.Keys {
     
     
     // MARK: Live Canvas
-    static let showLiveCanvasInNoori = Key<Bool>("showLiveCanvasInNoori", default: false)
     
     
     // Default media controller for new installs.

@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## What this is
 
-**Noori** — a lightweight native macOS app that turns the MacBook notch into an iPhone-style island. Core features only: **media** (now playing, controls, visualizer, live canvas; the lyrics button is a placeholder, the lyrics feature was removed), **live activities** (music, charging, Focus, screen recording, privacy indicators, caps lock), **devices** (Bluetooth/AirPods HUD), **controls** (custom volume/brightness/keyboard-backlight HUDs), **battery**, and **keyboard shortcuts**.
+**Noori** — a lightweight native macOS app that turns the MacBook notch into an iPhone-style island. Core features only: **media** (now playing, controls, visualizer; the lyrics button is a placeholder, the lyrics feature was removed), **live activities** (music, charging, Focus, screen recording, privacy indicators, caps lock), **devices** (Bluetooth/AirPods HUD), **controls** (custom volume/brightness/keyboard-backlight HUDs), **battery**, and **keyboard shortcuts**.
 
 Removed on purpose to keep the app light (see commits after `f96db6e`): Terminal, Downloads, Color Picker, Clipboard, Notes, Screen Assistant, LLM Usage, Webcam Mirror, Stats, Lock Screen widgets, Calendar/Reminders, Timer, Shelf, and Atoll's extension system. The full pre-removal code is on the `extensions-source` branch for reference. Don't re-add these without the owner asking.
 
