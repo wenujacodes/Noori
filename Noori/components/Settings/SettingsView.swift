@@ -1252,7 +1252,6 @@ struct Media: View {
     @Default(.autoHideInactiveNotchMediaPlayer) private var autoHideInactiveNotchMediaPlayer
     @Default(.visualizerBarCount) private var visualizerBarCount
     @Default(.colorExtractionMode) private var colorExtractionMode
-    @Default(.parallaxEffectIntensity) private var parallaxEffectIntensity
     @Default(.sliderColor) private var sliderColor
 
     
@@ -1352,16 +1351,6 @@ struct Media: View {
                     Text("Show live canvas in Noori")
                 }
                 .help("Replaces the artwork tile with the live canvas when the current app provides one, and reuses that moving canvas for the surrounding lighting effect.")
-                
-                //Parallax Effect Intensity to control how much parallax is wanted
-                Slider(value: $parallaxEffectIntensity, in: 0...12, step: 1.0) {
-                    HStack {
-                        Text("Parallax Effect Intensity")
-                        Spacer()
-                        Text("\(parallaxEffectIntensity, specifier: "%0.1f")")
-                            .foregroundStyle(.secondary)
-                    }
-                }
                 
                 Picker("Sneak Peek Style", selection: $sneakPeekStyles){
                     ForEach(SneakPeekStyle.allCases) { style in
