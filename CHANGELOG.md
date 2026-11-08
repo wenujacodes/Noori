@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- Lower idle CPU and battery use: Noori no longer launches a `pgrep` process about 7 times a second to keep the macOS volume/brightness popup hidden; it waits for that service to restart instead. Bluetooth connections use IOBluetooth notifications instead of checking every 3 seconds, the AirPods listening-mode log reader only runs while AirPods are connected, and Focus detection watches its file instead of reading it every 2 seconds.
 - The Controls page in Settings is now one scrolling page instead of two separately scrolling halves.
 - Caps Lock indicator color now defaults to Green (White and Accent are still available).
 - Moved the media appearance options (spectrograms, color tinting, slider color) from the Appearance tab to the Media tab.

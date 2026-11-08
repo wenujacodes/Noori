@@ -41,6 +41,9 @@ class BluetoothAudioManager: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let coordinator = NooriViewCoordinator.shared
     private var pollingTimer: Timer?
+    /// IOBluetooth connect/disconnect callbacks (event-driven; the poll is only a safety net).
+    private var connectNotification: IOBluetoothUserNotification?
+    private var disconnectNotifications: [String: IOBluetoothUserNotification] = [:]
     private let bluetoothPreferencesSuite = "/Library/Preferences/com.apple.Bluetooth"
     private let batteryReader = BluetoothLEBatteryReader()
     private var isLiveBatteryRefreshInFlight = false
@@ -141,6 +144,34 @@ class BluetoothAudioManager: ObservableObject {
         )
         
         print("🎧 [BluetoothAudioManager] ✅ Observers registered with DistributedNotificationCenter")
+
+        // IOBluetooth's own connect notifications (also fire once for devices already connected).
+        connectNotification = IOBluetoothDevice.register(
+            forConnectNotifications: self,
+            selector: #selector(bluetoothDeviceDidConnect(_:device:))
+        )
+    }
+
+    @objc private func bluetoothDeviceDidConnect(_ notification: IOBluetoothUserNotification, device: IOBluetoothDevice) {
+        if let address = device.addressString, disconnectNotifications[address] == nil {
+            disconnectNotifications[address] = device.register(
+                forDisconnectNotification: self,
+                selector: #selector(bluetoothDeviceDidDisconnect(_:device:))
+            )
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.checkForDeviceChanges()
+        }
+    }
+
+    @objc private func bluetoothDeviceDidDisconnect(_ notification: IOBluetoothUserNotification, device: IOBluetoothDevice) {
+        notification.unregister()
+        if let address = device.addressString {
+            disconnectNotifications.removeValue(forKey: address)
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.checkForDeviceChanges()
+        }
     }
 
     /// Watches private Bluetooth/Control Center notifications that Apple posts
@@ -191,13 +222,18 @@ class BluetoothAudioManager: ObservableObject {
             }
         }
 
-        if Defaults[.showAirPodsListeningModeChanges] {
-            listeningModeLogObserver.start()
-        }
+        // The observer runs a `log stream` process, so keep it alive only while
+        // the setting is on and AirPods are actually connected.
+        let airPodsConnected = $connectedDevices
+            .map { devices in devices.contains { $0.deviceType.isAirPods } }
+            .removeDuplicates()
 
-        Defaults.publisher(.showAirPodsListeningModeChanges, options: [])
-            .sink { [weak self] change in
-                if change.newValue {
+        Defaults.publisher(.showAirPodsListeningModeChanges)
+            .map(\.newValue)
+            .combineLatest(airPodsConnected)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] enabled, hasAirPods in
+                if enabled && hasAirPods {
                     self?.listeningModeLogObserver.start()
                 } else {
                     self?.listeningModeLogObserver.stop()
@@ -206,11 +242,11 @@ class BluetoothAudioManager: ObservableObject {
             .store(in: &cancellables)
     }
     
-    /// Starts polling for device connection changes (fallback mechanism)
+    /// Slow safety-net poll for connection changes; IOBluetooth notifications do the real work.
     private func startPollingForChanges() {
-        print("🎧 [BluetoothAudioManager] Starting polling timer (3s interval)...")
+        print("🎧 [BluetoothAudioManager] Starting safety-net polling timer (30s interval)...")
         
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
             self?.checkForDeviceChanges()
         }
     }
@@ -2019,6 +2055,10 @@ class BluetoothAudioManager: ObservableObject {
         
         pollingTimer?.invalidate()
         pollingTimer = nil
+        connectNotification?.unregister()
+        connectNotification = nil
+        disconnectNotifications.values.forEach { $0.unregister() }
+        disconnectNotifications.removeAll()
         
         let dnc = DistributedNotificationCenter.default()
         dnc.removeObserver(self)

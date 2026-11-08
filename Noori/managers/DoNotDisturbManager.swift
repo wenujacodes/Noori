@@ -47,6 +47,9 @@ final class DoNotDisturbManager: ObservableObject {
         .appendingPathComponent("Library/DoNotDisturb/DB/Assertions.json")
     private var pollingSource: DispatchSourceTimer?
     private var lastAssertionsModificationDate: Date?
+    /// File-system watchers for the assertions file and its folder (touched only on `pollingQueue`).
+    private var assertionsDirectoryWatcher: DispatchSourceFileSystemObject?
+    private var assertionsFileWatcher: DispatchSourceFileSystemObject?
     private var modeCancellable: AnyCancellable?
     /// Periodic task that verifies focus is still active when `isDoNotDisturbActive` is true.
     /// Catches cases where the disabled notification fails to fire.
@@ -582,13 +585,16 @@ private extension DoNotDisturbManager {
         }
     }
 
+    /// Watches the assertions file for changes instead of reading it every 2 seconds.
+    /// A slow timer stays as a safety net and to start watching once Full Disk Access is granted.
     func startAssertionsPolling() {
         stopAssertionsPolling()
         lastAssertionsModificationDate = nil
 
         let timer = DispatchSource.makeTimerSource(queue: pollingQueue)
-        timer.schedule(deadline: .now() + .seconds(1), repeating: .seconds(2), leeway: .milliseconds(250))
+        timer.schedule(deadline: .now() + .seconds(1), repeating: .seconds(15), leeway: .seconds(2))
         timer.setEventHandler { [weak self] in
+            self?.installAssertionsWatchersIfNeeded()
             self?.pollAssertionsState()
         }
         timer.resume()
@@ -599,6 +605,80 @@ private extension DoNotDisturbManager {
         pollingSource?.cancel()
         pollingSource = nil
         lastAssertionsModificationDate = nil
+        pollingQueue.async { [weak self] in
+            self?.removeAssertionsWatchers()
+        }
+    }
+
+    // MARK: Assertions file watching (runs on pollingQueue)
+
+    private func installAssertionsWatchersIfNeeded() {
+        guard FullDiskAccessAuthorization.hasPermission() else { return }
+
+        // The folder catches the file being replaced (atomic saves).
+        if assertionsDirectoryWatcher == nil {
+            assertionsDirectoryWatcher = makeFileWatcher(
+                path: assertionsURL.deletingLastPathComponent().path,
+                events: .write
+            ) { [weak self] _ in
+                self?.handleAssertionsFileEvent()
+            }
+        }
+
+        // The file itself catches in-place writes.
+        if assertionsFileWatcher == nil {
+            assertionsFileWatcher = makeFileWatcher(
+                path: assertionsURL.path,
+                events: [.write, .extend, .delete, .rename]
+            ) { [weak self] events in
+                guard let self else { return }
+                if events.contains(.delete) || events.contains(.rename) {
+                    // Old file is gone; watch the new one on the next event.
+                    self.assertionsFileWatcher?.cancel()
+                    self.assertionsFileWatcher = nil
+                }
+                self.handleAssertionsFileEvent()
+            }
+        }
+    }
+
+    private func removeAssertionsWatchers() {
+        assertionsDirectoryWatcher?.cancel()
+        assertionsDirectoryWatcher = nil
+        assertionsFileWatcher?.cancel()
+        assertionsFileWatcher = nil
+    }
+
+    private func handleAssertionsFileEvent() {
+        installAssertionsWatchersIfNeeded()
+        pollAssertionsState()
+        // A fresh notification can make the poll skip; check once more after the cooldown.
+        pollingQueue.asyncAfter(deadline: .now() + DoNotDisturbManager.notificationCooldown + 0.5) { [weak self] in
+            self?.pollAssertionsState()
+        }
+    }
+
+    private func makeFileWatcher(
+        path: String,
+        events: DispatchSource.FileSystemEvent,
+        onEvent: @escaping (DispatchSource.FileSystemEvent) -> Void
+    ) -> DispatchSourceFileSystemObject? {
+        let descriptor = open(path, O_EVTONLY)
+        guard descriptor >= 0 else { return nil }
+        let source = DispatchSource.makeFileSystemObjectSource(
+            fileDescriptor: descriptor,
+            eventMask: events,
+            queue: pollingQueue
+        )
+        source.setEventHandler { [weak source] in
+            guard let source else { return }
+            onEvent(source.data)
+        }
+        source.setCancelHandler {
+            close(descriptor)
+        }
+        source.resume()
+        return source
     }
 
     func pollAssertionsState() {
