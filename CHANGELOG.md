@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
-- The album art and visualizer no longer jump between the closed and open notch, and the album art hover tilt is smoother.
+- The album art and visualizer glide smoothly from the closed notch into the open player instead of jumping, and the album art no longer flashes black while the notch opens. The album art hover tilt is smoother.
+- The notch shape bounces slightly as it finishes opening; the content inside stays still. Closing has no bounce.
+- Fixed a Swift concurrency warning in the YouTube Music controller.
 - The volume, brightness and keyboard backlight HUDs no longer appear when Noori starts; they only show when the level changes.
 - Notch, HUD and live activity animations now share a small set of motions (`NooriMotion`), so they move consistently. Opening the notch uses the same spring everywhere instead of three slightly different ones.
 - The song progress bar in the open notch now updates 4 times a second instead of every display frame, cutting CPU use while music plays with the notch open from about 27% to about 8%.

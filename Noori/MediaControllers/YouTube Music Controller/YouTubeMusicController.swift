@@ -113,27 +113,32 @@ final class YouTubeMusicController: MediaControllerProtocol {
     
     // MARK: - Private Methods
     private func setupAppStateObserver() {
-        appStateObserver = Task { [weak self] in
-            await withTaskGroup(of: Void.self) { group in
-                group.addTask {
-                    let launchNotifications = NSWorkspace.shared.notificationCenter.notifications(
-                        named: NSWorkspace.didLaunchApplicationNotification
-                    )
-                    
-                    for await notification in launchNotifications {
-                        await self?.handleAppLaunched(notification)
-                    }
-                }
-                
-                group.addTask {
-                    let terminateNotifications = NSWorkspace.shared.notificationCenter.notifications(
-                        named: NSWorkspace.didTerminateApplicationNotification
-                    )
-                    
-                    for await notification in terminateNotifications {
-                        await self?.handleAppTerminated(notification)
-                    }
-                }
+        // Two plain tasks instead of a task group: task group closures are
+        // @Sendable and can't capture this (non-Sendable) controller.
+        let launchObserver = Task { [weak self] in
+            let launchNotifications = NSWorkspace.shared.notificationCenter.notifications(
+                named: NSWorkspace.didLaunchApplicationNotification
+            )
+            for await notification in launchNotifications {
+                await self?.handleAppLaunched(notification)
+            }
+        }
+        let terminateObserver = Task { [weak self] in
+            let terminateNotifications = NSWorkspace.shared.notificationCenter.notifications(
+                named: NSWorkspace.didTerminateApplicationNotification
+            )
+            for await notification in terminateNotifications {
+                await self?.handleAppTerminated(notification)
+            }
+        }
+        // Cancelling the observer stops both.
+        appStateObserver = Task {
+            await withTaskCancellationHandler {
+                await launchObserver.value
+                await terminateObserver.value
+            } onCancel: {
+                launchObserver.cancel()
+                terminateObserver.cancel()
             }
         }
     }

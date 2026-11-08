@@ -60,6 +60,7 @@ struct MinimalisticMusicPlayerView: View {
             .padding(.vertical, shouldUseNooriMode(for: vm.screen) ? 14 : 0)
             .frame(maxWidth: .infinity)
             .frame(height: calculateDynamicHeight())
+            .fadesWithNotchContent()
         } else {
             VStack(spacing: 0) {
                 if shouldUseNooriMode(for: vm.screen) {
@@ -99,6 +100,7 @@ struct MinimalisticMusicPlayerView: View {
 
                             }
                             .frame(width: textWidth, alignment: .leading)
+                            .fadesWithNotchContent()
 
                             if useMusicVisualizer {
                                 // 48-pt block matches the trailing time-label width so the
@@ -120,14 +122,17 @@ struct MinimalisticMusicPlayerView: View {
                 // Compact progress bar
                 progressBar
                     .padding(.top, batteryOffNotchMode ? 4 : 6)
+                    .fadesWithNotchContent()
                 
                 // Compact playback controls
                 if shouldShowControlHUDRow {
                     controlHUDRow
                         .padding(.top, 4)
+                        .fadesWithNotchContent()
                 } else {
                     playbackControls
                         .padding(.top, 4)
+                        .fadesWithNotchContent()
                 }
 
             }
@@ -243,6 +248,7 @@ struct MinimalisticMusicPlayerView: View {
                         .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .fadesWithNotchContent()
                 .padding(.leading, albumArtSize + 10)
                 // Position so the bottom of the artist text aligns with the
                 // bottom of the album art (which was pulled up by pullUp).
@@ -276,6 +282,8 @@ struct MinimalisticMusicPlayerView: View {
                     .frame(width: width, height: 16)
             }
             .frame(width: width, height: 16)
+            // Glides from the closed notch's visualizer, like the album art.
+            .matchedGeometryEffect(id: "spectrum", in: albumArtNamespace)
     }
     
     // MARK: - Progress Bar (Full Width)
@@ -759,6 +767,7 @@ struct MinimalisticAlbumArtView: View {
                         )
                     )
                     .clipped()
+                    .matchedGeometryEffect(id: "albumArt", in: albumArtNamespace)
                     .albumArtFlip(angle: musicManager.flipAngle)
                     .parallax3D()
         }

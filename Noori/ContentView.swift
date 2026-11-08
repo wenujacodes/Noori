@@ -136,6 +136,8 @@ struct ContentView: View {
 
     @State private var hoverTask: Task<Void, Never>?
     @State private var isHovering: Bool = false
+    /// Counts notch openings; each change plays the open bounce once.
+    @State private var notchOpenCount: Int = 0
     @State private var lastHapticTime: Date = Date()
     @State private var hoverClickMonitor: Any?
     @State private var hoverClickLocalMonitor: Any?
@@ -382,8 +384,29 @@ struct ContentView: View {
             .frame(alignment: .top)
             .padding(.horizontal, notchHorizontalPadding)
             .padding([.horizontal, .bottom], vm.notchState == .open ? 12 : 0)
-            .background(.black)
             .clipShape(resolvedClipShape)
+            // The black shape is drawn separately so it can bounce
+            // without moving or stretching the content inside it.
+            .background {
+                let isOpen = vm.notchState == .open
+                resolvedClipShape
+                    .fill(.black)
+                    .keyframeAnimator(initialValue: CGFloat(0), trigger: notchOpenCount) { shape, swell in
+                        // Only while open, so a close mid-bounce isn't stretched.
+                        let amount = isOpen ? swell : 0
+                        shape.scaleEffect(
+                            x: 1 + (NooriMotion.notchOpenBounce.width - 1) * amount,
+                            y: 1 + (NooriMotion.notchOpenBounce.height - 1) * amount,
+                            anchor: .top
+                        )
+                    } keyframes: { _ in
+                        // One smooth swell: waits while the notch grows fast, peaks
+                        // as it reaches full size, then settles back softly.
+                        CubicKeyframe(0, duration: NooriMotion.notchBounceWait)
+                        CubicKeyframe(1, duration: NooriMotion.notchBounceRise)
+                        SpringKeyframe(0, duration: NooriMotion.notchBounceFall, spring: .smooth)
+                    }
+            }
             .compositingGroup()
             .shadow(
                 color: ((vm.notchState == .open || isHovering) && Defaults[.enableShadow])
@@ -493,6 +516,9 @@ struct ContentView: View {
     private var rootBodyView: some View {
         ZStack(alignment: .top) {
             configuredMainLayout
+        }
+        .onChange(of: vm.notchState) { _, newState in
+            if newState == .open { notchOpenCount &+= 1 }
         }
         .frame(
             maxWidth: (dynamicNotchSize.width + (vm.notchState == .open ? 24 : 0) + (isNooriMode ? nooriShadowInset * 2 : 0)).rounded(),
@@ -641,7 +667,7 @@ struct ContentView: View {
                           }
                       }
                       .id(coordinator.currentView)
-                      .transition(.opacity)
+                      .transition(NooriMotion.notchContentFade)
                   }
               }
               .zIndex(1)
@@ -690,6 +716,7 @@ struct ContentView: View {
                             .clipShape(RoundedRectangle(cornerRadius: musicManager.albumArt.size.width/musicManager.albumArt.size.height > 1.0 ? MusicPlayerImageSizes.cornerRadiusInset.closed/3.0 : MusicPlayerImageSizes.cornerRadiusInset.closed))
                     )
                     .clipped()
+                    .matchedGeometryEffect(id: "albumArt", in: albumArtNamespace)
                     .albumArtFlip(angle: musicManager.flipAngle)
                 albumArtBadge(for: secondary, badgeSize: badgeDisplaySize)
                     .offset(x: badgeOffset.width, y: badgeOffset.height)
@@ -883,13 +910,18 @@ struct ContentView: View {
     ) -> some View {
         let width = CGFloat(Defaults[.visualizerBarCount]) * 4
         if useMusicVisualizer || forceSpectrum {
+            // Sized to just the visible bars, so it can glide to the open
+            // player's visualizer (same id) without jumping.
             Rectangle()
                 .fill((Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray).spectrogramGradient())
-                .frame(width: 50, alignment: .center)
+                .frame(width: min(width, 50), height: 12)
                 .mask {
                     AudioVisualizerView(isPlaying: $musicManager.isPlaying)
                         .frame(width: width, height: 12)
                 }
+                .matchedGeometryEffect(id: "spectrum", in: albumArtNamespace)
+                .frame(width: 50)
+                .frame(maxHeight: .infinity)
         }
     }
 
