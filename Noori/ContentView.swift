@@ -669,7 +669,7 @@ struct ContentView: View {
                                   HStack(alignment: .center) {
                                       Image(systemName: "music.note")
                                       GeometryReader { geo in
-                                          MarqueeText(.constant(musicManager.songTitle + " - " + musicManager.artistName), textColor: .gray, minDuration: 1, frameWidth: geo.size.width)
+                                          MarqueeText(.constant(musicManager.songTitle + " - " + musicManager.artistName), textColor: .gray, minDuration: 1, frameWidth: geo.size.width, onScrollPass: { coordinator.holdSneakPeek(for: $0) })
                                       }
                                   }
                                   .foregroundStyle(.gray)
@@ -763,7 +763,8 @@ struct ContentView: View {
                                 textColor: Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray,
                                 minDuration: 0.4,
                                 frameWidth: max(0, (effectiveCenterWidth - vm.closedNotchSize.width) / 2 - 12),
-                                badgeHeight: 13
+                                badgeHeight: 13,
+                                onScrollPass: { coordinator.holdExpandingView(for: $0) }
                             )
                             .padding(.leading, 8)
                             .opacity((coordinator.expandingView.show && Defaults[.enableSneakPeek] && Defaults[.sneakPeekStyles] == .inline) ? 1 : 0)
@@ -775,7 +776,8 @@ struct ContentView: View {
                                 textColor: Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray,
                                 minDuration: 0.4,
                                 frameWidth: max(0, (effectiveCenterWidth - vm.closedNotchSize.width) / 2 - 12),
-                                alignment: .trailing
+                                alignment: .trailing,
+                                onScrollPass: { coordinator.holdExpandingView(for: $0) }
                             )
                             .padding(.trailing, 8)
                                 .opacity((coordinator.expandingView.show && coordinator.expandingView.type == .music && Defaults[.enableSneakPeek] && Defaults[.sneakPeekStyles] == .inline) ? 1 : 0)

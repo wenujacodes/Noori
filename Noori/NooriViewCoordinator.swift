@@ -181,6 +181,35 @@ class NooriViewCoordinator: ObservableObject {
     
     private var sneakPeekDuration: TimeInterval = 1.5
     private var sneakPeekTask: Task<Void, Never>?
+    /// When the sneak peek hides; `holdSneakPeek(for:)` can push it later.
+    private var sneakPeekDeadline = Date.distantPast
+    private var expandingViewDeadline = Date.distantPast
+
+    /// Sleeps until `deadline()` has passed, re-reading it after each sleep so a
+    /// hold that moved it later is honoured. Returns false if cancelled.
+    private static func waitUntil(_ deadline: @escaping @MainActor () -> Date) async -> Bool {
+        while true {
+            let remaining = await MainActor.run { deadline().timeIntervalSinceNow }
+            guard remaining > 0 else { return !Task.isCancelled }
+            try? await Task.sleep(for: .seconds(remaining))
+            if Task.isCancelled { return false }
+        }
+    }
+
+    /// Keeps the sneak peek up for at least `seconds` more, e.g. while a long
+    /// song title scrolls through once.
+    @MainActor
+    func holdSneakPeek(for seconds: TimeInterval) {
+        guard sneakPeek.show, sneakPeekTask != nil else { return }
+        sneakPeekDeadline = max(sneakPeekDeadline, Date().addingTimeInterval(seconds))
+    }
+
+    /// Same as `holdSneakPeek(for:)` for the inline (expanding) sneak peek.
+    @MainActor
+    func holdExpandingView(for seconds: TimeInterval) {
+        guard expandingView.show, expandingViewTask != nil else { return }
+        expandingViewDeadline = max(expandingViewDeadline, Date().addingTimeInterval(seconds))
+    }
 
     // Helper function to manage sneakPeek timer using Swift Concurrency
     private func scheduleSneakPeekHide(after duration: TimeInterval) {
@@ -189,9 +218,10 @@ class NooriViewCoordinator: ObservableObject {
         // Don't schedule auto-hide if duration is infinite (for persistent indicators like Caps Lock)
         guard duration.isFinite else { return }
 
+        sneakPeekDeadline = Date().addingTimeInterval(duration)
         sneakPeekTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(duration))
-            guard let self = self, !Task.isCancelled else { return }
+            let finished = await Self.waitUntil { self?.sneakPeekDeadline ?? .distantPast }
+            guard let self = self, finished else { return }
             await MainActor.run {
                 withAnimation {
                     // Hide the sneak peek with the correct type that was showing
@@ -238,9 +268,10 @@ class NooriViewCoordinator: ObservableObject {
                 expandingViewTask?.cancel()
                 do {
                     let duration = expandingView.autoHideDuration ?? 3
+                    expandingViewDeadline = Date().addingTimeInterval(duration)
                     expandingViewTask = Task { [weak self] in
-                        try? await Task.sleep(for: .seconds(duration))
-                        guard let self = self, !Task.isCancelled else { return }
+                        let finished = await Self.waitUntil { self?.expandingViewDeadline ?? .distantPast }
+                        guard let self = self, finished else { return }
                         self.toggleExpandingView(status: false, type: .battery)
                     }
                 }

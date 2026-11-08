@@ -46,6 +46,9 @@ struct MarqueeText: View {
     let backgroundColor: Color
     let minDuration: Double
     let frameWidth: CGFloat
+    /// Called when a scroll starts with how long one full pass takes, so a
+    /// sneak peek can stay open until the whole text has been shown.
+    var onScrollPass: ((TimeInterval) -> Void)? = nil
     
     @State private var textSize: CGSize = .zero
     @State private var offset: CGFloat = 0
@@ -55,8 +58,9 @@ struct MarqueeText: View {
     /// that keep snapping the text back to the start.
     @State private var loopID = UUID()
     
-    init(_ text: Binding<String>, font: Font = .body, nsFont: NSFont.TextStyle = .body, textColor: Color = .primary, backgroundColor: Color = .clear, minDuration: Double = 3.0, frameWidth: CGFloat = 200) {
+    init(_ text: Binding<String>, font: Font = .body, nsFont: NSFont.TextStyle = .body, textColor: Color = .primary, backgroundColor: Color = .clear, minDuration: Double = 3.0, frameWidth: CGFloat = 200, onScrollPass: ((TimeInterval) -> Void)? = nil) {
         _text = text
+        self.onScrollPass = onScrollPass
         self.font = font
         self.nsFont = nsFont
         self.textColor = textColor
@@ -113,6 +117,8 @@ struct MarqueeText: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             guard loopID == id, needsScrolling else { return }
             isAnimating = true
+            // Pause, one pass, then a moment on the start of the text again.
+            onScrollPass?(minDuration + Double(textSize.width / 30) + 0.8)
             startAnimationLoop(id: id)
         }
     }
@@ -193,6 +199,7 @@ struct MusicTitleMarqueeView: View {
     let badgeHorizontalPadding: CGFloat
     let badgeMinWidth: CGFloat?
     let badgeCornerRadius: CGFloat?
+    let onScrollPass: ((TimeInterval) -> Void)?
 
     init(
         text: String,
@@ -212,8 +219,10 @@ struct MusicTitleMarqueeView: View {
         badgeBackgroundColor: Color = .white.opacity(0.18),
         badgeHorizontalPadding: CGFloat = 4,
         badgeMinWidth: CGFloat? = nil,
-        badgeCornerRadius: CGFloat? = nil
+        badgeCornerRadius: CGFloat? = nil,
+        onScrollPass: ((TimeInterval) -> Void)? = nil
     ) {
+        self.onScrollPass = onScrollPass
         self.text = text
         self.isExplicit = isExplicit
         self.font = font
@@ -270,7 +279,8 @@ struct MusicTitleMarqueeView: View {
                     textColor: textColor,
                     backgroundColor: backgroundColor,
                     minDuration: minDuration,
-                    frameWidth: titleFrameWidth
+                    frameWidth: titleFrameWidth,
+                    onScrollPass: onScrollPass
                 )
             } else {
                 Text(text)
