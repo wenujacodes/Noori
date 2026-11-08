@@ -641,7 +641,7 @@ struct ContentView: View {
                           }
                       }
                       .id(coordinator.currentView)
-                      .transition(.opacity)
+                      .transition(NooriMotion.notchContent)
                   }
               }
               .zIndex(1)
@@ -690,7 +690,6 @@ struct ContentView: View {
                             .clipShape(RoundedRectangle(cornerRadius: musicManager.albumArt.size.width/musicManager.albumArt.size.height > 1.0 ? MusicPlayerImageSizes.cornerRadiusInset.closed/3.0 : MusicPlayerImageSizes.cornerRadiusInset.closed))
                     )
                     .clipped()
-                    .matchedGeometryEffect(id: "albumArt", in: albumArtNamespace)
                     .albumArtFlip(angle: musicManager.flipAngle)
                 albumArtBadge(for: secondary, badgeSize: badgeDisplaySize)
                     .offset(x: badgeOffset.width, y: badgeOffset.height)
@@ -887,7 +886,6 @@ struct ContentView: View {
             Rectangle()
                 .fill((Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray).spectrogramGradient())
                 .frame(width: 50, alignment: .center)
-                .matchedGeometryEffect(id: "spectrum", in: albumArtNamespace)
                 .mask {
                     AudioVisualizerView(isPlaying: $musicManager.isPlaying)
                         .frame(width: width, height: 12)

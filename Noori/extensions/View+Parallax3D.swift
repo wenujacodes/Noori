@@ -57,12 +57,13 @@ struct ParallaxMotionModifier: ViewModifier {
                         let x = (location.x / viewSize.width) * 2 - 1
                         let y = (location.y / viewSize.height) * 2 - 1
 
-                        withAnimation(.interactiveSpring(response: 0.1, dampingFraction: 0.5)) {
+                        // Calm follow: no bounce, so the artwork glides instead of jumping.
+                        withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 1.0)) {
                             offset = CGSize(width: x, height: y)
                             isHovering = true
                         }
                     case .ended:
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
+                        withAnimation(.smooth(duration: 0.45)) {
                             offset = .zero
                             isHovering = false
                         }
@@ -76,7 +77,6 @@ struct ParallaxMotionModifier: ViewModifier {
                     .degrees(offset.width * -parallaxEffectIntensity), // X movement rotates around Y axis (inverted to look naturally)
                     axis: (x: 0, y: 1, z: 0)
                 )
-                .scaleEffect(isHovering ? 1.02 : 1.0) // Subtle scale up on hover
         }
     }
 }

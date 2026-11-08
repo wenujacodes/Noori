@@ -276,7 +276,6 @@ struct MinimalisticMusicPlayerView: View {
                     .frame(width: width, height: 16)
             }
             .frame(width: width, height: 16)
-            .matchedGeometryEffect(id: "spectrum", in: albumArtNamespace)
     }
     
     // MARK: - Progress Bar (Full Width)
@@ -760,7 +759,6 @@ struct MinimalisticAlbumArtView: View {
                         )
                     )
                     .clipped()
-                    .matchedGeometryEffect(id: "albumArt", in: albumArtNamespace)
                     .albumArtFlip(angle: musicManager.flipAngle)
                     .parallax3D()
         }

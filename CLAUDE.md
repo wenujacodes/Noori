@@ -80,7 +80,7 @@ All app code lives in `Noori/`. The Xcode project uses **synchronized folder gro
 ## Conventions
 
 - Settings: add a key to `extension Defaults.Keys` in `models/Constants.swift`; read with `@Default(.key)` in views or `Defaults[.key]` in code. Renaming/retyping a key needs a migration (see `Defaults.Keys.migrate…()` in `applicationDidFinishLaunching`).
-- Animations: use the shared motions in `animations/NooriMotion.swift` (`notchOpen`/`notchClose`, `hover`, `appear`, `change`, `gesture`) instead of one-off timings. Decorative loops (pulses, glows) and button press effects keep their own.
+- Animations: use the shared motions in `animations/NooriMotion.swift` (`notchOpen`/`notchClose`, `notchContent`, `hover`, `appear`, `change`, `gesture`) instead of one-off timings. Decorative loops (pulses, glows) and button press effects keep their own.
 - Managers are `ObservableObject` singletons (`.shared`) using Combine; UI work on the main actor.
 - Uses private/undocumented macOS APIs (SkyLight windows for lock screen, MediaRemote, DisplayServices, SMC/IOReport). Guard with availability checks; expect breakage across macOS versions.
 - Spotify / Music / Notes control goes through AppleScript — keep those bundle ids in the `temporary-exception.apple-events` entitlement.
