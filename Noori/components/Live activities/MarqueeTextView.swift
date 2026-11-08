@@ -50,6 +50,10 @@ struct MarqueeText: View {
     @State private var textSize: CGSize = .zero
     @State private var offset: CGFloat = 0
     @State private var isAnimating: Bool = false
+    /// Changes on every restart; a loop stops as soon as it's no longer current,
+    /// so restarts (appear, resize, new text) never leave several loops running
+    /// that keep snapping the text back to the start.
+    @State private var loopID = UUID()
     
     init(_ text: Binding<String>, font: Font = .body, nsFont: NSFont.TextStyle = .body, textColor: Color = .primary, backgroundColor: Color = .clear, minDuration: Double = 3.0, frameWidth: CGFloat = 200) {
         _text = text
@@ -99,28 +103,29 @@ struct MarqueeText: View {
     }
     
     private func resetAndStart() {
+        let id = UUID()
+        loopID = id
         isAnimating = false
         withAnimation(.none) {
             offset = 0
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            if needsScrolling {
-                isAnimating = true
-                startAnimationLoop()
-            }
+            guard loopID == id, needsScrolling else { return }
+            isAnimating = true
+            startAnimationLoop(id: id)
         }
     }
     
-    private func startAnimationLoop() {
-        guard isAnimating && needsScrolling else { return }
+    private func startAnimationLoop(id: UUID) {
+        guard loopID == id, isAnimating, needsScrolling else { return }
         
         // Duration based on speed (approx 30 pts per second)
         let duration = Double(textSize.width / 30)
         
         // 1. Initial/Restart Pause
         DispatchQueue.main.asyncAfter(deadline: .now() + minDuration) {
-            guard isAnimating else { return }
+            guard loopID == id, isAnimating else { return }
             
             // 2. Linear Move
             withAnimation(.linear(duration: duration)) {
@@ -129,7 +134,7 @@ struct MarqueeText: View {
             
             // 3. Wait for move to finish
             DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-                guard isAnimating else { return }
+                guard loopID == id, isAnimating else { return }
                 
                 // 4. Snap back instantly
                 withAnimation(.none) {
@@ -137,7 +142,7 @@ struct MarqueeText: View {
                 }
                 
                 // 5. Repeat
-                startAnimationLoop()
+                startAnimationLoop(id: id)
             }
         }
     }

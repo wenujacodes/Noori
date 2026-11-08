@@ -93,10 +93,7 @@ struct MinimalisticMusicPlayerView: View {
                                     )
                                 }
 
-                                Text(musicManager.artistName)
-                                    .font(.system(size: 10, weight: .regular))
-                                    .foregroundColor(Defaults[.playerColorTinting] ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.6) : .gray)
-                                    .lineLimit(1)
+                                artistLine(width: textWidth)
 
                             }
                             .frame(width: textWidth, alignment: .leading)
@@ -187,6 +184,20 @@ struct MinimalisticMusicPlayerView: View {
         return height
     }
 
+    /// The artist name; scrolls on its own when it's too long to fit, like the title.
+    private func artistLine(width: CGFloat) -> some View {
+        MusicTitleMarqueeView(
+            text: musicManager.artistName,
+            isExplicit: false,
+            font: .system(size: 10, weight: .regular),
+            nsFont: .caption1,
+            textColor: Defaults[.playerColorTinting]
+                ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.6)
+                : .gray,
+            frameWidth: width
+        )
+    }
+
     // MARK: - U-Shaped Notch-Hugging Header
 
     /// Layout that wraps content around the physical notch cutout.
@@ -242,10 +253,8 @@ struct MinimalisticMusicPlayerView: View {
                         )
                     }
 
-                    Text(musicManager.artistName)
-                        .font(.system(size: 10, weight: .regular))
-                        .foregroundColor(Defaults[.playerColorTinting] ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.6) : .gray)
-                        .lineLimit(1)
+                    // The artist row sits below the visualizer, so it can use the full width.
+                    artistLine(width: max(0, totalWidth - albumArtSize - 10 - 12))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fadesWithNotchContent()
