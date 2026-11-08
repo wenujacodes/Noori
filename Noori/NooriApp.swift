@@ -363,7 +363,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let baseSize = minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: vm.screen))
         
         let adjustedContentSize = baseSize
-        var result = addShadowPadding(
+        let result = addShadowPadding(
             to: adjustedContentSize,
             isMinimalistic: true
         )

@@ -843,7 +843,7 @@ class BluetoothAudioManager: ObservableObject {
             let updatedDevice = device.withBatteryLevel(refreshedLevel)
             updatedDevices.append(updatedDevice)
 
-            if let refreshedLevel {
+            if refreshedLevel != nil {
                 clearMissingBatteryInfo(forName: device.name, address: device.address)
             } else {
                 logMissingBatteryInfo(forName: device.name, address: device.address)
@@ -1240,7 +1240,7 @@ class BluetoothAudioManager: ObservableObject {
         if #available(macOS 12.0, *) {
             servicePort = kIOMainPortDefault
         } else {
-            servicePort = kIOMasterPortDefault
+            servicePort = kIOMainPortDefault
         }
 
         let kernResult = IOServiceGetMatchingServices(servicePort, matchingDict, &iterator)

@@ -232,7 +232,7 @@ struct MusicSliderView: View {
             guard !dragging else { return }
             setSliderValueWithoutAnimation(MusicManager.shared.estimatedPlaybackPosition())
         }
-        .onChange(of: currentDate) { newDate in
+        .onChange(of: currentDate) { _, newDate in
             guard !isLiveStream else { return }
             guard !dragging, timestampDate.timeIntervalSince(lastDragged) > -1 else { return }
             setSliderValueWithoutAnimation(MusicManager.shared.estimatedPlaybackPosition(at: newDate))
@@ -244,7 +244,7 @@ struct MusicSliderView: View {
                 sliderValue = MusicManager.shared.estimatedPlaybackPosition()
             }
         }
-        .onChange(of: isLiveStream) { isLive in
+        .onChange(of: isLiveStream) { _, isLive in
             if isLive {
                 sliderValue = 0
             }
