@@ -320,7 +320,7 @@ extension Defaults.Keys {
     static let playerColorTinting = Key<Bool>("playerColorTinting", default: true)
     static let useMusicVisualizer = Key<Bool>("useMusicVisualizer", default: true)
     static let visualizerBarCount = Key<Int>("visualizerBarCount", default: 4)
-    static let colorExtractionMode = Key<ColorExtractionMode>("colorExtractionMode", default: .vibrant)
+    static let colorExtractionMode = Key<ColorExtractionMode>("colorExtractionMode", default: .legacy)
     
         // MARK: Gestures
     static let enableGestures = Key<Bool>("enableGestures", default: true)
