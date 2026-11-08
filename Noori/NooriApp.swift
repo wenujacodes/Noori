@@ -21,6 +21,7 @@ import AVFoundation
 import Combine
 import Defaults
 import KeyboardShortcuts
+import LaunchAtLogin
 import Sparkle
 import SwiftUI
 import SkyLightWindow
@@ -1142,8 +1143,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     
     
-    /// First-run setup: haptics on, and a display style that matches the Mac's screen.
+    /// First-run setup: launch at login and haptics on, and a display style that matches the Mac's screen.
     private func applyDefaultSetup() {
+        // On by default; the user can turn it off in Settings.
+        LaunchAtLogin.isEnabled = true
         Defaults[.enableHaptics] = true
 
         // Notch Macs keep the standard notch; Macs without one get the Noori pill.

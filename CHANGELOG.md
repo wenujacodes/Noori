@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved the media appearance options (spectrograms, color tinting, slider color) from the Appearance tab to the Media tab.
 - The simpler close animation is now always used; its toggle was removed from Appearance settings.
 - Renamed the Focus detection options in the Focus menu to "Standard (needs Full Disk Access)" and "Faster, via system logs (needs Developer Tools permission)", replacing the confusing "Use DevTools" wording.
+- Launch at Login is now turned on for new installs (it can be turned off in Settings).
 - The default media player for new installs is now Now Playing on every macOS version (it was Apple Music on macOS 15.4 and later).
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
