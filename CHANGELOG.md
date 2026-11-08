@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub logo on the About page now follows the text color instead of always being white.
 
 ### Removed
+- Unused entries from the string catalog.
 - Spotify Canvas: the Spotify sign-in / `sp_dc` cookie setting and fetching Spotify's looping track videos. Live canvas still works for Apple Music animated artwork. Spotify artist names still come from Spotify's public track page.
 - The album art parallax (3D tilt on hover) effect and its intensity setting.
 - The "Vibrant" color extraction mode and the Color extraction setting; the visualizer and tinting always use the original (Legacy) album art color.
