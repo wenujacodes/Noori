@@ -268,8 +268,7 @@ class SystemHUDManager {
     deinit {
         keyInterceptionRetryTimer?.invalidate()
         cancellables.removeAll()
-        Task { @MainActor in
-            await stopSystemObserver()
-        }
+        changesObserver?.stopObserving()
+        SystemOSDManager.enableSystemHUD()
     }
 }

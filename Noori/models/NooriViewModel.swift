@@ -176,11 +176,8 @@ class NooriViewModel: NSObject, ObservableObject {
             )
         }
 
-        if Thread.isMainThread {
-            applyWindowResize()
-        } else {
-            DispatchQueue.main.async(execute: applyWindowResize)
-        }
+        // NooriViewModel is @MainActor, so this always runs on the main thread.
+        applyWindowResize()
 
         notchSize = targetSize
         notchState = .open

@@ -60,8 +60,8 @@ final class LunarManager: ObservableObject {
     nonisolated static let bundleID = "fyi.lunar.Lunar"
 
     /// UserDefaults suite used by Lunar to store its API key.
-    private static let lunarDomain = "fyi.lunar.Lunar"
-    private static let apiKeyKey = "apiKey"
+    nonisolated private static let lunarDomain = "fyi.lunar.Lunar"
+    nonisolated private static let apiKeyKey = "apiKey"
 
     // MARK: Published state
 

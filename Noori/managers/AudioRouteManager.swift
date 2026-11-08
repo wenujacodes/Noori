@@ -200,11 +200,12 @@ final class AudioRouteManager: ObservableObject {
             mElement: kAudioObjectPropertyElementMain
         )
 
-        var name: CFString = "" as CFString
-        var dataSize = UInt32(MemoryLayout<CFString?>.size)
+        var name: Unmanaged<CFString>?
+        var dataSize = UInt32(MemoryLayout<Unmanaged<CFString>?>.size)
         let status = AudioObjectGetPropertyData(deviceID, &address, 0, nil, &dataSize, &name)
-        guard status == noErr else { return nil }
-        return name as String
+        guard status == noErr, let name else { return nil }
+        // CoreAudio hands back a retained string; take ownership so it is released.
+        return name.takeRetainedValue() as String
     }
 
     private func transportType(for deviceID: AudioDeviceID) -> UInt32 {

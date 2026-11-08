@@ -38,7 +38,7 @@ final class YouTubeMusicController: MediaControllerProtocol {
     }
     
     var isWorking: Bool {
-        isActive() && (updateTimer != nil || webSocketClient != nil)
+        isActive() && (updateTask != nil || webSocketClient != nil)
     }
     
     // MARK: - Private Properties
@@ -47,7 +47,7 @@ final class YouTubeMusicController: MediaControllerProtocol {
     private let authManager: YouTubeMusicAuthManager
     private var webSocketClient: YouTubeMusicWebSocketClient?
     
-    private var updateTimer: Timer?
+    private var updateTask: Task<Void, Never>?
     private var appStateObserver: Task<Void, Never>?
     private var reconnectDelay: TimeInterval = 1.0
     
@@ -301,16 +301,19 @@ final class YouTubeMusicController: MediaControllerProtocol {
         
         stopPeriodicUpdates()
         
-        updateTimer = Timer.scheduledTimer(withTimeInterval: configuration.updateInterval, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                await self?.updatePlaybackInfo()
+        let interval = configuration.updateInterval
+        updateTask = Task { @MainActor [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(interval))
+                guard !Task.isCancelled, let self else { return }
+                await self.updatePlaybackInfo()
             }
         }
     }
     
     private func stopPeriodicUpdates() {
-        updateTimer?.invalidate()
-        updateTimer = nil
+        updateTask?.cancel()
+        updateTask = nil
     }
 
     func pollPlaybackState() async {

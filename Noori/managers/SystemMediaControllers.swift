@@ -395,7 +395,7 @@ final class SystemVolumeController {
         }
     }
 
-    private func getData<T>(selector: AudioObjectPropertySelector, data: inout T) -> OSStatus {
+    private func getData<T: BitwiseCopyable>(selector: AudioObjectPropertySelector, data: inout T) -> OSStatus {
         var lastStatus: OSStatus = kAudioHardwareUnspecifiedError
         for element in preferredElements(for: selector) {
             var address = makeAddress(selector: selector, element: element)
@@ -410,7 +410,7 @@ final class SystemVolumeController {
         return lastStatus
     }
 
-    private func setData<T>(selector: AudioObjectPropertySelector, data: inout T) -> OSStatus {
+    private func setData<T: BitwiseCopyable>(selector: AudioObjectPropertySelector, data: inout T) -> OSStatus {
         var lastStatus: OSStatus = kAudioHardwareUnspecifiedError
         for element in preferredElements(for: selector) {
             var address = makeAddress(selector: selector, element: element)
@@ -425,7 +425,7 @@ final class SystemVolumeController {
         return lastStatus
     }
 
-    private func getData<T>(selector: AudioObjectPropertySelector, element: AudioObjectPropertyElement, data: inout T) -> OSStatus {
+    private func getData<T: BitwiseCopyable>(selector: AudioObjectPropertySelector, element: AudioObjectPropertyElement, data: inout T) -> OSStatus {
         var address = makeAddress(selector: selector, element: element)
         guard propertyExists(deviceID: currentDeviceID, address: &address) else {
             return kAudioHardwareUnknownPropertyError
@@ -434,7 +434,7 @@ final class SystemVolumeController {
         return AudioObjectGetPropertyData(currentDeviceID, &address, 0, nil, &size, &data)
     }
 
-    private func setData<T>(selector: AudioObjectPropertySelector, element: AudioObjectPropertyElement, data: inout T) -> OSStatus {
+    private func setData<T: BitwiseCopyable>(selector: AudioObjectPropertySelector, element: AudioObjectPropertyElement, data: inout T) -> OSStatus {
         var address = makeAddress(selector: selector, element: element)
         guard propertyExists(deviceID: currentDeviceID, address: &address) else {
             return kAudioHardwareUnknownPropertyError
