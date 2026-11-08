@@ -1957,9 +1957,6 @@ struct Appearance: View {
                 Defaults.Toggle(key: .enableShadow) {
                     Text("Enable window shadow")
                 }
-                Defaults.Toggle(key: .cornerRadiusScaling) {
-                    Text("Corner radius scaling")
-                }
             } header: {
                 Text("General")
             }

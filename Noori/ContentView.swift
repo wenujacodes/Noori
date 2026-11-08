@@ -187,10 +187,7 @@ struct ContentView: View {
         guard vm.notchState == .open else {
             return activeCornerRadiusInsets.closed.bottom
         }
-        if Defaults[.cornerRadiusScaling] {
-            return activeCornerRadiusInsets.opened.top - 5
-        }
-        return activeCornerRadiusInsets.opened.bottom - 5
+        return activeCornerRadiusInsets.opened.top - 5
     }
 
     private var bodyHoverAreaPadding: CGFloat {
@@ -236,10 +233,10 @@ struct ContentView: View {
     }
 
     private var currentNotchShape: NotchShape {
-        let topRadius = (vm.notchState == .open && Defaults[.cornerRadiusScaling])
+        let topRadius = vm.notchState == .open
             ? activeCornerRadiusInsets.opened.top
             : activeCornerRadiusInsets.closed.top
-        let bottomRadius = (vm.notchState == .open && Defaults[.cornerRadiusScaling])
+        let bottomRadius = vm.notchState == .open
             ? activeCornerRadiusInsets.opened.bottom
             : activeCornerRadiusInsets.closed.bottom
         return NotchShape(topCornerRadius: topRadius, bottomCornerRadius: bottomRadius)
@@ -392,7 +389,7 @@ struct ContentView: View {
                 color: ((vm.notchState == .open || isHovering) && Defaults[.enableShadow])
                     ? .black.opacity(0.6)
                     : .clear,
-                radius: Defaults[.cornerRadiusScaling] ? 10 : 5
+                radius: 10
             )
             // Extra horizontal inset for Noori mode so the shadow
             // is not clipped by the outer frame constraint
