@@ -669,7 +669,7 @@ struct ContentView: View {
                                   HStack(alignment: .center) {
                                       Image(systemName: "music.note")
                                       GeometryReader { geo in
-                                          MarqueeText(.constant(musicManager.songTitle + " - " + musicManager.artistName), textColor: .gray, minDuration: 1, frameWidth: geo.size.width, onScrollPass: { coordinator.holdSneakPeek(for: $0) })
+                                          MarqueeText(.constant(musicManager.songTitle + " - " + musicManager.artistName), font: .system(size: 11, weight: .medium), nsFont: .subheadline, textColor: .gray, minDuration: 1, frameWidth: geo.size.width, onScrollPass: { coordinator.holdSneakPeek(for: $0) })
                                       }
                                   }
                                   .foregroundStyle(.gray)
@@ -760,6 +760,8 @@ struct ContentView: View {
                             MusicTitleMarqueeView(
                                 text: musicManager.songTitle,
                                 isExplicit: musicManager.isCurrentTrackExplicit,
+                                font: .system(size: 11, weight: .medium),
+                                nsFont: .subheadline,
                                 textColor: Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray,
                                 minDuration: 0.4,
                                 frameWidth: max(0, (effectiveCenterWidth - vm.closedNotchSize.width) / 2 - 12),
@@ -773,6 +775,8 @@ struct ContentView: View {
                             MusicTitleMarqueeView(
                                 text: musicManager.artistName,
                                 isExplicit: false,
+                                font: .system(size: 11, weight: .medium),
+                                nsFont: .subheadline,
                                 textColor: Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray,
                                 minDuration: 0.4,
                                 frameWidth: max(0, (effectiveCenterWidth - vm.closedNotchSize.width) / 2 - 12),

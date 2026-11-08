@@ -1333,11 +1333,21 @@ extension MusicManager {
 
 // MARK: - Album Art Flip Helper
 
-private struct AlbumArtFlipModifier: ViewModifier {
-    let angle: Double
+private struct AlbumArtFlipModifier: ViewModifier, Animatable {
+    var angle: Double
+    /// Blur at the middle of the flip (edge-on); none when the cover faces front.
+    private let maxBlur: CGFloat = 6
+
+    // Animating the angle frame by frame lets the blur follow the flip and the
+    // mirror fix below switch exactly when the cover is edge-on.
+    var animatableData: Double {
+        get { angle }
+        set { angle = newValue }
+    }
 
     func body(content: Content) -> some View {
         content
+            .blur(radius: abs(sin(angle * .pi / 180)) * maxBlur)
             .rotation3DEffect(
                 .degrees(angle),
                 axis: (x: 0, y: 1, z: 0),

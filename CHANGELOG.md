@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The song name and artist in the small-notch sneak peek use the same 11 pt medium font as the open notch's artist name.
+- The album cover flip on a song change now blurs as it turns (strongest halfway through, sharp again when it lands).
 - The explicit "E" badge is now a bright white square with a black E (it was a faint grey square).
 - The artist name in the open notch is a little bigger (11 pt medium instead of 10 pt regular) so it's easier to read.
 - The song sneak peek (on song change or hover) still hides after 3 seconds, but when the title or artist is too long and scrolls, it stays until the name has scrolled through once.
@@ -87,6 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
+- The song name and artist in the small-notch sneak peek use the same 11 pt medium font as the open notch's artist name.
+- The album cover flip on a song change now blurs as it turns (strongest halfway through, sharp again when it lands).
 - The explicit "E" badge is now a bright white square with a black E (it was a faint grey square).
 - The artist name in the open notch is a little bigger (11 pt medium instead of 10 pt regular) so it's easier to read.
 - The song sneak peek (on song change or hover) still hides after 3 seconds, but when the title or artist is too long and scrolls, it stays until the name has scrolled through once.
