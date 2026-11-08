@@ -9,7 +9,7 @@ Guidance for Claude Code when working in this repository.
 Removed on purpose to keep the app light (see commits after `f96db6e`): Terminal, Downloads, Color Picker, Clipboard, Notes, Screen Assistant, LLM Usage, Webcam Mirror, Stats, Lock Screen widgets, Calendar/Reminders, Timer, Shelf, and Atoll's extension system. The full pre-removal code is on the `extensions-source` branch for reference. Don't re-add these without the owner asking.
 
 - Noori is a fork of **Atoll** 2.3.3 (`Ebullioscopic/Atoll`), which derives from **boring.notch**. GPL-3.0. Repo: `wenujacodes/Noori`. Owner: Wenuja Liyanamana.
-- Language: Swift / SwiftUI + AppKit, plus one Metal shader (`Noori/metal/visualizer.metal`, not referenced by Swift code).
+- Language: Swift / SwiftUI + AppKit (no C++, Obj-C++ or Metal code).
 - Size: ~160 Swift files, ~42k lines.
 - Version: `VERSION` file and `MARKETING_VERSION` in the project (currently 1.0.0).
 
@@ -33,7 +33,7 @@ Removed on purpose to keep the app light (see commits after `f96db6e`): Terminal
 
 ## Building
 
-Requirements: macOS 14+, Xcode with **Swift 6.1+**, and on Xcode 26+ the downloadable **Metal Toolchain** (`xcodebuild -downloadComponent MetalToolchain`, installed by Xcode into its own system location — no path to choose). Without it the build fails at the first `.metal` file (SwiftTerm's shaders or `visualizer.metal`).
+Requirements: macOS 14+, Xcode with **Swift 6.1+**. The Metal Toolchain is no longer needed (the app and its packages have no `.metal` files).
 
 Open in Xcode: `open Noori.xcodeproj`, scheme **Noori**, run on My Mac. `DEVELOPMENT_TEAM` is empty: pick your own team (a free Personal Team works) under Signing & Capabilities to run a signed build.
 
@@ -50,7 +50,7 @@ xcodebuild build \
 - No root Swift package; dependencies are SPM packages referenced from `Noori.xcodeproj` (resolve with `xcodebuild -resolvePackageDependencies -project Noori.xcodeproj -scheme Noori`).
 - Product is `Noori.app`. Debug bundle id `com.wenujacodes.Noori.dev` (icon `AppIconDev`); Release `com.wenujacodes.Noori`.
 - Prebuilt `Frameworks/MediaRemoteAdapter.framework` (source: `mediaremote-adapter/`) provides Now Playing info; `Contents/Helpers/NowPlayingTestClient` is copied into the app and used by `MediaChecker.swift`.
-- Bridging header: `Noori/Noori-Bridging-Header.h` (currently empty; the C++ audio bridge was removed with the real-time waveform).
+- No bridging header (removed with the C++ audio bridge).
 - Swift language mode is 5.0 (`SWIFT_VERSION = 5.0`) even though the toolchain must be 6.1+.
 
 ### Tests
