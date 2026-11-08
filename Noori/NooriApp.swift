@@ -244,11 +244,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.animationBehavior = .none
         // collectionBehavior is configured in NooriWindow.init
 
-        window.contentView = FirstMouseHostingView(
+        let hostingView = FirstMouseHostingView(
             rootView: ContentView()
                 .environmentObject(viewModel)
                 //.moveToSky()
         )
+        // Noori sizes and centers this window itself. Without this, SwiftUI grows the
+        // window to fit wider content (like the inline sneak peek) while keeping its
+        // left edge fixed, which pushes the notch off-center.
+        hostingView.sizingOptions = []
+        window.contentView = hostingView
         
         window.orderFrontRegardless()
         // Pin above every space (fullscreen included) only for "Never hide"; the
@@ -315,12 +320,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                                           airPodsListeningModeSneakActive
                                       )
         
-        // If inline sneak peek is active, use a wider width to accommodate the expanded content
+        // If inline sneak peek is active, widen the window to fit the expanded content
+        // (keeping the normal height, so the shadow and the open transition aren't clipped).
         if isInlineSneakPeekActive {
-            // Calculate required width for inline sneak peek:
             // Album art (~32) + Middle section (380) + Visualizer (~32) + horizontal padding (28) + clip shape margin (12)
             let inlineSneakPeekWidth: CGFloat = 460
-            return CGSize(width: inlineSneakPeekWidth, height: vm.effectiveClosedNotchHeight)
+            let base = addShadowPadding(
+                to: minimalisticOpenNotchSize(isNooriMode: shouldUseNooriMode(for: vm.screen)),
+                isMinimalistic: true
+            )
+            return CGSize(width: max(base.width, inlineSneakPeekWidth), height: base.height)
         }
 
         // Check for battery HUD expansion
@@ -495,6 +504,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Defaults.publisher(.openNotchWidth, options: []).sink { [weak self] _ in
             self?.debouncedUpdateWindowSize()
         }.store(in: &cancellables)
+
+        // Sneak peeks can need a wider window than the closed notch. Resize (and
+        // re-center) when one starts or ends, instead of letting the window drift.
+        // Deferred a tick because @Published fires before the new value is stored.
+        Publishers.Merge(
+            coordinator.$expandingView.map { _ in () },
+            coordinator.$sneakPeek.map { _ in () }
+        )
+        .sink { [weak self] in
+            DispatchQueue.main.async {
+                guard let self, self.vm.notchState == .closed else { return }
+                self.updateWindowSizeIfNeeded()
+            }
+        }
+        .store(in: &cancellables)
 
         MemoryUsageMonitor.shared.startMonitoring()
 
