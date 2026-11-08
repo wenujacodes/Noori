@@ -246,17 +246,13 @@ struct MusicTitleMarqueeView: View {
         max(0, frameWidth - reservedBadgeWidth)
     }
 
-    private var measurementFont: NSFont {
-        NSFont.preferredFont(forTextStyle: nsFont)
-    }
-
-    private var measuredTextWidth: CGFloat {
-        let attributes: [NSAttributedString.Key: Any] = [.font: measurementFont]
-        return ceil((text as NSString).size(withAttributes: attributes).width)
-    }
+    /// Width of the title as actually drawn in `font`. Measuring with `nsFont`
+    /// instead could under-measure (e.g. 12 pt semibold vs. subheadline), so a
+    /// slightly-too-long title wouldn't scroll and would overflow its frame.
+    @State private var renderedTextWidth: CGFloat = 0
 
     private var needsScrolling: Bool {
-        measuredTextWidth > titleFrameWidth
+        ceil(renderedTextWidth) > titleFrameWidth
     }
 
     var body: some View {
@@ -294,5 +290,18 @@ struct MusicTitleMarqueeView: View {
             }
         }
         .frame(width: frameWidth, alignment: alignment)
+        .background(alignment: .leading) {
+            // Invisible copy of the title, only to measure its real width.
+            Text(text)
+                .font(font)
+                .lineLimit(1)
+                .fixedSize()
+                .hidden()
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    proxy.size.width
+                } action: { width in
+                    renderedTextWidth = width
+                }
+        }
     }
 }
