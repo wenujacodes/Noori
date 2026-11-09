@@ -94,36 +94,39 @@ struct NotchLyricLine: View {
     /// by line, so when a line is done it slides out on its own and the next line
     /// moves up and grows into its place.
     private func nextLineRows(current index: Int?, ms: Int, fillsWords: Bool) -> some View {
-        let currentRow = index ?? -1
-        let rows = [currentRow] + (nextLyricIndex(after: index).map { [$0] } ?? [])
+        // In a pause (or before the first line) the upcoming line takes the top row,
+        // dimmed with a music note; when it's sung, the same row lights up in place.
+        let isPause = index.map { lyrics.lines[$0].text.isEmpty } ?? true
+        let topRow: Int? = isPause ? nextLyricIndex(after: index) : index
+        let rows = [topRow, topRow.flatMap { nextLyricIndex(after: $0) }].compactMap { $0 }
         let smallScale = secondaryFontSize / max(fontSize, 1)
         let anchor: UnitPoint = alignment == .center ? .center : .leading
 
         return VStack(spacing: 0) {
             ForEach(rows, id: \.self) { row in
-                let isCurrent = row == currentRow
+                let isTop = row == topRow
                 Group {
-                    if isCurrent {
-                        if let index, !lyrics.lines[index].text.isEmpty {
-                            primaryLine(lyrics.lines[index], ms: ms, fillsWords: fillsWords)
-                        } else {
-                            // Before the first line and in instrumental parts.
-                            Image(systemName: "music.note")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(.white.opacity(0.35))
-                        }
+                    if isTop && !isPause {
+                        primaryLine(lyrics.lines[row], ms: ms, fillsWords: fillsWords)
                     } else {
-                        // Drawn at full size and scaled down, so it grows smoothly when it becomes current.
-                        Text(lyrics.lines[row].text)
-                            .font(.system(size: fittingFontSize(for: lyrics.lines[row].text), weight: fontWeight.fontWeight))
-                            .foregroundStyle(sungColor)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
+                        HStack(spacing: 6) {
+                            if isTop {
+                                Image(systemName: "music.note")
+                                    .font(.system(size: 10, weight: .semibold))
+                                    .foregroundStyle(.white.opacity(0.5))
+                            }
+                            // Drawn at full size and scaled down, so it grows smoothly when it moves up.
+                            Text(lyrics.lines[row].text)
+                                .font(.system(size: fittingFontSize(for: lyrics.lines[row].text), weight: fontWeight.fontWeight))
+                                .foregroundStyle(sungColor)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                        }
                     }
                 }
-                .scaleEffect(isCurrent ? 1 : smallScale, anchor: anchor)
-                .opacity(isCurrent ? 1 : 0.5)
-                .frame(width: width, height: isCurrent ? primaryHeight : secondaryHeight, alignment: frameAlignment)
+                .scaleEffect(isTop ? 1 : smallScale, anchor: anchor)
+                .opacity(isTop ? (isPause ? 0.45 : 1) : 0.5)
+                .frame(width: width, height: isTop ? primaryHeight : secondaryHeight, alignment: frameAlignment)
                 .transition(.asymmetric(
                     insertion: .modifier(
                         active: LyricLineMotion(offset: secondaryHeight, opacity: 0),
