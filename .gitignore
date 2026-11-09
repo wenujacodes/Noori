@@ -174,3 +174,6 @@ graphify-out/
 /dist/
 /build/
 !scripts/*.sh
+
+# Python test caches
+__pycache__/
