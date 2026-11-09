@@ -10,9 +10,8 @@
 
 import SwiftUI
 
-/// Volume, brightness or keyboard backlight, shown in the lyric row under the closed
-/// notch while lyrics are showing (instead of the wide inline HUD), then the lyrics
-/// come back.
+/// Volume, brightness or keyboard backlight, shown as a bar under the lyrics in the
+/// closed notch while lyrics are showing (instead of the wide inline HUD).
 struct NotchLyricHUDRow: View {
     let type: SneakContentType
     let value: CGFloat

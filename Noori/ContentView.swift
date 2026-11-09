@@ -814,23 +814,20 @@ struct ContentView: View {
         .frame(height: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0), alignment: .center)
 
             if showLyricRow {
-                ZStack {
-                    if showsControlHUD {
-                        // Volume / brightness under the notch, in place of the lyrics for a moment.
-                        NotchLyricHUDRow(
-                            type: coordinator.sneakPeek.type,
-                            value: coordinator.sneakPeek.value,
-                            width: max(0, notchWidth - 16)
-                        )
-                        .transition(.opacity)
-                    } else {
-                        NotchLyricLine(width: max(0, notchWidth - 16))
-                            .transition(.opacity)
-                    }
+                NotchLyricLine(width: max(0, notchWidth - 16))
+                    .padding(.bottom, showsControlHUD ? 2 : 6)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                if showsControlHUD {
+                    // Volume / brightness under the lyrics for a moment; the lyrics stay.
+                    NotchLyricHUDRow(
+                        type: coordinator.sneakPeek.type,
+                        value: coordinator.sneakPeek.value,
+                        width: max(0, notchWidth - 16)
+                    )
+                    .frame(height: 22)
+                    .padding(.bottom, 8)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
-                .frame(height: NotchLyricLine.rowHeight)
-                .padding(.bottom, 6)
-                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
         .animation(NooriMotion.appear, value: secondary?.id)
@@ -845,7 +842,7 @@ struct ContentView: View {
     }
 
     /// A volume, brightness or keyboard backlight change while lyrics show under the
-    /// closed notch: it goes in the lyric row instead of the wide inline HUD.
+    /// closed notch: it shows as a bar under the lyrics instead of the wide inline HUD.
     private var controlHUDUnderLyrics: Bool {
         guard vm.notchState == .closed, isSneakPeekVisibleOnCurrentScreen, closedLyricRowVisible else { return false }
         switch coordinator.sneakPeek.type {
