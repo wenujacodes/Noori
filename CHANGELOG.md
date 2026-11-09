@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- The layout preview in Settings › Media no longer shows the shuffle and repeat icons in red when they're on in the player.
+- With Second line › Next line, the top row no longer looks empty in a pause: the upcoming line shows there, dimmed with a music note, and lights up in place when it's sung while the line after it slides in below.
+
 ## [1.0.0] - 2026-11-09
 
 ### Added

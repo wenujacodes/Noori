@@ -262,15 +262,10 @@ private struct ScrollHintIndicator: View {
         return base
     }
 
+    /// The preview shows the layout, not whether shuffle or repeat is on, so every
+    /// icon uses the same color.
     private func previewIconColor(for slot: MusicControlButton) -> Color {
-        switch slot {
-        case .shuffle:
-            return musicManager.isShuffled ? .red : .primary
-        case .repeatMode:
-            return musicManager.repeatMode == .off ? .primary : .red
-        default:
-            return .primary
-        }
+        .primary
     }
 
     private func ensureSlotCapacity(_ target: Int) {
