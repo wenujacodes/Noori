@@ -133,7 +133,6 @@ struct NotchLyricLine: View {
         switch colorStyle {
         case .white: return .white
         case .albumArt: return Color(nsColor: music.avgColor).ensureMinimumBrightness(factor: 0.7)
-        case .accent: return .accentColor
         }
     }
 

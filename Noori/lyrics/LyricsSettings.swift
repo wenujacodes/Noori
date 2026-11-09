@@ -68,7 +68,6 @@ enum LyricsAlignment: String, CaseIterable, Identifiable, Defaults.Serializable 
 enum LyricsColorStyle: String, CaseIterable, Identifiable, Defaults.Serializable {
     case white
     case albumArt
-    case accent
 
     var id: String { rawValue }
 
@@ -76,7 +75,6 @@ enum LyricsColorStyle: String, CaseIterable, Identifiable, Defaults.Serializable
         switch self {
         case .white: return String(localized: "White")
         case .albumArt: return String(localized: "Album art color")
-        case .accent: return String(localized: "Accent color")
         }
     }
 }
