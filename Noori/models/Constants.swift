@@ -581,8 +581,6 @@ extension Defaults.Keys {
     static let lyricsOffsetMs = Key<Int>("lyricsOffsetMs", default: 0)
     // Lyrics: look
     static let lyricsKaraoke = Key<Bool>("lyricsKaraoke", default: true)
-    /// The next line below the current one, same size and dimmed.
-    static let lyricsTwoLines = Key<Bool>("lyricsTwoLines", default: false)
     static let lyricsAlignment = Key<LyricsAlignment>("lyricsAlignment", default: .center)
     static let lyricsColorStyle = Key<LyricsColorStyle>("lyricsColorStyle", default: .white)
     static let lyricsFontSize = Key<Double>("lyricsFontSize", default: 12)

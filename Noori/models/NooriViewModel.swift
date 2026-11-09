@@ -118,9 +118,8 @@ class NooriViewModel: NSObject, ObservableObject {
     private func observeLyricsForOpenNotchSize() {
         let lyricsChanged = LyricsManager.shared.$lines.map { _ in () }
         let sessionChanged = MusicManager.shared.$songTitle.map { _ in () }
-        let settingsChanged = Publishers.Merge5(
+        let settingsChanged = Publishers.Merge4(
             Defaults.publisher(.showLyrics).map { _ in () },
-            Defaults.publisher(.lyricsTwoLines).map { _ in () },
             Defaults.publisher(.lyricsFontSize).map { _ in () },
             Defaults.publisher(.lyricsSecondaryLine).map { _ in () },
             Defaults.publisher(.lyricsHideWhenPaused).map { _ in () }

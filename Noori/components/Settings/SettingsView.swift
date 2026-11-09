@@ -674,7 +674,6 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .lyrics, title: "Translate lyrics to", keywords: ["translation", "language"], highlightID: SettingsTab.lyrics.highlightID(for: "Translate to")),
             SettingsSearchEntry(tab: .lyrics, title: "Chinese characters", keywords: ["simplified", "traditional"], highlightID: SettingsTab.lyrics.highlightID(for: "Chinese characters")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics timing offset", keywords: ["offset", "delay", "early", "late", "sync"], highlightID: SettingsTab.lyrics.highlightID(for: "Timing offset")),
-            SettingsSearchEntry(tab: .lyrics, title: "Show two lines of lyrics", keywords: ["two lines", "next line", "double", "2 lines"], highlightID: SettingsTab.lyrics.highlightID(for: "Show two lines")),
             SettingsSearchEntry(tab: .lyrics, title: "Fill in words as they're sung", keywords: ["karaoke", "word by word"], highlightID: SettingsTab.lyrics.highlightID(for: "Fill in words as they're sung")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics color", keywords: ["color", "album", "accent"], highlightID: SettingsTab.lyrics.highlightID(for: "Color")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics text size", keywords: ["font", "size"], highlightID: SettingsTab.lyrics.highlightID(for: "Text size")),

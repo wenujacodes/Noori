@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- "Show two lines" in Settings › Lyrics: the next lyric line shows under the current one at the same size, dimmed, and slides up into place when it's sung, like Apple Music. Off by default.
 - Lyrics in the open notch too: when lyrics are showing and the notch opens, the line being sung shows under the player controls and the notch grows to fit it (it stays while paused, so the notch doesn't change size).
 - Lyrics under the notch: while a song plays, the closed notch gets a bit wider and shows the line being sung underneath, filling in word by word when the timing is available. Lyrics come from LRCLIB, NetEase Cloud Music and QQ Music (searched at the same time; word-by-word timing wins) and are kept in memory only, never saved on the Mac. Turn it on or off with the lyrics button in the player. Based on [Lyrimuse](https://github.com/Yudaotor/lyrimuse).
 - Settings › Lyrics: choose the lyrics sources; a second line with the translation (NetEase's Chinese translations, or Apple's on-device translation into any language on macOS 15+, with a button to download the languages), the pronunciation (romaji, pinyin, Latin letters for Korean, Cyrillic and other scripts, worked out on the Mac) or the next line; Chinese characters as written, simplified or traditional; a timing offset; word fill, alignment, color (white or album art), text size and weight; and whether lyrics hide when paused. "Search again" fetches the current song's lyrics again.
