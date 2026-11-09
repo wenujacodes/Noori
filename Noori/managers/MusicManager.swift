@@ -1152,8 +1152,17 @@ class MusicManager: ObservableObject {
     }
 
     func seek(to position: TimeInterval) {
-        Task {
-            await activeController?.seek(to: position)
+        // Move our own position right away: some players (like Spotify through Now
+        // Playing) don't report a seek until play/pause, so lyrics kept going from
+        // the old spot. Then ask the player for its exact position.
+        let target = songDuration > 0 ? min(max(0, position), songDuration) : max(0, position)
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.elapsedTime = target
+            self.timestampDate = Date()
+            await self.activeController?.seek(to: target)
+            try? await Task.sleep(for: .milliseconds(400))
+            self.forceUpdate()
         }
     }
 

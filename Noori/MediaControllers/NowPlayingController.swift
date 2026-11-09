@@ -127,6 +127,14 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
 
     func seek(to time: Double) async {
         MRMediaRemoteSetElapsedTimeFunction(time)
+        // Some players don't report a seek, so record it ourselves; otherwise the
+        // next update (artwork, play/pause) would bring back the old position.
+        await MainActor.run {
+            var state = playbackState
+            state.currentTime = time
+            state.lastUpdated = Date()
+            playbackState = state
+        }
     }
 
     func isActive() -> Bool {

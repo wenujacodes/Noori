@@ -129,6 +129,11 @@ class FilteredNowPlayingController: ObservableObject, MediaControllerProtocol {
     func seek(to time: Double) async {
         await MainActor.run {
             MRMediaRemoteSetElapsedTimeFunction(time)
+            // Record the seek ourselves; see NowPlayingController.seek(to:).
+            var state = playbackState
+            state.currentTime = time
+            state.lastUpdated = Date()
+            playbackState = state
         }
     }
 
