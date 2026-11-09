@@ -29,7 +29,8 @@ import Sparkle
 class SettingsWindowController: NSWindowController {
     static let shared = SettingsWindowController()
     private var updaterController: SPUStandardUpdaterController?
-    /// True while the window fades out after the close button or ⌘W.
+    /// True while the window fades out after the close button or ⌘W. Opening
+    /// fades in over the same duration.
     private var isFadingOut = false
     private let closeFadeDuration: TimeInterval = 0.2
     
@@ -104,10 +105,18 @@ class SettingsWindowController: NSWindowController {
             return
         }
         
-        // Show the window with proper ordering
+        // Show the window with proper ordering, fading in like it fades out.
+        window?.alphaValue = 0
+        window?.center()
         window?.orderFrontRegardless()
         window?.makeKeyAndOrderFront(nil)
-        window?.center()
+        if let window {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = closeFadeDuration
+                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+                window.animator().alphaValue = 1
+            }
+        }
         
         // Activate the app and ensure window gets focus
         NSApp.activate(ignoringOtherApps: true)

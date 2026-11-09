@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
-- The Settings window fades out when you close it (close button or ⌘W) instead of vanishing instantly.
+- The Settings window fades in when it opens and fades out when you close it (close button or ⌘W) instead of appearing and vanishing instantly.
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
 - In the open notch the two time labels use the slider color (white, the album color, or the accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
 - The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.
@@ -57,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- Possible cause of the whole Mac freezing while Noori runs: Noori kept macOS's OSD helper (OSDUIHelper) paused with SIGSTOP to hide the native volume/brightness popup, and anything waiting on that helper could hang until Noori quit. Noori no longer pauses it (it already swallows the media keys itself) and resumes it if an older run left it paused.
 - Scrolling song titles and artist names no longer jump sideways when a scroll loop ends (the text was measured 10 pt too wide).
 - Battery HUDs (charging, low battery, full battery) had a flat bottom with square corners: the window was sized exactly to the HUD, so its rounded bottom (and the hover growth) got cut off. The window now stays at least its normal size.
 - Long song titles now start scrolling on their own: restarts no longer leave several scroll loops running that kept snapping the text back to the start.
@@ -99,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
-- The Settings window fades out when you close it (close button or ⌘W) instead of vanishing instantly.
+- The Settings window fades in when it opens and fades out when you close it (close button or ⌘W) instead of appearing and vanishing instantly.
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
 - In the open notch the two time labels use the slider color (white, the album color, or the accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
 - The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.

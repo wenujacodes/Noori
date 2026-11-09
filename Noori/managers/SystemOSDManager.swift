@@ -87,6 +87,19 @@ class SystemOSDManager {
 
     // MARK: - Public API
 
+    /// Whether Noori pauses (SIGSTOPs) OSDUIHelper to hide the native OSD.
+    /// Off: a paused system process never answers, so anything in macOS that
+    /// waits on it can hang until Noori quits and resumes it. Noori already
+    /// swallows the volume/brightness keys in its event tap, so the native OSD
+    /// isn't triggered by them anyway.
+    static let pausesNativeOSDHelper = false
+
+    /// Resumes OSDUIHelper if it's paused (e.g. left paused by an older Noori
+    /// that didn't quit cleanly). Safe to call any time.
+    public static func resumeNativeOSDHelperIfPaused() {
+        resumeOSDUIHelperProcess()
+    }
+
     /// True while Noori is hiding the native macOS OSD.
     public static var isSuppressingNativeOSD: Bool {
         suppressionState.withLock { $0.active }
@@ -205,6 +218,10 @@ class SystemOSDManager {
     /// background watcher that re-suspends any future incarnation launchd
     /// spawns (macOS auto-exits OSDUIHelper on idle).
     public static func disableSystemHUD() {
+        guard pausesNativeOSDHelper else {
+            resumeNativeOSDHelperIfPaused()
+            return
+        }
         // Ensure sleep/wake observers are registered.
         _ = sleepWakeSetupOnce
         let generation = suppressionState.withLock { state -> UInt64 in
