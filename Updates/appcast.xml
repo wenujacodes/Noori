@@ -1,6 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
     <channel>
         <title>Noori</title>
+        <item>
+            <title>1.0.0</title>
+            <pubDate>Mon, 09 Nov 2026 19:37:56 +0530</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/wenujacodes/Noori-releases/releases/download/v1.0.0/Noori-1.0.0.zip" length="6351806" type="application/octet-stream" sparkle:edSignature="6pKizZCBVL8nyBro5cIc/zi3F+PTcEAEE/4VniNMXqcfhO/7N+GCYercTKwczIeRILp81I6l5nxwhJ5hwsv6Aw=="/>
+        </item>
     </channel>
 </rss>

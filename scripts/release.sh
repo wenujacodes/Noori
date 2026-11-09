@@ -18,8 +18,12 @@
 # one more than the newest build in Updates/appcast.xml (Sparkle uses it to
 # decide what is newer), or the project's current build for the first release.
 # Set BUILD=<n> to choose it yourself.
-# --publish also creates the GitHub release v<version> with the zip attached.
-# The appcast change still has to be committed and pushed afterwards.
+# --publish also creates the GitHub release v<version> (with the zip and the
+# version's CHANGELOG.md notes) in the public repo wenujacodes/Noori-releases,
+# and pushes the updated appcast there. Noori's own repo is private, so
+# installed copies read the feed and download updates from that public repo.
+# Its local checkout is ../Noori-releases (set RELEASES_DIR to change it).
+# Updates/appcast.xml here is the master copy and still has to be committed.
 #
 # Signing: SIGN_IDENTITY (default "-", ad-hoc) is used for the app itself.
 # The Sparkle signature uses the "Noori" EdDSA key in the login Keychain
@@ -59,7 +63,9 @@ SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 DERIVED="$ROOT/build/release"
 DIST="$ROOT/dist"
 APPCAST="$ROOT/Updates/appcast.xml"
-DOWNLOAD_PREFIX="https://github.com/wenujacodes/Noori/releases/download/v$VERSION/"
+RELEASES_REPO="wenujacodes/Noori-releases"
+RELEASES_DIR="${RELEASES_DIR:-$ROOT/../Noori-releases}"
+DOWNLOAD_PREFIX="https://github.com/$RELEASES_REPO/releases/download/v$VERSION/"
 ZIP="$DIST/Noori-$VERSION.zip"
 
 # 1. Version numbers (kept in the repo so the next release starts from them).
@@ -99,14 +105,32 @@ cp "$APPCAST" "$DIST/appcast.xml"
 cp "$DIST/appcast.xml" "$APPCAST"
 echo "Updated $APPCAST"
 
-# 5. Optionally publish the GitHub release.
+# 5. Optionally publish: the GitHub release (zip + this version's changelog
+#    notes) and the appcast, both in the public releases repo.
 if [[ "$PUBLISH" == "--publish" ]]; then
+    [[ -d "$RELEASES_DIR/.git" ]] || git clone -q "https://github.com/$RELEASES_REPO.git" "$RELEASES_DIR"
+    NOTES="$DIST/notes-$VERSION.md"
+    awk -v v="$VERSION" '
+        index($0, "## [" v "]") == 1 { found = 1; next }
+        found && /^## \[/ { exit }
+        found { print }
+    ' CHANGELOG.md > "$NOTES"
+    [[ -s "$NOTES" ]] || echo "See the changelog for what's new." > "$NOTES"
+
     gh release create "v$VERSION" "$ZIP" \
+        --repo "$RELEASES_REPO" \
         --title "Noori $VERSION" \
-        --notes "See CHANGELOG.md for what's new."
-    echo "Published GitHub release v$VERSION"
+        --notes-file "$NOTES"
+    echo "Published release v$VERSION in $RELEASES_REPO"
+
+    # Release first, feed second: the feed must never point at a missing download.
+    cp "$APPCAST" "$RELEASES_DIR/appcast.xml"
+    git -C "$RELEASES_DIR" pull -q --ff-only
+    git -C "$RELEASES_DIR" add appcast.xml
+    git -C "$RELEASES_DIR" commit -q -m "Noori $VERSION ($BUILD)"
+    git -C "$RELEASES_DIR" push -q
+    echo "Pushed the appcast to $RELEASES_REPO"
 fi
 
 echo
-echo "Next: commit VERSION, the project file and Updates/appcast.xml, then push."
-echo "Installed copies pick up the update from the appcast on main."
+echo "Next: commit VERSION, the project file and Updates/appcast.xml here, then push."

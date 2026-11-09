@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-09
+
 ### Added
+- First Noori release, forked from Atoll 2.3.3 and renamed to Noori.
 - Lyrics in the open notch too: when lyrics are showing and the notch opens, the line being sung shows under the player controls and the notch grows to fit it (it stays while paused, so the notch doesn't change size).
 - Lyrics under the notch: while a song plays, the closed notch gets a bit wider and shows the line being sung underneath, filling in word by word when the timing is available. Lyrics come from LRCLIB, NetEase Cloud Music and QQ Music (searched at the same time; word-by-word timing wins) and are kept in memory only, never saved on the Mac. Turn it on or off with the lyrics button in the player. Based on [Lyrimuse](https://github.com/Yudaotor/lyrimuse).
 - Settings › Lyrics: choose the lyrics sources; a second line with the translation (NetEase's Chinese translations, or Apple's on-device translation into any language on macOS 15+, with a button to download the languages), the pronunciation (romaji, pinyin, Latin letters for Korean, Cyrillic and other scripts, worked out on the Mac) or the next line; Chinese characters as written, simplified or traditional; a timing offset; word fill, alignment, color (white or album art), text size and weight; and whether lyrics hide when paused. "Search again" fetches the current song's lyrics again.
@@ -25,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
-- While lyrics show under the closed notch, changing the volume, brightness or keyboard backlight shows a bar in the lyric row (icon, level, percentage) instead of the wide inline HUD; the lyrics come back when it's done.
+- While lyrics show under the closed notch, changing the volume, brightness or keyboard backlight shows a bar (icon, level, percentage) under the lyrics instead of the wide inline HUD; the lyrics stay up.
 - During a pause in the lyrics (and just before the first line), the notch shows the upcoming line, dimmed, with the music note instead of the note alone.
 - The extra player buttons (shuffle, repeat, lyrics, media output, AirPlay) animate when clicked: they squeeze and spring back with a bounce, and their color fades between on and off.
 - The album art in the open notch stays full size and full brightness when the song is paused.
@@ -131,31 +134,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unused `MinimalisticMusicView` and translations for removed features.
 - Unused Metal shader (`visualizer.metal`), the empty bridging header and the unused Accelerate framework link. Building no longer needs the Metal Toolchain.
 - Real-time waveform: live audio capture, the C++ audio processing behind it, the scrubbable waveform on the progress bar, the "Enable real-time waveform" and "Scrubbable real-time waveform" settings, and the audio capture permission. The music visualizer always shows the animated bars.
-- Lyrics feature (fetching from LRCLIB, the lyrics line in the player, and the "Enable lyrics" setting). The lyrics button stays in the music controls as a placeholder for a future version and does nothing for now.
 - "Corner radius scaling" setting; the open notch now always uses the larger, scaled corners.
 - The onboarding window (welcome screen, media player picker and finish screen), including its "Focus detection mode" popup. First-run defaults are still applied on first launch, and Focus detection uses the Standard mode.
-
-## [1.0.0]
-
-### Changed
-- The Bluetooth icon in the HUD is a little smaller (14 pt tall, was 16).
-- Wi-Fi, AirDrop and Bluetooth HUD words (On/Off, Connected/Disconnected, Contacts Only/Everyone, and the Wi-Fi/AirDrop title) roll to the new value like the brightness percentage when they change while the HUD is showing.
-- The Bluetooth device name in the HUD uses the same font as the other HUD titles (Wi-Fi, AirDrop, Volume) instead of a larger one.
-- The Bluetooth and Wi-Fi HUD icons no longer get a slash when off or disconnected; the colored On/Off/Disconnected text shows the state.
-- Bluetooth HUD: the Bluetooth on/off HUD uses the Bluetooth rune (with a slash when off) and shows "On" in green / "Off" in red; "Disconnected" is red; the battery ring and bar go smoothly from green (75%+) through yellow (50%) and orange (25%) to red (10% and below).
-- A long Bluetooth device name in the connection HUD scrolls through twice before the HUD closes.
-- The Bluetooth connection HUD shows the battery percentage as a number next to the ring by default.
-- The Bluetooth device-connected HUD stays up for 5 seconds (was 2.5).
-- The Bluetooth connection HUD shows the device name by default ("Show device name" is on for new installs).
-- The Settings window fades in when it opens and fades out when you close it (close button or ⌘W) instead of appearing and vanishing instantly.
-- Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
-- In the open notch the two time labels use the slider color (white, the album color, or the accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
-- The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.
-- Opening the notch is a little faster again (open spring 0.32 s, was 0.36 s), with the content fade-in and bounce shortened to match.
-- The album cover flip on a song change is slower and smoother (0.75 s with a smooth curve, was 0.45 s ease-in-out).
-- The song name and artist in the small notch (sneak peek and the song line on screens without a notch) use the same 11 pt medium font as the open notch's artist name.
-- The album cover flip on a song change now blurs as it turns (strongest halfway through, sharp again when it lands).
-- The explicit "E" badge is now a bright white square with a black E (it was a faint grey square).
-- The artist name in the open notch is a little bigger (11 pt medium instead of 10 pt regular) so it's easier to read.
-- The song sneak peek (on song change or hover) still hides after 3 seconds, but when the title or artist is too long and scrolls, it stays until the name has scrolled through once.
-- First Noori release, forked from Atoll 2.3.3 and renamed to Noori.
