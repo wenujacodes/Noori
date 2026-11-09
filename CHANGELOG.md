@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- With Second line › Next line, the line that moves up into the top row of the closed notch no longer disappears after each line change.
 - Scrolling in Settings is smoother: rows no longer each draw an invisible search-highlight outline with a shadow, and the Media and Lyrics pages no longer redraw on every playback update while music plays.
 - The layout preview in Settings › Media no longer shows the shuffle and repeat icons in red when they're on in the player.
 - With Second line › Next line, the top row no longer looks empty in a pause: the upcoming line shows there, dimmed with a music note, and lights up in place when it's sung while the line after it slides in below.

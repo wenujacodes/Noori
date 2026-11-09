@@ -105,27 +105,21 @@ struct NotchLyricLine: View {
         return VStack(spacing: 0) {
             ForEach(rows, id: \.self) { row in
                 let isTop = row == topRow
-                Group {
-                    if isTop && !isPause {
-                        primaryLine(lyrics.lines[row], ms: ms, fillsWords: fillsWords)
-                    } else {
-                        HStack(spacing: 6) {
-                            if isTop {
-                                Image(systemName: "music.note")
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundStyle(.white.opacity(0.5))
-                            }
-                            // Drawn at full size and scaled down, so it grows smoothly when it moves up.
-                            Text(lyrics.lines[row].text)
-                                .font(.system(size: fittingFontSize(for: lyrics.lines[row].text), weight: fontWeight.fontWeight))
-                                .foregroundStyle(sungColor)
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                        }
+                let line = lyrics.lines[row]
+                // Word-timed lines are already dim until they're sung.
+                let dimmed: Double = fillsWords && line.words != nil ? 1 : 0.5
+                // Every row is the same line view, drawn at full size: moving up only
+                // changes its scale and brightness, so it never disappears on the way.
+                HStack(spacing: 6) {
+                    if isTop && isPause {
+                        Image(systemName: "music.note")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(.white.opacity(0.5))
                     }
+                    primaryLine(line, ms: ms, fillsWords: fillsWords)
                 }
                 .scaleEffect(isTop ? 1 : smallScale, anchor: anchor)
-                .opacity(isTop ? (isPause ? 0.45 : 1) : 0.5)
+                .opacity(isTop && !isPause ? 1 : dimmed)
                 .frame(width: width, height: isTop ? primaryHeight : secondaryHeight, alignment: frameAlignment)
                 .transition(.asymmetric(
                     insertion: .modifier(
@@ -191,12 +185,6 @@ struct NotchLyricLine: View {
                 }
             }
             .fixedSize()
-            // One layer for the whole line: the per-word masks are redrawn every
-            // frame, so flattening them keeps the notch's own animations smooth.
-            // The padding leaves room for the glow and the rise, which the layer would clip.
-            .padding(8)
-            .drawingGroup()
-            .padding(-8)
         } else {
             Text(line.text)
                 .font(font)
