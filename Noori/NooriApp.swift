@@ -122,6 +122,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         installTopMenuItemsIfNeeded()
     }
 
+    /// Clicking Noori's app icon while it's running (Finder, Launchpad, Spotlight,
+    /// Dock): the first click opens the notch, a click while it's open opens Settings.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        let viewModel: NooriViewModel = {
+            if Defaults[.showOnAllDisplays], let main = NSScreen.main, let screenVM = viewModels[main] {
+                return screenVM
+            }
+            return vm
+        }()
+
+        closeNotchWorkItem?.cancel()
+        closeNotchWorkItem = nil
+
+        if viewModel.notchState == .open {
+            SettingsWindowController.shared.showWindow()
+            return false
+        }
+
+        viewModel.open()
+        // Close again after a few seconds unless the pointer is over it, like the
+        // open-notch shortcut. A click within that time opens Settings.
+        let workItem = DispatchWorkItem { [weak viewModel] in
+            guard let viewModel, viewModel.notchState == .open,
+                  !viewModel.isMouseHovering() else { return }
+            viewModel.close()
+        }
+        closeNotchWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: workItem)
+        return false
+    }
+
     
     func applicationWillTerminate(_ notification: Notification) {
 
