@@ -100,6 +100,14 @@ struct ContentView: View {
             return CGSize(width: max(baseSize.width, inlineWidth), height: baseSize.height)
         }
         
+        // Long lyric lines widen the closed notch past the open notch's width.
+        if vm.notchState == .closed, closedLyricRowVisible {
+            let lyricsWidth = lyricsManager.closedWindowWidth
+            if lyricsWidth > baseSize.width {
+                return CGSize(width: lyricsWidth, height: baseSize.height)
+            }
+        }
+
         // Handle battery HUD expansion sizing
         if vm.notchState == .closed && 
            coordinator.expandingView.show && 
@@ -717,7 +725,7 @@ struct ContentView: View {
         // wider so lines fit.
         let showLyricRow = closedLyricRowVisible
         let showsControlHUD = controlHUDUnderLyrics
-        let effectiveCenterWidth = inlineSneakPeekActive ? 380 : (showLyricRow ? max(centerBaseWidth, 260) : centerBaseWidth)
+        let effectiveCenterWidth = inlineSneakPeekActive ? 380 : (showLyricRow ? max(centerBaseWidth, lyricsManager.closedCenterWidth) : centerBaseWidth)
         let notchWidth = wingBaseWidth + effectiveCenterWidth + rightWingWidth
         let badgeBaseSize = max(13, notchContentHeight * 0.36)
         let badgeDisplaySize = badgeDisplaySize(for: secondary, baseSize: badgeBaseSize)

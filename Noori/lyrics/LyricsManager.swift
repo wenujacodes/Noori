@@ -8,6 +8,7 @@
  * (at your option) any later version.
  */
 
+import AppKit
 import Combine
 import Defaults
 import Foundation
@@ -114,6 +115,33 @@ final class LyricsManager: ObservableObject {
         }()
         if isWithinLyrics != within { isWithinLyrics = within }
     }
+
+    /// Width of the closed notch's middle while lyrics show: wide enough for the
+    /// song's longest line at the chosen text size, decided once per song so the
+    /// notch doesn't change width line by line. Between 260 and 620 pt; longer lines
+    /// shrink a little to fit.
+    var closedCenterWidth: CGFloat {
+        guard !lines.isEmpty else { return 260 }
+        let size = CGFloat(Defaults[.lyricsFontSize])
+        let weight = Defaults[.lyricsFontWeight].nsFontWeight
+        let key = "\(lines.count)|\(lines.first?.timeMs ?? 0)|\(lines.last?.timeMs ?? 0)|\(size)|\(weight.rawValue)"
+        if key != widestLineKey {
+            let font = NSFont.systemFont(ofSize: size, weight: weight)
+            widestLine = lines.map { ceil(($0.text as NSString).size(withAttributes: [.font: font]).width) }.max() ?? 0
+            widestLineKey = key
+        }
+        return min(620, max(260, widestLine))
+    }
+
+    /// Window width the closed notch needs for the lyrics (0 when there are none):
+    /// the middle plus the album art and visualizer wings and the notch's padding.
+    var closedWindowWidth: CGFloat {
+        guard Defaults[.showLyrics], !lines.isEmpty else { return 0 }
+        return closedCenterWidth + 130
+    }
+
+    private var widestLine: CGFloat = 0
+    private var widestLineKey = ""
 
     var showsInOpenNotch: Bool {
         Defaults[.showLyrics] && !lines.isEmpty && music.hasActiveSession

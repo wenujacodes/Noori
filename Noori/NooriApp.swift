@@ -461,6 +461,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func resizeWindows(to size: CGSize, animated: Bool, force: Bool) {
         guard size.width > 0, size.height > 0 else { return }
+        // Always wide enough for the closed notch with the current song's lyrics.
+        var size = size
+        size.width = max(size.width, LyricsManager.shared.closedWindowWidth)
 
         if Defaults[.showOnAllDisplays] {
             for (screen, window) in windows {
