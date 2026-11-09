@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Settings › Appearance now has all the notch's size and shape settings: Notch height moved there from General, next to Notch width, and the two pickers for the style on screens without a notch (one in General, one in Appearance) are now one, "Style on screens without a notch", always shown in Appearance.
 - Settings clean-up: the artist color setting in Media had the wrong label ("Enable colored spectograms"); it's now "Color the artist name with the album art". The loose "Hide Noori Options" picker is now "Hide Noori in full screen" in its own Full screen section. "Visualizer candles" is "Visualizer bars", "Progressbar style" is "Progress bar style", and the Devices notes point to Settings › Controls instead of a page that doesn't exist.
 - Smaller download: releases are stripped of debugging symbols (the universal app is about 19 MB instead of 48 MB, the zip about 7.5 MB instead of 11 MB). Nothing changes in how Noori works.
 

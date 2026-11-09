@@ -609,9 +609,9 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .general, title: "Reverse scroll gestures", keywords: ["reverse", "scroll", "open", "close"], highlightID: SettingsTab.general.highlightID(for: "Reverse scroll gestures")),
             SettingsSearchEntry(tab: .general, title: "Enable haptics", keywords: ["haptic", "feedback"], highlightID: SettingsTab.general.highlightID(for: "Enable haptics")),
             SettingsSearchEntry(tab: .general, title: "Open notch on hover", keywords: ["hover to open", "auto open"], highlightID: SettingsTab.general.highlightID(for: "Open notch on hover")),
-            SettingsSearchEntry(tab: .general, title: "External display style", keywords: ["noori", "pill", "external display", "non-notch", "floating", "capsule"], highlightID: SettingsTab.general.highlightID(for: "External display style")),
+            SettingsSearchEntry(tab: .appearance, title: "Style on screens without a notch", keywords: ["noori", "pill", "external display", "non-notch", "floating", "capsule"], highlightID: SettingsTab.appearance.highlightID(for: "Display style")),
             SettingsSearchEntry(tab: .general, title: "Hide until hovered", keywords: ["hide", "hover", "external", "non-notch", "auto hide", "slide"], highlightID: SettingsTab.general.highlightID(for: "Hide until hovered")),
-            SettingsSearchEntry(tab: .general, title: "Notch display height", keywords: ["display height", "menu bar size"], highlightID: SettingsTab.general.highlightID(for: "Notch display height")),
+            SettingsSearchEntry(tab: .appearance, title: "Notch display height", keywords: ["display height", "menu bar size"], highlightID: SettingsTab.appearance.highlightID(for: "Notch display height")),
 
             SettingsSearchEntry(tab: .general, title: "Minimum hover duration", keywords: ["hover", "delay", "open"], highlightID: SettingsTab.general.highlightID(for: "Minimum hover duration")),
             SettingsSearchEntry(tab: .general, title: "Horizontal media gestures", keywords: ["swipe", "media", "gesture", "skip"], highlightID: SettingsTab.general.highlightID(for: "Horizontal media gestures")),
@@ -689,7 +689,6 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .media, title: "Show song title and artist in closed notch", keywords: ["song title", "artist", "closed notch"], highlightID: SettingsTab.media.highlightID(for: "Show song title and artist in closed notch")),
 
             // Appearance
-            SettingsSearchEntry(tab: .appearance, title: "Main screen style", keywords: ["noori", "pill", "non-notch", "display style", "notch style"], highlightID: SettingsTab.appearance.highlightID(for: "Main screen style")),
             SettingsSearchEntry(tab: .appearance, title: "Enable window shadow", keywords: ["shadow", "appearance"], highlightID: SettingsTab.appearance.highlightID(for: "Enable window shadow")),
             SettingsSearchEntry(tab: .media, title: "Enable colored spectrograms", keywords: ["spectrogram", "audio"], highlightID: SettingsTab.media.highlightID(for: "Enable colored spectrograms")),
             SettingsSearchEntry(tab: .media, title: "Hide Noori in full screen", keywords: ["fullscreen", "full screen", "hide", "video", "games"], highlightID: nil),
