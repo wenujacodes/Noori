@@ -108,6 +108,13 @@ struct SystemEventIndicatorModifier: View {
                         .foregroundStyle(.white)
                         .lineLimit(1)
                         .allowsTightening(true)
+                } else if BluetoothAudioManager.shared.disconnectedHUDDevice != nil {
+                    Text("Disconnected")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.gray)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     ProgressSection(value: $value, showPercentages: showProgressPercentages, colorMode: .battery)
                 }

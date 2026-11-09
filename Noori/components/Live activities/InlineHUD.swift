@@ -77,6 +77,8 @@ struct InlineHUD: View {
         let listeningMode = listeningModeEvent?.mode ?? (type == .bluetoothAudio && value < 0 ? AirPodsListeningMode.fromHUDSymbol(icon) : nil)
         let isListeningModeEvent = type == .bluetoothAudio && listeningMode != nil
         let hasBatteryLevel = value > 0 && !isListeningModeEvent
+        let isDisconnectEvent = type == .bluetoothAudio && !isListeningModeEvent
+            && bluetoothManager.disconnectedHUDDevice != nil
         let capsLockAccentColor = capsLockTintMode.color
 
         // Widths stay constant whether hovered or not so HUD text/icons do
@@ -314,6 +316,14 @@ struct InlineHUD: View {
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
+                    } else if isDisconnectEvent {
+                        Text("Disconnected")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.gray)
+                            .lineLimit(1)
+                            .allowsTightening(true)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
                     } else if hasBatteryLevel {
                         let indicatorSpacing: CGFloat = {
                             if useCircularIndicator {
@@ -396,6 +406,9 @@ struct InlineHUD: View {
             displayName = Type2Name(type)
         }
         .onChange(of: bluetoothManager.lastConnectedDevice?.name) { _, _ in
+            displayName = Type2Name(type)
+        }
+        .onChange(of: bluetoothManager.disconnectedHUDDevice?.name) { _, _ in
             displayName = Type2Name(type)
         }
     }
@@ -509,7 +522,8 @@ struct InlineHUD: View {
             case .mic:
                 return String(localized: "Mic")
             case .bluetoothAudio:
-                return BluetoothAudioManager.shared.lastConnectedDevice?.name ?? "Bluetooth"
+                let manager = BluetoothAudioManager.shared
+                return manager.disconnectedHUDDevice?.name ?? manager.lastConnectedDevice?.name ?? "Bluetooth"
             case .capsLock:
                 return String(localized: "Caps Lock")
             default:

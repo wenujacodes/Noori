@@ -32,6 +32,9 @@ class BluetoothAudioManager: ObservableObject {
     
     // MARK: - Published Properties
     @Published var lastConnectedDevice: BluetoothAudioDevice?
+    /// Set while the "Disconnected" HUD is showing for this device.
+    @Published var disconnectedHUDDevice: BluetoothAudioDevice?
+    private var disconnectedHUDClearTask: Task<Void, Never>?
     @Published var connectedDevices: [BluetoothAudioDevice] = []
     @Published var isBluetoothAudioConnected: Bool = false
     @Published private(set) var activeListeningModeEvent: AirPodsListeningModeEvent?
@@ -468,6 +471,9 @@ class BluetoothAudioManager: ObservableObject {
         if !removedDevices.isEmpty {
             print("🎧 [BluetoothAudioManager] 👋 Audio device(s) disconnected")
             removedDevices.forEach { cancelHUDBatteryWait(for: $0) }
+            if let device = removedDevices.last {
+                showDeviceDisconnectedHUD(device)
+            }
         }
         
         isBluetoothAudioConnected = !connectedDevices.isEmpty
@@ -525,6 +531,9 @@ class BluetoothAudioManager: ObservableObject {
         connectedDevices.removeAll { $0.address == address }
         removed.forEach { cancelHUDBatteryWait(for: $0) }
         isBluetoothAudioConnected = !connectedDevices.isEmpty
+        if let device = removed.last {
+            showDeviceDisconnectedHUD(device)
+        }
     }
     
     // MARK: - Device Detection Helpers
@@ -1851,8 +1860,41 @@ class BluetoothAudioManager: ObservableObject {
         hudBatteryWaitTasks[device.id] = task
     }
 
+    /// How long the "Disconnected" HUD stays up.
+    private let disconnectedHUDDuration: TimeInterval = 3
+
+    /// Shows "<device> · Disconnected". Disconnecting switches the audio output
+    /// back to the Mac, which fires a volume change; that volume HUD is held back.
+    private func showDeviceDisconnectedHUD(_ device: BluetoothAudioDevice) {
+        guard Defaults[.showBluetoothDeviceConnections] else { return }
+
+        HUDSuppressionCoordinator.shared.suppressVolumeHUD(for: 2)
+        disconnectedHUDDevice = device
+
+        Task { @MainActor in
+            coordinator.toggleSneakPeek(
+                status: true,
+                type: .bluetoothAudio,
+                duration: disconnectedHUDDuration,
+                value: 0,
+                icon: device.deviceType.sfSymbol
+            )
+        }
+
+        disconnectedHUDClearTask?.cancel()
+        disconnectedHUDClearTask = Task { @MainActor [weak self] in
+            // Clear after the HUD has hidden, so it doesn't switch back mid-fade.
+            try? await Task.sleep(for: .seconds(self?.disconnectedHUDDuration ?? 3) + .milliseconds(600))
+            guard !Task.isCancelled else { return }
+            self?.disconnectedHUDDevice = nil
+        }
+    }
+
     private func presentDeviceConnectedHUD(device: BluetoothAudioDevice, batteryLevel: Int?) {
         guard Defaults[.showBluetoothDeviceConnections] else { return }
+
+        disconnectedHUDClearTask?.cancel()
+        disconnectedHUDDevice = nil
 
         print("🎧 [BluetoothAudioManager] 📱 Showing device connected HUD")
 
