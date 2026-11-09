@@ -564,4 +564,6 @@ extension Defaults.Keys {
         Defaults[.musicAuxRightControl] = fallback
     }
     static let showSongMetadataInClosedNotch = Key<Bool>("showSongMetadataInClosedNotch", default: false)
+    /// Synced lyrics under the closed notch while music plays.
+    static let showLyrics = Key<Bool>("showLyrics", default: true)
 }

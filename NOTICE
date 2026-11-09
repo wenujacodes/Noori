@@ -7,5 +7,11 @@ Both projects are licensed under the GNU General Public License v3.0.
 
 Modifications for Noori: Copyright (C) 2026 Wenuja Liyanamana.
 
+The lyrics feature (Noori/lyrics/) adapts code from Lyrimuse
+(https://github.com/Yudaotor/lyrimuse) by Yudaotor: the LRC and NetEase
+word-timed (YRC) lyric parsers, and the LRCLIB, NetEase Cloud Music and QQ
+Music lyric lookups from its lyrics engine. Lyrimuse is licensed under the
+GNU General Public License v3.0.
+
 Noori is also licensed under the GNU General Public License v3.0.
 See the LICENSE file for the full GPL v3 text.

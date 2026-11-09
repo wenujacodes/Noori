@@ -40,6 +40,8 @@ struct ContentView: View {
 
     @ObservedObject var coordinator = NooriViewCoordinator.shared
     @ObservedObject var musicManager = MusicManager.shared
+    @ObservedObject private var lyricsManager = LyricsManager.shared
+    @Default(.showLyrics) private var showLyrics
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var recordingManager = ScreenRecordingManager.shared
     @ObservedObject var privacyManager = PrivacyIndicatorManager.shared
@@ -706,12 +708,16 @@ struct ContentView: View {
             centerBaseWidth: centerBaseWidth,
             notchHeight: notchContentHeight
         )
-        let effectiveCenterWidth = inlineSneakPeekActive ? 380 : centerBaseWidth
+        // Lyrics: a row under the notch for the line being sung, with the notch a bit
+        // wider so lines fit.
+        let showLyricRow = showLyrics && musicManager.isPlaying && !lyricsManager.lines.isEmpty
+        let effectiveCenterWidth = inlineSneakPeekActive ? 380 : (showLyricRow ? max(centerBaseWidth, 260) : centerBaseWidth)
         let notchWidth = wingBaseWidth + effectiveCenterWidth + rightWingWidth
         let badgeBaseSize = max(13, notchContentHeight * 0.36)
         let badgeDisplaySize = badgeDisplaySize(for: secondary, baseSize: badgeBaseSize)
         let badgeOffset = badgeOverlayOffset(for: secondary, badgeSize: badgeDisplaySize)
 
+        VStack(spacing: 0) {
         HStack(spacing: 0) {
             ZStack(alignment: .bottomTrailing) {
                 Color.clear
@@ -800,7 +806,15 @@ struct ContentView: View {
         }
         .frame(width: notchWidth, height: notchContentHeight)
         .frame(height: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0), alignment: .center)
+
+            if showLyricRow {
+                ClosedNotchLyricLine(width: max(0, notchWidth - 16))
+                    .padding(.bottom, 6)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
         .animation(NooriMotion.appear, value: secondary?.id)
+        .animation(NooriMotion.change, value: showLyricRow)
     }
 
     private func resolveMusicSecondaryLiveActivity(isMusicPairingEligible: Bool = true) -> MusicSecondaryLiveActivity? {

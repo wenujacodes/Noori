@@ -663,6 +663,7 @@ struct SettingsView: View {
 
             // Media
             SettingsSearchEntry(tab: .media, title: "Music source", keywords: ["media source", "controller"], highlightID: SettingsTab.media.highlightID(for: "Music source")),
+            SettingsSearchEntry(tab: .media, title: "Show lyrics under the notch", keywords: ["lyrics", "karaoke", "words", "lrclib", "netease", "qq"], highlightID: SettingsTab.media.highlightID(for: "Show lyrics under the notch")),
             SettingsSearchEntry(tab: .media, title: "Skip buttons", keywords: ["skip", "controls", "±10"], highlightID: SettingsTab.media.highlightID(for: "Skip buttons")),
             SettingsSearchEntry(tab: .media, title: "Sneak peek style", keywords: ["sneak peek", "preview"], highlightID: SettingsTab.media.highlightID(for: "Sneak peek style")),
             SettingsSearchEntry(tab: .media, title: "Show Change Media Output control", keywords: ["airplay", "route picker", "media output"], highlightID: SettingsTab.media.highlightID(for: "Show Change Media Output control")),
@@ -1811,6 +1812,19 @@ struct Media: View {
                 .settingsHighlight(id: highlightID("Show song title and artist in closed notch"))
             } header: {
                 Text("Media playback live activity")
+            }
+
+            Section {
+                Defaults.Toggle(key: .showLyrics) {
+                    Text("Show lyrics under the notch")
+                }
+                .settingsHighlight(id: highlightID("Show lyrics under the notch"))
+            } header: {
+                Text("Lyrics")
+            } footer: {
+                Text("While a song plays, the line being sung shows under the closed notch, word by word when the timing is available. Lyrics come from LRCLIB, NetEase Cloud Music and QQ Music, which get the song's title, artist and length. The lyrics button in the player turns this on and off.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Section {

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Lyrics under the notch: while a song plays, the closed notch gets a bit wider and shows the line being sung underneath, filling in word by word when the timing is available. Lyrics come from LRCLIB, NetEase Cloud Music and QQ Music (searched at the same time; word-by-word timing wins) and are cached on disk. Turn it on or off with the lyrics button in the player or "Show lyrics under the notch" in Settings › Media. Based on [Lyrimuse](https://github.com/Yudaotor/lyrimuse).
 - Menu bar icon (a bolt for now): click it to open or close the notch; right-click (or Control-click) for Settings…, Check for Updates…, Restart Noori and Quit Noori. It can be hidden with "Show menu bar icon" in Settings › General.
 - AirDrop HUD: the notch shows "AirDrop · Off/Contacts Only/Everyone" when the AirDrop setting changes (red for Off, green otherwise), with a "Show AirDrop changes" toggle in Settings › Devices. AirDrop has no connected device to show, and macOS posts no notification for the setting, so Noori checks it every 2 seconds.
 - Wi-Fi HUD: the notch shows "Wi-Fi · On/Off" and "Wi-Fi · Connected/Disconnected" when they change (green for on/connected, red for off/disconnected), with a "Show Wi-Fi changes" toggle in Settings › Devices. The network name isn't shown, since macOS only gives it to apps with Location permission.

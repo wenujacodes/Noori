@@ -48,4 +48,6 @@ Noori builds upon the work of several open-source projects and draws inspiration
 
 - [**DynamicNotch**](https://github.com/jackson-storm/DynamicNotch) - thanks DynamicNotch for letting us use their battery huds
 
+- [**Lyrimuse**](https://github.com/Yudaotor/lyrimuse) by [Yudaotor](https://github.com/Yudaotor) - Noori's notch lyrics are based on Lyrimuse: its LRC and word-by-word lyric parsers, and the way it looks up lyrics on LRCLIB, NetEase Cloud Music and QQ Music.
+
 A heartfelt thanks to [TheBoredTeam](https://github.com/TheBoredTeam) for being supportive and being totally awesome, Noori (and Atoll before it) would not have been possible without Boring.Notch

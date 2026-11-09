@@ -31,6 +31,7 @@ struct MinimalisticMusicPlayerView: View {
     @Default(.musicControlSlots) private var slotConfig
     @Default(.showMediaOutputControl) private var showMediaOutputControl
     @Default(.musicSkipBehavior) private var musicSkipBehavior
+    @Default(.showLyrics) private var showLyrics
     @ObservedObject private var coordinator = NooriViewCoordinator.shared
     @State private var hudValue: Double = 0
     @State private var hudDragging: Bool = false
@@ -600,8 +601,10 @@ struct MinimalisticMusicPlayerView: View {
         case .airPlay:
             MinimalisticAirPlayButton()
         case .lyrics:
-            // Placeholder: the lyrics feature was removed; the button is kept for a future version.
-            controlButton(icon: "quote.bubble", isActive: false, isSecondary: true) {}
+            // Turns the lyrics under the closed notch on and off.
+            controlButton(icon: "quote.bubble", isActive: showLyrics, isSecondary: true) {
+                showLyrics.toggle()
+            }
         }
     }
 
