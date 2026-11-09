@@ -271,6 +271,7 @@ struct InlineHUD: View {
                         .lineLimit(1)
                         .allowsTightening(true)
                         .contentTransition(.numericText())
+                        .animation(NooriMotion.change, value: Type2Name(type))
                         .foregroundStyle(.white)
                 }
             }
@@ -302,12 +303,16 @@ struct InlineHUD: View {
                             .contentTransition(.interpolate)
                     }
                 } else if type == .connectivity {
+                    // Rolls like the brightness percentage when the status changes
+                    // while the HUD is up (e.g. On → Off).
                     Text(connectivityState.status)
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundStyle(connectivityState.isPositive ? Color.green : Color.red)
                         .lineLimit(1)
                         .allowsTightening(true)
+                        .contentTransition(.numericText())
+                        .animation(NooriMotion.change, value: connectivityState.status)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 } else if (type == .bluetoothAudio) {
                     if let listeningMode {
@@ -343,12 +348,16 @@ struct InlineHUD: View {
                             .fontWeight(.medium)
                             .foregroundStyle(bluetoothPowerState ? Color.green : Color.red)
                             .lineLimit(1)
+                            .contentTransition(.numericText())
+                            .animation(NooriMotion.change, value: bluetoothPowerState)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     } else if isDisconnectEvent {
                         Text(bluetoothManager.disconnectedHUDBatteryDead ? "Battery dead" : "Disconnected")
                             .font(.caption)
                             .fontWeight(.medium)
                             .foregroundStyle(.red)
+                            .contentTransition(.numericText())
+                            .animation(NooriMotion.change, value: bluetoothManager.disconnectedHUDBatteryDead)
                             .lineLimit(1)
                             .allowsTightening(true)
                             .frame(maxWidth: .infinity, alignment: .trailing)
