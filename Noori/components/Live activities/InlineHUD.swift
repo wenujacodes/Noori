@@ -326,10 +326,10 @@ struct InlineHUD: View {
                             .lineLimit(1)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     } else if isDisconnectEvent {
-                        Text("Disconnected")
+                        Text(bluetoothManager.disconnectedHUDBatteryDead ? "Battery dead" : "Disconnected")
                             .font(.caption)
                             .fontWeight(.medium)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(bluetoothManager.disconnectedHUDBatteryDead ? .red : .gray)
                             .lineLimit(1)
                             .allowsTightening(true)
                             .frame(maxWidth: .infinity, alignment: .trailing)

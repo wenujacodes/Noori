@@ -116,10 +116,11 @@ struct SystemEventIndicatorModifier: View {
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else if BluetoothAudioManager.shared.disconnectedHUDDevice != nil {
-                    Text("Disconnected")
+                    let batteryDead = BluetoothAudioManager.shared.disconnectedHUDBatteryDead
+                    Text(batteryDead ? "Battery dead" : "Disconnected")
                         .font(.caption)
                         .fontWeight(.medium)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(batteryDead ? .red : .gray)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {

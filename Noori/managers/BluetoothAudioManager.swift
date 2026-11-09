@@ -34,6 +34,14 @@ class BluetoothAudioManager: ObservableObject {
     @Published var lastConnectedDevice: BluetoothAudioDevice?
     /// Set while the "Disconnected" HUD is showing for this device.
     @Published var disconnectedHUDDevice: BluetoothAudioDevice?
+    /// True when the "Disconnected" HUD is for a device whose battery ran out.
+    @Published var disconnectedHUDBatteryDead = false
+    /// Battery levels that trigger a reminder when a device drops to or below them.
+    private let batteryReminderThresholds = [75, 50, 25, 10, 5]
+    /// At or below this level, a disconnect is shown as "Battery dead".
+    private let deadBatteryLevel = 5
+    private var lastSeenBatteryByAddress: [String: Int] = [:]
+    private var remindedBatteryThresholdsByAddress: [String: Set<Int>] = [:]
     private var disconnectedHUDClearTask: Task<Void, Never>?
     /// Set while the "Bluetooth On/Off" HUD is showing (true = turned on).
     @Published var bluetoothPowerHUDState: Bool?
@@ -259,7 +267,12 @@ class BluetoothAudioManager: ObservableObject {
         print("🎧 [BluetoothAudioManager] Starting safety-net polling timer (30s interval)...")
         
         pollingTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
-            self?.checkForDeviceChanges()
+            guard let self else { return }
+            self.checkForDeviceChanges()
+            // Re-read battery levels so low-battery reminders fire while connected.
+            if !self.connectedDevices.isEmpty {
+                self.refreshBatteryLevelsForConnectedDevices()
+            }
         }
     }
     
@@ -908,6 +921,7 @@ class BluetoothAudioManager: ObservableObject {
         if let last = updatedDevices.last {
             lastConnectedDevice = last
         }
+        checkBatteryReminders(for: updatedDevices)
 
         if triggerPmsetFallback,
            updatedDevices.contains(where: { $0.batteryLevel == nil }) {
@@ -1879,7 +1893,11 @@ class BluetoothAudioManager: ObservableObject {
               bluetoothPowerHUDState == nil else { return }
 
         HUDSuppressionCoordinator.shared.suppressVolumeHUD(for: 2)
+        let lastLevel = device.batteryLevel ?? lastSeenBatteryByAddress[device.address]
+        disconnectedHUDBatteryDead = (lastLevel ?? 100) <= deadBatteryLevel
         disconnectedHUDDevice = device
+        lastSeenBatteryByAddress.removeValue(forKey: device.address)
+        remindedBatteryThresholdsByAddress.removeValue(forKey: device.address)
 
         Task { @MainActor in
             coordinator.toggleSneakPeek(
@@ -1897,6 +1915,34 @@ class BluetoothAudioManager: ObservableObject {
             try? await Task.sleep(for: .seconds(self?.disconnectedHUDDuration ?? 3) + .milliseconds(600))
             guard !Task.isCancelled else { return }
             self?.disconnectedHUDDevice = nil
+            self?.disconnectedHUDBatteryDead = false
+        }
+    }
+
+    /// Shows the device HUD (name, ring, percentage) once each time a connected
+    /// device's battery drops past 75, 50, 25, 10 or 5%. A threshold can remind
+    /// again after the device has been charged back above it. The first level
+    /// seen after connecting only sets the baseline (the connect HUD shows it).
+    private func checkBatteryReminders(for devices: [BluetoothAudioDevice]) {
+        for device in devices {
+            guard let level = device.batteryLevel else { continue }
+            let address = device.address
+            let previous = lastSeenBatteryByAddress[address]
+            lastSeenBatteryByAddress[address] = level
+            guard let previous else { continue }
+
+            // Re-arm thresholds the battery has charged back above.
+            var reminded = (remindedBatteryThresholdsByAddress[address] ?? []).filter { level <= $0 }
+            let crossed = batteryReminderThresholds.filter {
+                previous > $0 && level <= $0 && !reminded.contains($0)
+            }
+            reminded.formUnion(crossed)
+            remindedBatteryThresholdsByAddress[address] = reminded
+
+            if !crossed.isEmpty {
+                print("🎧 [BluetoothAudioManager] 🔋 \(device.name) battery at \(level)%")
+                presentDeviceConnectedHUD(device: device, batteryLevel: level)
+            }
         }
     }
 
