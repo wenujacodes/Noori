@@ -76,7 +76,7 @@ final class ConnectivityMonitor: NSObject {
         // Turning Wi-Fi off also drops the network; the Off HUD covers that.
         wifiConnected = Self.isAssociated(interface)
         show(title: "Wi-Fi", status: isOn ? "On" : "Off", isPositive: isOn,
-             icon: isOn ? "wifi" : "wifi.slash", enabled: Defaults[.showWiFiChanges])
+             icon: "wifi", enabled: Defaults[.showWiFiChanges])
     }
 
     /// Link events come in bursts while joining or leaving; check once things settle.
@@ -95,7 +95,7 @@ final class ConnectivityMonitor: NSObject {
         guard connected != wifiConnected else { return }
         wifiConnected = connected
         show(title: "Wi-Fi", status: connected ? "Connected" : "Disconnected", isPositive: connected,
-             icon: connected ? "wifi" : "wifi.exclamationmark", enabled: Defaults[.showWiFiChanges])
+             icon: "wifi", enabled: Defaults[.showWiFiChanges])
     }
 
     // MARK: - AirDrop

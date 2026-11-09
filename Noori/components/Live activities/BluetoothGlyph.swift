@@ -21,18 +21,14 @@ struct BluetoothGlyph: View {
         icon == onIcon || icon == offIcon
     }
 
+    /// Kept for callers; the glyph looks the same on and off (the HUD's
+    /// "On"/"Off" text says which).
     var isOff: Bool = false
 
     var body: some View {
-        ZStack {
-            BluetoothRuneShape()
-                .stroke(style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
-            if isOff {
-                SlashShape()
-                    .stroke(style: StrokeStyle(lineWidth: 1.6, lineCap: .round))
-            }
-        }
-        .frame(width: 12, height: 16)
+        BluetoothRuneShape()
+            .stroke(style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
+            .frame(width: 12, height: 16)
     }
 }
 
@@ -50,15 +46,6 @@ private struct BluetoothRuneShape: Shape {
         path.addLine(to: point(0.5, 0.02))
         path.addLine(to: point(0.88, 0.28))
         path.addLine(to: point(0.12, 0.72))
-        return path
-    }
-}
-
-private struct SlashShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: rect.minX - 2, y: rect.minY + 1))
-        path.addLine(to: CGPoint(x: rect.maxX + 2, y: rect.maxY - 1))
         return path
     }
 }

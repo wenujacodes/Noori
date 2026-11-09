@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The Bluetooth and Wi-Fi HUD icons no longer get a slash when off or disconnected; the colored On/Off/Disconnected text shows the state.
 - Bluetooth HUD: the Bluetooth on/off HUD uses the Bluetooth rune (with a slash when off) and shows "On" in green / "Off" in red; "Disconnected" is red; the battery ring and bar go smoothly from green (75%+) through yellow (50%) and orange (25%) to red (10% and below).
 - A long Bluetooth device name in the connection HUD scrolls through twice before the HUD closes.
 - The Bluetooth connection HUD shows the battery percentage as a number next to the ring by default.
@@ -113,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
+- The Bluetooth and Wi-Fi HUD icons no longer get a slash when off or disconnected; the colored On/Off/Disconnected text shows the state.
 - Bluetooth HUD: the Bluetooth on/off HUD uses the Bluetooth rune (with a slash when off) and shows "On" in green / "Off" in red; "Disconnected" is red; the battery ring and bar go smoothly from green (75%+) through yellow (50%) and orange (25%) to red (10% and below).
 - A long Bluetooth device name in the connection HUD scrolls through twice before the HUD closes.
 - The Bluetooth connection HUD shows the battery percentage as a number next to the ring by default.
