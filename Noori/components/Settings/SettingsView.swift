@@ -692,6 +692,8 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .appearance, title: "Main screen style", keywords: ["noori", "pill", "non-notch", "display style", "notch style"], highlightID: SettingsTab.appearance.highlightID(for: "Main screen style")),
             SettingsSearchEntry(tab: .appearance, title: "Enable window shadow", keywords: ["shadow", "appearance"], highlightID: SettingsTab.appearance.highlightID(for: "Enable window shadow")),
             SettingsSearchEntry(tab: .media, title: "Enable colored spectrograms", keywords: ["spectrogram", "audio"], highlightID: SettingsTab.media.highlightID(for: "Enable colored spectrograms")),
+            SettingsSearchEntry(tab: .media, title: "Hide Noori in full screen", keywords: ["fullscreen", "full screen", "hide", "video", "games"], highlightID: nil),
+            SettingsSearchEntry(tab: .media, title: "Color the artist name with the album art", keywords: ["tint", "artist", "color"], highlightID: nil),
             SettingsSearchEntry(tab: .media, title: "Slider color", keywords: ["slider", "accent"], highlightID: SettingsTab.media.highlightID(for: "Slider color")),
 
             SettingsSearchEntry(tab: .appearance, title: "Customize physical notch width", keywords: ["notch width", "physical notch"], highlightID: SettingsTab.appearance.highlightID(for: "Customize physical notch width")),
@@ -1238,7 +1240,7 @@ struct Charge: View {
                     VStack(spacing: 16) {
                         Image(systemName: "battery.100percent.slash")
                             .font(.title)
-                        Text("Battery settings and informations are only available on MacBooks")
+                        Text("Battery settings and information are only available on MacBooks")
                             .font(.title3)
                     }
                 }
@@ -1534,11 +1536,11 @@ private struct DevicesSettingsView: View {
                 Text("Battery indicator style")
             } footer: {
                 if progressBarStyle == .segmented {
-                    Text("Color-coded fills are unavailable in Segmented mode. Switch to Hierarchical or Gradient inside Controls › Noori to adjust advanced options.")
+                    Text("Color-coded fills are unavailable in Segmented mode. Switch to Hierarchical or Gradient in Settings › Controls to adjust advanced options.")
                         .foregroundStyle(.secondary)
                         .font(.caption)
                 } else if Defaults[.useSmoothColorGradient] {
-                    Text("Smooth transitions blend Green (0–60%), Yellow (60–85%), and Red (85–100%) through the entire fill. Adjust gradient behavior from Controls › Noori.")
+                    Text("Smooth transitions blend Green (0–60%), Yellow (60–85%), and Red (85–100%) through the entire fill. Adjust gradient behavior in Settings › Controls.")
                         .foregroundStyle(.secondary)
                         .font(.caption)
                 } else {
@@ -1660,7 +1662,7 @@ struct HUD: View {
                         }
                     }
                 }
-                Picker("Progressbar style", selection: $progressBarStyle) {
+                Picker("Progress bar style", selection: $progressBarStyle) {
                     Text("Hierarchical")
                         .tag(ProgressBarStyle.hierarchical)
                     Text("Gradient")
@@ -1708,7 +1710,6 @@ struct Media: View {
     @Default(.showShuffleAndRepeat) private var showShuffleAndRepeat
     @Default(.musicSkipBehavior) private var musicSkipBehavior
     @Default(.showSneakPeekOnTrackChange) private var showSneakPeekOnTrackChange
-    @Default(.showStandardMediaControls) private var showStandardMediaControls
     @Default(.autoHideInactiveNotchMediaPlayer) private var autoHideInactiveNotchMediaPlayer
     @Default(.visualizerBarCount) private var visualizerBarCount
     @Default(.sliderColor) private var sliderColor
@@ -1844,7 +1845,7 @@ struct Media: View {
                 }
                 .settingsHighlight(id: highlightID("Enable colored spectrograms"))
                 Defaults.Toggle(key: .playerColorTinting) {
-                    Text("Enable colored spectograms")
+                    Text("Color the artist name with the album art")
                 }
                 Picker("Slider color", selection: $sliderColor) {
                     ForEach(SliderColorEnum.allCases, id: \.self) { option in
@@ -1857,7 +1858,7 @@ struct Media: View {
             }
 
             Section {
-                Picker("Visualizer candles", selection: $visualizerBarCount) {
+                Picker("Visualizer bars", selection: $visualizerBarCount) {
                     Text("4").tag(4)
                     Text("5").tag(5)
                     Text("6").tag(6)
@@ -1867,18 +1868,17 @@ struct Media: View {
                 Text("Music visualizer")
             }
 
-            .opacity(showStandardMediaControls ? 1 : 0.5)
-
-            Picker(selection: $hideNotchOption, label:
-                    HStack {
-                Text("Hide Noori Options")
-            }) {
-                Text("Always hide in fullscreen").tag(HideNotchOption.always)
-                Text("Hide only when NowPlaying app is in fullscreen").tag(HideNotchOption.nowPlayingOnly)
-                Text("Never hide").tag(HideNotchOption.never)
-            }
-            .onChange(of: hideNotchOption) {
-                Defaults[.enableFullscreenMediaDetection] = hideNotchOption != .never
+            Section {
+                Picker("Hide Noori in full screen", selection: $hideNotchOption) {
+                    Text("Always").tag(HideNotchOption.always)
+                    Text("Only when the music app is full screen").tag(HideNotchOption.nowPlayingOnly)
+                    Text("Never").tag(HideNotchOption.never)
+                }
+                .onChange(of: hideNotchOption) {
+                    Defaults[.enableFullscreenMediaDetection] = hideNotchOption != .never
+                }
+            } header: {
+                Text("Full screen")
             }
         }
         .navigationTitle("Media")
