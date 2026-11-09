@@ -50,6 +50,9 @@ struct NotchLyricLine: View {
             let index = lyrics.lineIndex(at: ms)
             let line = index.map { lyrics.lines[$0] }
 
+            if secondaryLine == .nextLine {
+                nextLineRows(current: index, ms: ms, fillsWords: fillsWords)
+            } else {
             ZStack {
                 if let index, let line, !line.text.isEmpty {
                     VStack(spacing: 0) {
@@ -84,8 +87,66 @@ struct NotchLyricLine: View {
             .frame(width: width, height: primaryHeight + secondaryHeight)
             // A smooth slide up, without bounce.
             .animation(.spring(response: 0.5, dampingFraction: 1), value: index)
+            }
         }
         .clipped()
+    }
+
+    /// "Next line" mode: the current line and the next one are separate rows, keyed
+    /// by line, so when a line is done it slides out on its own and the next line
+    /// moves up and grows into its place.
+    private func nextLineRows(current index: Int?, ms: Int, fillsWords: Bool) -> some View {
+        let currentRow = index ?? -1
+        let rows = [currentRow] + (nextLyricIndex(after: index).map { [$0] } ?? [])
+        let smallScale = secondaryFontSize / max(fontSize, 1)
+        let anchor: UnitPoint = alignment == .center ? .center : .leading
+
+        return VStack(spacing: 0) {
+            ForEach(rows, id: \.self) { row in
+                let isCurrent = row == currentRow
+                Group {
+                    if isCurrent {
+                        if let index, !lyrics.lines[index].text.isEmpty {
+                            primaryLine(lyrics.lines[index], ms: ms, fillsWords: fillsWords)
+                        } else {
+                            // Before the first line and in instrumental parts.
+                            Image(systemName: "music.note")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundStyle(.white.opacity(0.35))
+                        }
+                    } else {
+                        // Drawn at full size and scaled down, so it grows smoothly when it becomes current.
+                        Text(lyrics.lines[row].text)
+                            .font(.system(size: fittingFontSize(for: lyrics.lines[row].text), weight: fontWeight.fontWeight))
+                            .foregroundStyle(sungColor)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                    }
+                }
+                .scaleEffect(isCurrent ? 1 : smallScale, anchor: anchor)
+                .opacity(isCurrent ? 1 : 0.5)
+                .frame(width: width, height: isCurrent ? primaryHeight : secondaryHeight, alignment: frameAlignment)
+                .transition(.asymmetric(
+                    insertion: .modifier(
+                        active: LyricLineMotion(offset: secondaryHeight, opacity: 0),
+                        identity: LyricLineMotion(offset: 0, opacity: 1)
+                    ),
+                    removal: .modifier(
+                        active: LyricLineMotion(offset: -primaryHeight, opacity: 0),
+                        identity: LyricLineMotion(offset: 0, opacity: 1)
+                    )
+                ))
+            }
+        }
+        .frame(width: width, height: primaryHeight + secondaryHeight, alignment: .top)
+        .animation(.spring(response: 0.5, dampingFraction: 1), value: index)
+    }
+
+    /// The first line with words after `index` (or the first line of the song).
+    private func nextLyricIndex(after index: Int?) -> Int? {
+        let start = (index ?? -1) + 1
+        guard start < lyrics.lines.count else { return nil }
+        return lyrics.lines[start...].firstIndex { !$0.text.isEmpty }
     }
 
     private var frameAlignment: Alignment { alignment == .center ? .center : .leading }
