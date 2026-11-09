@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- Word-by-word lyrics animate like Apple Music: each word lights up with a soft edge, rises slightly as it's sung, and long held words glow; lines drift up and blur out as the next one rises in.
 - The Bluetooth icon in the HUD is a little smaller (14 pt tall, was 16).
 - Wi-Fi, AirDrop and Bluetooth HUD words (On/Off, Connected/Disconnected, Contacts Only/Everyone, and the Wi-Fi/AirDrop title) roll to the new value like the brightness percentage when they change while the HUD is showing.
 - The Bluetooth device name in the HUD uses the same font as the other HUD titles (Wi-Fi, AirDrop, Volume) instead of a larger one.
@@ -75,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- Lyrics and the song progress bar could run up to a second early, by a different amount after each update: macOS's Now Playing times were read rounded down to the whole second. Noori now reads them to the microsecond.
 - The Bluetooth device HUD could show up as an empty wide notch with only the headphones icon (the device name didn't draw). The name is now always drawn, and the HUD isn't shown when it would have neither a name nor a battery level.
 - Turning on a Focus other than Do Not Disturb (e.g. Reduce Interruptions) no longer shows the Do Not Disturb pill when Noori can't tell which Focus it is (no Full Disk Access): it shows a neutral "Focus". With Full Disk Access, each Focus shows its own name and icon.
 - The volume HUD no longer flashes for a moment when the audio output switches, e.g. when Bluetooth earphones disconnect.

@@ -161,7 +161,7 @@ class FilteredNowPlayingController: ObservableObject, MediaControllerProtocol {
         }
 
         process.executableURL = URL(fileURLWithPath: "/usr/bin/perl")
-        process.arguments = [scriptURL.path, frameworkPath, "stream"]
+        process.arguments = [scriptURL.path, frameworkPath, "stream", "--micros"]
 
         let pipeHandler = JSONLinesPipeHandler()
         process.standardOutput = await pipeHandler.getPipe()
@@ -250,8 +250,8 @@ class FilteredNowPlayingController: ObservableObject, MediaControllerProtocol {
         newPlaybackState.title = payload.title ?? (diff ? self.playbackState.title : "")
         newPlaybackState.artist = payload.artist ?? (diff ? self.playbackState.artist : "")
         newPlaybackState.album = payload.album ?? (diff ? self.playbackState.album : "")
-        newPlaybackState.duration = payload.duration ?? (diff ? self.playbackState.duration : 0)
-        newPlaybackState.currentTime = payload.elapsedTime ?? (diff ? self.playbackState.currentTime : 0)
+        newPlaybackState.duration = payload.resolvedDuration ?? (diff ? self.playbackState.duration : 0)
+        newPlaybackState.currentTime = payload.resolvedElapsedTime ?? (diff ? self.playbackState.currentTime : 0)
 
         if let shuffleMode = payload.shuffleMode {
             newPlaybackState.isShuffled = shuffleMode != 1
@@ -276,10 +276,10 @@ class FilteredNowPlayingController: ObservableObject, MediaControllerProtocol {
             newPlaybackState.artwork = nil
         }
 
-        if let dateString = payload.timestamp,
-           let date = ISO8601DateFormatter().date(from: dateString) {
+        if let date = payload.resolvedTimestamp {
             newPlaybackState.lastUpdated = date
-        } else if !diff {
+        } else if !diff || payload.resolvedElapsedTime != nil {
+            // A new position without a time was measured now, not at the last update.
             newPlaybackState.lastUpdated = Date()
         } else {
             newPlaybackState.lastUpdated = self.playbackState.lastUpdated

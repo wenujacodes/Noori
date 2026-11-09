@@ -163,7 +163,7 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
         }
         
         process.executableURL = URL(fileURLWithPath: "/usr/bin/perl")
-        process.arguments = [scriptURL.path, frameworkPath, "stream"]
+        process.arguments = [scriptURL.path, frameworkPath, "stream", "--micros"]
         
         let pipeHandler = JSONLinesPipeHandler()
         process.standardOutput = await pipeHandler.getPipe()
@@ -213,11 +213,11 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
         newPlaybackState.title = payload.title ?? (diff ? self.playbackState.title : "")
         newPlaybackState.artist = payload.artist ?? (diff ? self.playbackState.artist : "")
         newPlaybackState.album = payload.album ?? (diff ? self.playbackState.album : "")
-        newPlaybackState.duration = payload.duration ?? (diff ? self.playbackState.duration : 0)
+        newPlaybackState.duration = payload.resolvedDuration ?? (diff ? self.playbackState.duration : 0)
         
         // Match boring.notch behavior: if elapsedTime is provided use it,
         // if this update is a diff keep the previous currentTime, otherwise default to 0.
-        newPlaybackState.currentTime = payload.elapsedTime ?? (diff ? self.playbackState.currentTime : 0)
+        newPlaybackState.currentTime = payload.resolvedElapsedTime ?? (diff ? self.playbackState.currentTime : 0)
 
         
         if let shuffleMode = payload.shuffleMode {
@@ -243,10 +243,10 @@ final class NowPlayingController: ObservableObject, MediaControllerProtocol {
             newPlaybackState.artwork = nil
         }
 
-        if let dateString = payload.timestamp,
-           let date = ISO8601DateFormatter().date(from: dateString) {
+        if let date = payload.resolvedTimestamp {
             newPlaybackState.lastUpdated = date
-        } else if !diff {
+        } else if !diff || payload.resolvedElapsedTime != nil {
+            // A new position without a time was measured now, not at the last update.
             newPlaybackState.lastUpdated = Date()
         } else {
             newPlaybackState.lastUpdated = self.playbackState.lastUpdated
@@ -279,10 +279,25 @@ struct NowPlayingPayload: Codable {
     let repeatMode: Int?
     let artworkData: String?
     let timestamp: String?
+    // With the adapter's --micros option: exact times (the ISO timestamp is rounded
+    // down to the whole second, which made lyrics and the progress bar run up to 1 s early).
+    let durationMicros: Double?
+    let elapsedTimeMicros: Double?
+    let timestampEpochMicros: Double?
     let playbackRate: Double?
     let playing: Bool?
     let parentApplicationBundleIdentifier: String?
     let bundleIdentifier: String?
+}
+
+extension NowPlayingPayload {
+    var resolvedDuration: Double? { durationMicros.map { $0 / 1_000_000 } ?? duration }
+    var resolvedElapsedTime: Double? { elapsedTimeMicros.map { $0 / 1_000_000 } ?? elapsedTime }
+    /// When `resolvedElapsedTime` was measured.
+    var resolvedTimestamp: Date? {
+        if let micros = timestampEpochMicros { return Date(timeIntervalSince1970: micros / 1_000_000) }
+        return timestamp.flatMap { ISO8601DateFormatter().date(from: $0) }
+    }
 }
 
 actor JSONLinesPipeHandler {
