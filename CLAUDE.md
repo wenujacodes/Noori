@@ -6,7 +6,7 @@ Guidance for Claude Code when working in this repository.
 
 **Noori** — a lightweight native macOS app that turns the MacBook notch into an iPhone-style island. Core features only: **media** (now playing, controls, visualizer, synced lyrics under the closed notch), **live activities** (music, charging, Focus, screen recording, privacy indicators, caps lock), **devices** (Bluetooth/AirPods HUD), **controls** (custom volume/brightness/keyboard-backlight HUDs), **battery**, and **keyboard shortcuts**.
 
-Removed on purpose to keep the app light (see commits after `f96db6e`): Terminal, Downloads, Color Picker, Clipboard, Notes, Screen Assistant, LLM Usage, Webcam Mirror, Stats, Lock Screen widgets, Calendar/Reminders, Timer, Shelf, and Atoll's extension system (the owner decided on 2026-11-09 that extensions won't come back). The full pre-removal code is on the `extensions-source` branch for reference. Don't re-add these without the owner asking.
+Removed on purpose to keep the app light (see commits after `f96db6e`): Terminal, Downloads, Color Picker, Clipboard, Notes, Screen Assistant, LLM Usage, Webcam Mirror, Stats, Lock Screen widgets, Calendar/Reminders, Timer, Shelf, and Atoll's extension system (the owner decided on 2026-11-09 that extensions won't come back). The full pre-removal code is in history at commit `f96db6e` (`git show f96db6e:<path>`) for reference. Don't re-add these without the owner asking.
 
 - Noori is a fork of **Atoll** 2.3.3 (`Ebullioscopic/Atoll`), which derives from **boring.notch**. GPL-3.0. Repo: `wenujacodes/Noori`. Owner: Wenuja Liyanamana.
 - Language: Swift / SwiftUI + AppKit (no C++, Obj-C++ or Metal code).
