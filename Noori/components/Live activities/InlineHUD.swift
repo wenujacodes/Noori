@@ -244,7 +244,9 @@ struct InlineHUD: View {
                             nsFont: .body,
                             textColor: .white,
                             minDuration: 0.2,
-                            frameWidth: infoWidth
+                            frameWidth: infoWidth,
+                            // A long name scrolls through twice before the HUD closes.
+                            onScrollPass: { NooriViewCoordinator.shared.holdSneakPeek(for: $0 * 2) }
                         )
                     }
                 } else if type != .capsLock {
