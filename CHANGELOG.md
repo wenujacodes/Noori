@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Wi-Fi HUD: the notch shows "Wi-Fi · On/Off" and "Wi-Fi · Connected/Disconnected" when they change (green for on/connected, red for off/disconnected), with a "Show Wi-Fi changes" toggle in Settings › Devices. The network name isn't shown, since macOS only gives it to apps with Location permission.
 - Bluetooth battery reminders: the device HUD shows again when a connected device drops to 75%, 50%, 25%, 10% and 5% (once per level until it's charged back above it), and a device that disconnects at 5% or less shows "Battery dead" in red. Battery levels are re-read every 30 seconds while a device is connected.
 - Turning Bluetooth on or off shows "Bluetooth · On/Off" in the notch (part of "Show Bluetooth device connections").
 - Disconnecting a Bluetooth audio device shows "<device> · Disconnected" in the notch instead of the Mac's volume level.

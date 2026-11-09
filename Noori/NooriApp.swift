@@ -479,6 +479,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         LockScreenManager.shared.configure(viewModel: vm)
         LockScreenIndicatorWindowManager.shared.configure(viewModel: vm)
+        ConnectivityMonitor.shared.start()
         
         // Migrate legacy progress bar settings
         Defaults.Keys.migrateProgressBarStyle()

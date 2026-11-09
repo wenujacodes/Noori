@@ -57,6 +57,7 @@ struct InlineHUD: View {
     @Default(.capsLockIndicatorTintMode) var capsLockTintMode
     @ObservedObject var bluetoothManager = BluetoothAudioManager.shared
     @ObservedObject private var volumeMuteState = VolumeMuteState.shared
+    @ObservedObject private var connectivityState = ConnectivityHUDState.shared
     
     @State private var displayName: String = ""
 
@@ -213,6 +214,10 @@ struct InlineHUD: View {
                                 .symbolVariant(value > 0 ? .none : .slash)
                                 .contentTransition(.interpolate)
                                 .frame(width: 20, height: 15, alignment: .center)
+                        case .connectivity:
+                            Image(systemName: icon)
+                                .contentTransition(.interpolate)
+                                .frame(width: 20, height: 15, alignment: .center)
                         case .bluetoothAudio:
                             if let listeningMode {
                                 AirPodsListeningModeSymbol(mode: listeningMode)
@@ -295,6 +300,14 @@ struct InlineHUD: View {
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .contentTransition(.interpolate)
                     }
+                } else if type == .connectivity {
+                    Text(connectivityState.status)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(connectivityState.isPositive ? Color.green : Color.red)
+                        .lineLimit(1)
+                        .allowsTightening(true)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                 } else if (type == .bluetoothAudio) {
                     if let listeningMode {
                         let listeningModeTextWidth: CGFloat = 96
@@ -544,6 +557,8 @@ struct InlineHUD: View {
                 return manager.disconnectedHUDDevice?.name ?? manager.lastConnectedDevice?.name ?? "Bluetooth"
             case .capsLock:
                 return String(localized: "Caps Lock")
+            case .connectivity:
+                return ConnectivityHUDState.shared.title
             default:
                 return ""
         }

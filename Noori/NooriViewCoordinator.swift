@@ -33,6 +33,8 @@ enum SneakContentType: Equatable {
     case bluetoothAudio
     case privacy
     case capsLock
+    /// Wi-Fi / AirDrop changes (see ConnectivityMonitor).
+    case connectivity
 }
 
 extension SneakContentType {
@@ -47,6 +49,7 @@ extension SneakContentType {
              (.recording, .recording),
              (.doNotDisturb, .doNotDisturb),
              (.bluetoothAudio, .bluetoothAudio),
+             (.connectivity, .connectivity),
              (.privacy, .privacy),
              (.capsLock, .capsLock):
             return true
@@ -154,7 +157,7 @@ class NooriViewCoordinator: ObservableObject {
             resolvedDuration = duration
         }
         sneakPeekDuration = resolvedDuration
-        let bypassedTypes: [SneakContentType] = [.music, .bluetoothAudio]
+        let bypassedTypes: [SneakContentType] = [.music, .bluetoothAudio, .connectivity]
         
         if !bypassedTypes.contains(type) && !Defaults[.enableSystemHUD] {
             return

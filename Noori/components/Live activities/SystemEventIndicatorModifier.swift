@@ -72,6 +72,11 @@ struct SystemEventIndicatorModifier: View {
                         .contentTransition(.interpolate)
                         .frame(width: 20, height: 15)
                         .foregroundStyle(.white)
+                case .connectivity:
+                    Image(systemName: icon)
+                        .contentTransition(.interpolate)
+                        .frame(width: 20, height: 15)
+                        .foregroundStyle(.white)
                 case .bluetoothAudio:
                     if value < 0, let mode = AirPodsListeningMode.fromHUDSymbol(icon) {
                         AirPodsListeningModeSymbol(mode: mode)
@@ -105,6 +110,18 @@ struct SystemEventIndicatorModifier: View {
                 ProgressSection(value: $value, showPercentages: showProgressPercentages)
             case .backlight:
                 ProgressSection(value: $value, showPercentages: showProgressPercentages)
+            case .connectivity:
+                let state = ConnectivityHUDState.shared
+                HStack(spacing: 6) {
+                    Text(state.title)
+                        .foregroundStyle(.white)
+                    Text(state.status)
+                        .foregroundStyle(state.isPositive ? Color.green : Color.red)
+                }
+                .font(.caption)
+                .fontWeight(.medium)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
             case .bluetoothAudio:
                 if value < 0, let mode = AirPodsListeningMode.fromHUDSymbol(icon) {
                     Text(mode.displayName)
