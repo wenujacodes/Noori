@@ -42,6 +42,8 @@ struct ContentView: View {
     @ObservedObject var musicManager = MusicManager.shared
     @ObservedObject private var lyricsManager = LyricsManager.shared
     @Default(.showLyrics) private var showLyrics
+    @Default(.lyricsHideWhenPaused) private var lyricsHideWhenPaused
+    @Default(.lyricsNotchWidth) private var lyricsNotchWidth
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var recordingManager = ScreenRecordingManager.shared
     @ObservedObject var privacyManager = PrivacyIndicatorManager.shared
@@ -525,6 +527,8 @@ struct ContentView: View {
     private var rootBodyView: some View {
         ZStack(alignment: .top) {
             configuredMainLayout
+            // Runs Apple's on-device translation for the lyrics (invisible).
+            LyricsTranslationHost()
         }
         .onChange(of: vm.notchState) { _, newState in
             if newState == .open { notchOpenCount &+= 1 }
@@ -710,8 +714,9 @@ struct ContentView: View {
         )
         // Lyrics: a row under the notch for the line being sung, with the notch a bit
         // wider so lines fit.
-        let showLyricRow = showLyrics && musicManager.isPlaying && !lyricsManager.lines.isEmpty
-        let effectiveCenterWidth = inlineSneakPeekActive ? 380 : (showLyricRow ? max(centerBaseWidth, 260) : centerBaseWidth)
+        let showLyricRow = showLyrics && !lyricsManager.lines.isEmpty
+            && (musicManager.isPlaying || (!lyricsHideWhenPaused && musicManager.hasActiveSession))
+        let effectiveCenterWidth = inlineSneakPeekActive ? 380 : (showLyricRow ? max(centerBaseWidth, lyricsNotchWidth) : centerBaseWidth)
         let notchWidth = wingBaseWidth + effectiveCenterWidth + rightWingWidth
         let badgeBaseSize = max(13, notchContentHeight * 0.36)
         let badgeDisplaySize = badgeDisplaySize(for: secondary, baseSize: badgeBaseSize)

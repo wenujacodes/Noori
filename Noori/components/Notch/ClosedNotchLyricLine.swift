@@ -9,69 +9,96 @@
  */
 
 import AppKit
+import Defaults
 import SwiftUI
 
-/// Height of the lyric row under the closed notch.
-let closedNotchLyricRowHeight: CGFloat = 22
-
-/// The line being sung, under the closed notch. With word timing, the words
-/// fill in as they're sung.
+/// The line being sung, under the closed notch, with an optional smaller second
+/// line (translation, pronunciation or the next line). With word timing, the
+/// words fill in as they're sung.
 struct ClosedNotchLyricLine: View {
     let width: CGFloat
 
     @ObservedObject private var lyrics = LyricsManager.shared
     @ObservedObject private var music = MusicManager.shared
+    @Default(.lyricsSecondaryLine) private var secondaryLine
+    @Default(.lyricsKaraoke) private var karaoke
+    @Default(.lyricsAlignment) private var alignment
+    @Default(.lyricsColorStyle) private var colorStyle
+    @Default(.lyricsFontSize) private var fontSize
+    @Default(.lyricsFontWeight) private var fontWeight
+    @Default(.lyricsOffsetMs) private var offsetMs
 
     /// Show a line slightly early so it doesn't trail the singer.
     private let leadMs = 150
-    private static let fontSize: CGFloat = 12
-    private static let minimumFontSize: CGFloat = 10
+
+    private var primaryHeight: CGFloat { (fontSize + 10).rounded() }
+    private var secondaryFontSize: CGFloat { max(9, fontSize - 2) }
+    private var secondaryHeight: CGFloat { secondaryLine == .none ? 0 : (secondaryFontSize + 5).rounded() }
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: lyrics.isWordTimed ? 1.0 / 30.0 : 0.2, paused: !music.isPlaying)) { context in
-            let ms = Int(music.estimatedPlaybackPosition(at: context.date) * 1000) + leadMs
+        let fillsWords = karaoke && lyrics.isWordTimed
+        TimelineView(.animation(minimumInterval: fillsWords ? 1.0 / 30.0 : 0.2, paused: !music.isPlaying)) { context in
+            let ms = Int(music.estimatedPlaybackPosition(at: context.date) * 1000) + leadMs + offsetMs
             let index = lyrics.lineIndex(at: ms)
             let line = index.map { lyrics.lines[$0] }
 
             ZStack {
-                if let line, !line.text.isEmpty {
-                    lineView(line, ms: ms)
-                        .id(index)
-                        .transition(.asymmetric(
-                            insertion: .opacity.combined(with: .offset(y: 6)),
-                            removal: .opacity.combined(with: .offset(y: -6))
-                        ))
+                if let index, let line, !line.text.isEmpty {
+                    VStack(spacing: 0) {
+                        primaryLine(line, ms: ms, fillsWords: fillsWords)
+                            .frame(width: width, height: primaryHeight, alignment: frameAlignment)
+                        if secondaryLine != .none {
+                            secondaryText(for: line, at: index)
+                                .frame(width: width, height: secondaryHeight, alignment: frameAlignment)
+                        }
+                    }
+                    .id(index)
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .offset(y: 6)),
+                        removal: .opacity.combined(with: .offset(y: -6))
+                    ))
                 } else {
                     // Before the first line and in instrumental parts.
                     Image(systemName: "music.note")
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.35))
+                        .frame(width: width, alignment: frameAlignment)
                         .transition(.opacity)
                 }
             }
-            .frame(width: width, height: closedNotchLyricRowHeight)
+            .frame(width: width, height: primaryHeight + secondaryHeight)
             .animation(NooriMotion.change, value: index)
         }
         .clipped()
     }
 
-    @ViewBuilder
-    private func lineView(_ line: LyricsLine, ms: Int) -> some View {
-        let fontSize = Self.fittingFontSize(for: line.text, width: width)
-        let font = Font.system(size: fontSize, weight: .semibold)
+    private var frameAlignment: Alignment { alignment == .center ? .center : .leading }
 
-        if let words = line.words {
-            let fullWidth = Self.textWidth(line.text, size: fontSize)
-            let sungWidth = Self.textWidth(Self.sungText(words, ms: ms), size: fontSize)
+    private var sungColor: Color {
+        switch colorStyle {
+        case .white: return .white
+        case .albumArt: return Color(nsColor: music.avgColor).ensureMinimumBrightness(factor: 0.7)
+        case .accent: return .accentColor
+        }
+    }
+
+    @ViewBuilder
+    private func primaryLine(_ line: LyricsLine, ms: Int, fillsWords: Bool) -> some View {
+        let size = fittingFontSize(for: line.text)
+        let font = Font.system(size: size, weight: fontWeight.fontWeight)
+
+        if fillsWords, let words = line.words {
+            let fullWidth = textWidth(line.text, size: size)
+            let sungWidth = textWidth(Self.sungText(words, ms: ms), size: size)
             let fraction = fullWidth > 0 ? min(1, sungWidth / fullWidth) : 0
 
             Text(line.text)
                 .font(font)
-                .foregroundStyle(.white.opacity(0.4))
+                .foregroundStyle(sungColor.opacity(0.4))
                 .overlay(alignment: .leading) {
                     Text(line.text)
                         .font(font)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(sungColor)
                         .mask(alignment: .leading) {
                             GeometryReader { geo in
                                 Rectangle().frame(width: geo.size.width * fraction)
@@ -80,14 +107,35 @@ struct ClosedNotchLyricLine: View {
                 }
                 .lineLimit(1)
                 .fixedSize()
-                .frame(width: width)
         } else {
             Text(line.text)
                 .font(font)
-                .foregroundStyle(.white.opacity(0.92))
+                .foregroundStyle(sungColor.opacity(0.92))
                 .lineLimit(1)
                 .truncationMode(.tail)
-                .frame(width: width)
+        }
+    }
+
+    @ViewBuilder
+    private func secondaryText(for line: LyricsLine, at index: Int) -> some View {
+        let text: String? = {
+            switch secondaryLine {
+            case .none: return nil
+            case .translation: return line.translation
+            case .pronunciation: return line.pronunciation
+            case .nextLine:
+                return lyrics.lines[(index + 1)...].first { !$0.text.isEmpty }?.text
+            }
+        }()
+        if let text, !text.isEmpty {
+            Text(text)
+                .font(.system(size: secondaryFontSize, weight: .medium))
+                .foregroundStyle(.white.opacity(0.55))
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .minimumScaleFactor(0.85)
+        } else {
+            Color.clear
         }
     }
 
@@ -109,16 +157,16 @@ struct ClosedNotchLyricLine: View {
         return sung.trimmingCharacters(in: .whitespaces).isEmpty ? "" : sung
     }
 
-    /// The font size that fits the line in `width`, down to the minimum.
-    private static func fittingFontSize(for text: String, width: CGFloat) -> CGFloat {
+    /// The font size that fits the line in `width`, down to 80% of the chosen size.
+    private func fittingFontSize(for text: String) -> CGFloat {
         let natural = textWidth(text, size: fontSize)
         guard natural > width, natural > 0 else { return fontSize }
-        return max(minimumFontSize, (fontSize * width / natural).rounded(.down))
+        return max((fontSize * 0.8).rounded(), (fontSize * width / natural).rounded(.down))
     }
 
-    private static func textWidth(_ text: String, size: CGFloat) -> CGFloat {
+    private func textWidth(_ text: String, size: CGFloat) -> CGFloat {
         guard !text.isEmpty else { return 0 }
-        let font = NSFont.systemFont(ofSize: size, weight: .semibold)
+        let font = NSFont.systemFont(ofSize: size, weight: fontWeight.nsFontWeight)
         return ceil((text as NSString).size(withAttributes: [.font: font]).width)
     }
 }

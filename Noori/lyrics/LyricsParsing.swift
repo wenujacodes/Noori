@@ -15,18 +15,22 @@
 import Foundation
 
 /// One sung word (or syllable) with its own timing.
-struct LyricWord: Equatable, Codable {
+struct LyricWord: Equatable {
     let startMs: Int
     let durationMs: Int
-    let text: String
+    var text: String
 }
 
 /// One lyric line. `words` is set when the source has word-by-word timing.
 /// An empty `text` marks a gap (instrumental part) starting at `timeMs`.
-struct LyricsLine: Equatable, Codable {
+struct LyricsLine: Equatable {
     let timeMs: Int
-    let text: String
-    let words: [LyricWord]?
+    var text: String
+    var words: [LyricWord]?
+    /// From the lyrics source or Apple's on-device translation.
+    var translation: String? = nil
+    /// Reading in Latin letters (romaji, pinyin…), from the source or worked out on this Mac.
+    var pronunciation: String? = nil
 }
 
 enum LyricsParsing {
@@ -189,6 +193,22 @@ enum LyricsParsing {
         // Leading gaps only delay the first line's appearance; drop them.
         while let first = result.first, first.text.isEmpty { result.removeFirst() }
         return result
+    }
+
+    /// Puts each extra line's text (a translation or pronunciation, timed like the
+    /// lyrics) on the lyric line it belongs to: the one starting closest, within a second.
+    static func attach(_ extras: [LyricsLine], to lines: [LyricsLine], as keyPath: WritableKeyPath<LyricsLine, String?>) -> [LyricsLine] {
+        let extras = extras.filter { !$0.text.isEmpty && $0.text != "//" }
+        guard !extras.isEmpty else { return lines }
+        return lines.map { line in
+            guard !line.text.isEmpty else { return line }
+            let nearest = extras.min { abs($0.timeMs - line.timeMs) < abs($1.timeMs - line.timeMs) }
+            guard let nearest, abs(nearest.timeMs - line.timeMs) <= 1000,
+                  nearest.text != line.text else { return line }
+            var updated = line
+            updated[keyPath: keyPath] = nearest.text
+            return updated
+        }
     }
 
     /// QQ returns some characters as HTML entities.

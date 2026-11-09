@@ -24,7 +24,7 @@ struct LyricsQuery: Hashable {
 }
 
 /// Lyrics found for a song.
-struct LyricsResult: Codable {
+struct LyricsResult {
     let lines: [LyricsLine]
     let source: String
 
@@ -205,6 +205,8 @@ enum LyricsSources {
         struct Body: Decodable { let lyric: String? }
         let lrc: Body?
         let yrc: Body?
+        let tlyric: Body?
+        let romalrc: Body?
         let pureMusic: Bool?
     }
 
@@ -240,8 +242,15 @@ enum LyricsSources {
         if lyric.pureMusic == true { return (.instrumental, .instrumental) }
 
         func unescape(_ text: String?) -> String { (text ?? "").replacingOccurrences(of: "\\'", with: "'") }
-        let wordLines = LyricsParsing.parseYRC(unescape(lyric.yrc?.lyric))
-        let lineLines = LyricsParsing.parseLRC(unescape(lyric.lrc?.lyric))
+        // NetEase also has a Chinese translation and, for some songs, a romanization.
+        let translations = LyricsParsing.parseLRC(unescape(lyric.tlyric?.lyric))
+        let romanizations = LyricsParsing.parseLRC(unescape(lyric.romalrc?.lyric))
+        func withExtras(_ lines: [LyricsLine]) -> [LyricsLine] {
+            let translated = LyricsParsing.attach(translations, to: lines, as: \.translation)
+            return LyricsParsing.attach(romanizations, to: translated, as: \.pronunciation)
+        }
+        let wordLines = withExtras(LyricsParsing.parseYRC(unescape(lyric.yrc?.lyric)))
+        let lineLines = withExtras(LyricsParsing.parseLRC(unescape(lyric.lrc?.lyric)))
         let word: Outcome = wordLines.isEmpty ? .none : .lyrics(LyricsResult(lines: wordLines, source: "NetEase"))
         let line: Outcome = lineLines.isEmpty ? .none : .lyrics(LyricsResult(lines: lineLines, source: "NetEase"))
         return (word, line)

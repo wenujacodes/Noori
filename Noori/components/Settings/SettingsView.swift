@@ -39,6 +39,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
     case liveActivities
     case appearance
     case media
+    case lyrics
     case devices
     case hudAndOSD
     case battery
@@ -51,7 +52,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
     var group: SettingsTabGroup {
         switch self {
         case .general, .appearance:                                          return .core
-        case .media, .liveActivities, .devices:                              return .mediaAndDisplay
+        case .media, .lyrics, .liveActivities, .devices:                     return .mediaAndDisplay
         case .hudAndOSD, .battery, .shortcuts:                               return .system
         case .about:                                                         return .info
         }
@@ -63,6 +64,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .liveActivities: return String(localized: "Live Activities")
         case .appearance: return String(localized: "Appearance")
         case .media: return String(localized: "Media")
+        case .lyrics: return String(localized: "Lyrics")
         case .devices: return String(localized: "Devices")
         case .hudAndOSD: return String(localized: "Controls")
         case .battery: return String(localized: "Battery")
@@ -77,6 +79,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .liveActivities: return "waveform.path.ecg"
         case .appearance: return "paintpalette"
         case .media: return "play.laptopcomputer"
+        case .lyrics: return "quote.bubble"
         case .devices: return "headphones"
         case .hudAndOSD: return "dial.medium.fill"
         case .battery: return "battery.100.bolt"
@@ -91,6 +94,7 @@ private enum SettingsTab: String, CaseIterable, Identifiable {
         case .liveActivities: return .pink
         case .appearance: return .purple
         case .media: return .green
+        case .lyrics: return .pink
         case .devices: return Color(red: 0.1, green: 0.11, blue: 0.12)
         case .hudAndOSD: return .indigo
         case .battery: return Color(red: 0.202, green: 0.783, blue: 0.348, opacity: 1.000)
@@ -396,6 +400,7 @@ struct SettingsView: View {
             .appearance,
             // Media & Display
             .media,
+            .lyrics,
             .liveActivities,
             .devices,
             // System
@@ -663,7 +668,17 @@ struct SettingsView: View {
 
             // Media
             SettingsSearchEntry(tab: .media, title: "Music source", keywords: ["media source", "controller"], highlightID: SettingsTab.media.highlightID(for: "Music source")),
-            SettingsSearchEntry(tab: .media, title: "Show lyrics under the notch", keywords: ["lyrics", "karaoke", "words", "lrclib", "netease", "qq"], highlightID: SettingsTab.media.highlightID(for: "Show lyrics under the notch")),
+            SettingsSearchEntry(tab: .lyrics, title: "Show lyrics under the notch", keywords: ["lyrics", "karaoke", "words"], highlightID: SettingsTab.lyrics.highlightID(for: "Show lyrics under the notch")),
+            SettingsSearchEntry(tab: .lyrics, title: "Lyrics sources", keywords: ["lrclib", "netease", "qq", "source"], highlightID: SettingsTab.lyrics.highlightID(for: "Sources")),
+            SettingsSearchEntry(tab: .lyrics, title: "Second line", keywords: ["translation", "pronunciation", "romaji", "pinyin", "next line"], highlightID: SettingsTab.lyrics.highlightID(for: "Second line")),
+            SettingsSearchEntry(tab: .lyrics, title: "Translate lyrics to", keywords: ["translation", "language"], highlightID: SettingsTab.lyrics.highlightID(for: "Translate to")),
+            SettingsSearchEntry(tab: .lyrics, title: "Chinese characters", keywords: ["simplified", "traditional"], highlightID: SettingsTab.lyrics.highlightID(for: "Chinese characters")),
+            SettingsSearchEntry(tab: .lyrics, title: "Lyrics timing offset", keywords: ["offset", "delay", "early", "late", "sync"], highlightID: SettingsTab.lyrics.highlightID(for: "Timing offset")),
+            SettingsSearchEntry(tab: .lyrics, title: "Fill in words as they're sung", keywords: ["karaoke", "word by word"], highlightID: SettingsTab.lyrics.highlightID(for: "Fill in words as they're sung")),
+            SettingsSearchEntry(tab: .lyrics, title: "Lyrics color", keywords: ["color", "album", "accent"], highlightID: SettingsTab.lyrics.highlightID(for: "Color")),
+            SettingsSearchEntry(tab: .lyrics, title: "Lyrics text size", keywords: ["font", "size"], highlightID: SettingsTab.lyrics.highlightID(for: "Text size")),
+            SettingsSearchEntry(tab: .lyrics, title: "Lyrics notch width", keywords: ["width", "wide"], highlightID: SettingsTab.lyrics.highlightID(for: "Notch width")),
+            SettingsSearchEntry(tab: .lyrics, title: "Hide lyrics when paused", keywords: ["pause", "hide"], highlightID: SettingsTab.lyrics.highlightID(for: "Hide when paused")),
             SettingsSearchEntry(tab: .media, title: "Skip buttons", keywords: ["skip", "controls", "±10"], highlightID: SettingsTab.media.highlightID(for: "Skip buttons")),
             SettingsSearchEntry(tab: .media, title: "Sneak peek style", keywords: ["sneak peek", "preview"], highlightID: SettingsTab.media.highlightID(for: "Sneak peek style")),
             SettingsSearchEntry(tab: .media, title: "Show Change Media Output control", keywords: ["airplay", "route picker", "media output"], highlightID: SettingsTab.media.highlightID(for: "Show Change Media Output control")),
@@ -715,6 +730,10 @@ struct SettingsView: View {
         case .media:
             SettingsForm(tab: .media) {
                 Media()
+            }
+        case .lyrics:
+            SettingsForm(tab: .lyrics) {
+                LyricsSettingsView()
             }
         case .devices:
             SettingsForm(tab: .devices) {
@@ -1812,19 +1831,6 @@ struct Media: View {
                 .settingsHighlight(id: highlightID("Show song title and artist in closed notch"))
             } header: {
                 Text("Media playback live activity")
-            }
-
-            Section {
-                Defaults.Toggle(key: .showLyrics) {
-                    Text("Show lyrics under the notch")
-                }
-                .settingsHighlight(id: highlightID("Show lyrics under the notch"))
-            } header: {
-                Text("Lyrics")
-            } footer: {
-                Text("While a song plays, the line being sung shows under the closed notch, word by word when the timing is available. Lyrics come from LRCLIB, NetEase Cloud Music and QQ Music, which get the song's title, artist and length. The lyrics button in the player turns this on and off.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
 
             Section {

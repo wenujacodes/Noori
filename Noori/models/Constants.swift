@@ -566,4 +566,27 @@ extension Defaults.Keys {
     static let showSongMetadataInClosedNotch = Key<Bool>("showSongMetadataInClosedNotch", default: false)
     /// Synced lyrics under the closed notch while music plays.
     static let showLyrics = Key<Bool>("showLyrics", default: true)
+    // Lyrics: sources
+    static let lyricsUseLRCLIB = Key<Bool>("lyricsUseLRCLIB", default: true)
+    static let lyricsUseNetEase = Key<Bool>("lyricsUseNetEase", default: true)
+    static let lyricsUseQQ = Key<Bool>("lyricsUseQQ", default: true)
+    // Lyrics: translation and pronunciation
+    static let lyricsSecondaryLine = Key<LyricsSecondaryLine>("lyricsSecondaryLine", default: .none)
+    /// Language code to translate into; empty = the system language.
+    static let lyricsTranslationLanguage = Key<String>("lyricsTranslationLanguage", default: "")
+    static let lyricsAutoTranslate = Key<Bool>("lyricsAutoTranslate", default: true)
+    static let lyricsChineseScript = Key<LyricsChineseScript>("lyricsChineseScript", default: .original)
+    // Lyrics: timing
+    /// Positive shows lyrics earlier, negative later.
+    static let lyricsOffsetMs = Key<Int>("lyricsOffsetMs", default: 0)
+    // Lyrics: look
+    static let lyricsKaraoke = Key<Bool>("lyricsKaraoke", default: true)
+    static let lyricsAlignment = Key<LyricsAlignment>("lyricsAlignment", default: .center)
+    static let lyricsColorStyle = Key<LyricsColorStyle>("lyricsColorStyle", default: .white)
+    static let lyricsFontSize = Key<Double>("lyricsFontSize", default: 12)
+    static let lyricsFontWeight = Key<LyricsFontWeight>("lyricsFontWeight", default: .semibold)
+    /// Width of the notch's middle while lyrics show.
+    static let lyricsNotchWidth = Key<Double>("lyricsNotchWidth", default: 260)
+    // Lyrics: behavior
+    static let lyricsHideWhenPaused = Key<Bool>("lyricsHideWhenPaused", default: true)
 }
