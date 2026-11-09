@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- The open notch no longer slides up under the camera when lyrics load right after launch: the notch content is pinned to the top of its window, so if it's briefly taller than the window it runs past the bottom instead.
 - Releases run on Intel Macs again: 1.0.0 was built for Apple Silicon only. Releases are now universal (Apple Silicon and Intel in one download).
 - Long lyric lines no longer get cut off in the closed notch: when a song's lyrics load, the notch widens to fit its longest line (once per song, between 260 and 620 pt), and the window widens with it.
 - With Second line › Next line, the line that moves up into the top row of the closed notch no longer disappears after each line change.

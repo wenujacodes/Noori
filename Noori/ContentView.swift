@@ -547,7 +547,12 @@ struct ContentView: View {
             maxHeight: (dynamicNotchSize.height + (vm.notchState == .open ? 12 : 0) + (isNooriMode ? nooriTopOffset + nooriShadowInset * 2 : currentShadowPadding)).rounded(),
             alignment: .top
         )
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        // Pinned to the top of the window. When the content is briefly taller than
+        // the window (lyrics just loaded, window not resized yet), SwiftUI would
+        // center it, pushing the art and controls up under the camera notch; with a
+        // fixed top it only runs past the bottom (the shadow area) until the window
+        // catches up.
+        .modifier(PinnedToWindowTop())
         .environmentObject(privacyManager)
         .environmentObject(vm)
     }
@@ -1449,3 +1454,12 @@ private func musicMeasureText(_ text: String, font: MusicSupplementFont) -> CGFl
     return CGFloat(ceil(NSAttributedString(string: text, attributes: attributes).size().width))
 }
 
+/// Lays its content out from the top of the window, whatever its height.
+private struct PinnedToWindowTop: ViewModifier {
+    func body(content: Content) -> some View {
+        GeometryReader { geo in
+            content
+                .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
+        }
+    }
+}
