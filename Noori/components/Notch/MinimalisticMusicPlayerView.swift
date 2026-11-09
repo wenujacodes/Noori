@@ -565,7 +565,10 @@ struct MinimalisticMusicPlayerView: View {
     private func slotView(for control: MusicControlButton) -> some View {
         switch control {
         case .none:
-            Spacer(minLength: 0)
+            // An empty slot keeps a button's width, so play/pause stays centered
+            // even when only one end has a button.
+            Color.clear
+                .frame(width: 36, height: 36)
         case .playPause:
             playPauseButton
         case .trackBackward:
