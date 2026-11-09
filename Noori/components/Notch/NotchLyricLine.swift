@@ -13,15 +13,17 @@ import Defaults
 import SwiftUI
 
 /// The line being sung (under the closed notch, and under the controls in the open
-/// notch), with an optional smaller second
-/// line (translation, pronunciation or the next line). With word timing, the
-/// words fill in as they're sung.
+/// notch), with an optional smaller second line (translation, pronunciation or the
+/// next line). With "Show two lines", the next line shows below at the same size,
+/// dimmed, and slides up when it's sung. With word timing, the words fill in as
+/// they're sung.
 struct NotchLyricLine: View {
     let width: CGFloat
 
     @ObservedObject private var lyrics = LyricsManager.shared
     @ObservedObject private var music = MusicManager.shared
     @Default(.lyricsSecondaryLine) private var secondaryLine
+    @Default(.lyricsTwoLines) private var twoLines
     @Default(.lyricsKaraoke) private var karaoke
     @Default(.lyricsAlignment) private var alignment
     @Default(.lyricsColorStyle) private var colorStyle
@@ -39,8 +41,23 @@ struct NotchLyricLine: View {
     /// Height of the row with the current settings.
     static var rowHeight: CGFloat {
         let size = CGFloat(Defaults[.lyricsFontSize])
+        let primary = (size + 10).rounded()
         let secondary: CGFloat = Defaults[.lyricsSecondaryLine] == .none ? 0 : (max(9, size - 2) + 5).rounded()
-        return (size + 10).rounded() + secondary
+        return primary + secondary + (Defaults[.lyricsTwoLines] ? primary : 0)
+    }
+
+    /// Like Apple Music: a line leaving drifts up and blurs out, a new one rises in.
+    private var lineTransition: AnyTransition {
+        .asymmetric(
+            insertion: .modifier(
+                active: LyricLineMotion(offset: 9, blur: 5, opacity: 0, scale: 0.97),
+                identity: LyricLineMotion(offset: 0, blur: 0, opacity: 1, scale: 1)
+            ),
+            removal: .modifier(
+                active: LyricLineMotion(offset: -9, blur: 5, opacity: 0, scale: 0.97),
+                identity: LyricLineMotion(offset: 0, blur: 0, opacity: 1, scale: 1)
+            )
+        )
     }
 
     var body: some View {
@@ -48,43 +65,66 @@ struct NotchLyricLine: View {
         TimelineView(.animation(minimumInterval: fillsWords ? 1.0 / 60.0 : 0.1, paused: !music.isPlaying)) { context in
             let ms = Int(music.estimatedPlaybackPosition(at: context.date) * 1000) + leadMs + offsetMs
             let index = lyrics.lineIndex(at: ms)
-            let line = index.map { lyrics.lines[$0] }
+            // Rows are identified by line index, so in two-line mode the next line's
+            // row moves up into the current spot instead of being replaced.
+            let currentRow = index ?? -1
+            let nextRow = twoLines ? nextLyricIndex(after: index) : nil
 
-            ZStack {
-                if let index, let line, !line.text.isEmpty {
-                    VStack(spacing: 0) {
-                        primaryLine(line, ms: ms, fillsWords: fillsWords)
-                            .frame(width: width, height: primaryHeight, alignment: frameAlignment)
-                        if secondaryLine != .none {
-                            secondaryText(for: line, at: index)
-                                .frame(width: width, height: secondaryHeight, alignment: frameAlignment)
+            VStack(spacing: 0) {
+                ForEach([currentRow] + (nextRow.map { [$0] } ?? []), id: \.self) { row in
+                    Group {
+                        if row == currentRow {
+                            currentLine(at: index, ms: ms, fillsWords: fillsWords)
+                        } else {
+                            upcomingLine(lyrics.lines[row])
                         }
                     }
-                    .id(index)
-                    // Like Apple Music: the old line drifts up and blurs out, the new one rises in.
-                    .transition(.asymmetric(
-                        insertion: .modifier(
-                            active: LyricLineMotion(offset: 9, blur: 5, opacity: 0, scale: 0.97),
-                            identity: LyricLineMotion(offset: 0, blur: 0, opacity: 1, scale: 1)
-                        ),
-                        removal: .modifier(
-                            active: LyricLineMotion(offset: -9, blur: 5, opacity: 0, scale: 0.97),
-                            identity: LyricLineMotion(offset: 0, blur: 0, opacity: 1, scale: 1)
-                        )
-                    ))
-                } else {
-                    // Before the first line and in instrumental parts.
-                    Image(systemName: "music.note")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.35))
-                        .frame(width: width, alignment: frameAlignment)
-                        .transition(.opacity)
+                    .transition(lineTransition)
                 }
             }
-            .frame(width: width, height: primaryHeight + secondaryHeight)
+            .frame(width: width, height: primaryHeight + secondaryHeight + (twoLines ? primaryHeight : 0), alignment: .top)
             .animation(.spring(response: 0.55, dampingFraction: 0.9), value: index)
         }
         .clipped()
+    }
+
+    /// The line being sung (with its second line), or a music note before the first
+    /// line and in instrumental parts.
+    @ViewBuilder
+    private func currentLine(at index: Int?, ms: Int, fillsWords: Bool) -> some View {
+        if let index, !lyrics.lines[index].text.isEmpty {
+            let line = lyrics.lines[index]
+            VStack(spacing: 0) {
+                primaryLine(line, ms: ms, fillsWords: fillsWords)
+                    .frame(width: width, height: primaryHeight, alignment: frameAlignment)
+                if secondaryLine != .none {
+                    secondaryText(for: line, at: index)
+                        .frame(width: width, height: secondaryHeight, alignment: frameAlignment)
+                }
+            }
+        } else {
+            Image(systemName: "music.note")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.35))
+                .frame(width: width, height: primaryHeight + secondaryHeight, alignment: frameAlignment)
+        }
+    }
+
+    /// The next line in two-line mode: same size, dimmed.
+    private func upcomingLine(_ line: LyricsLine) -> some View {
+        Text(line.text)
+            .font(.system(size: fittingFontSize(for: line.text), weight: fontWeight.fontWeight))
+            .foregroundStyle(sungColor.opacity(0.35))
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .frame(width: width, height: primaryHeight, alignment: frameAlignment)
+    }
+
+    /// The first line with words after `index` (or the first line of the song).
+    private func nextLyricIndex(after index: Int?) -> Int? {
+        let start = (index ?? -1) + 1
+        guard start < lyrics.lines.count else { return nil }
+        return lyrics.lines[start...].firstIndex { !$0.text.isEmpty }
     }
 
     private var frameAlignment: Alignment { alignment == .center ? .center : .leading }

@@ -132,6 +132,11 @@ struct LyricsSettingsView: View {
             }
 
             Section {
+                Defaults.Toggle(key: .lyricsTwoLines) {
+                    Text("Show two lines")
+                }
+                .settingsHighlight(id: highlightID("Show two lines"))
+
                 Defaults.Toggle(key: .lyricsKaraoke) {
                     Text("Fill in words as they're sung")
                 }
@@ -173,7 +178,7 @@ struct LyricsSettingsView: View {
             } header: {
                 Text("Look")
             } footer: {
-                Text("Words fill in only when the lyrics have word-by-word timing. The notch widens to this width while lyrics show.")
+                Text("Two lines shows the next line under the current one, dimmed, and slides it up when it's sung. Words fill in only when the lyrics have word-by-word timing. The notch widens to this width while lyrics show.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
