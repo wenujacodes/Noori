@@ -57,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- When nothing is playing (no music in the closed notch), the open player's album art and visualizer now blur in and out with the notch instead of popping; they still glide from the closed notch when a song is showing there.
 - Possible cause of the whole Mac freezing while Noori runs: Noori kept macOS's OSD helper (OSDUIHelper) paused with SIGSTOP to hide the native volume/brightness popup, and anything waiting on that helper could hang until Noori quit. Noori no longer pauses it (it already swallows the media keys itself) and resumes it if an older run left it paused.
 - Scrolling song titles and artist names no longer jump sideways when a scroll loop ends (the text was measured 10 pt too wide).
 - Battery HUDs (charging, low battery, full battery) had a flat bottom with square corners: the window was sized exactly to the HUD, so its rounded bottom (and the hover growth) got cut off. The window now stays at least its normal size.

@@ -292,6 +292,8 @@ struct MinimalisticMusicPlayerView: View {
             .frame(width: width, height: 16)
             // Glides from the closed notch's visualizer, like the album art.
             .matchedGeometryEffect(id: "spectrum", in: albumArtNamespace)
+            // Nothing to glide from when the closed notch shows no music: blur in/out instead.
+            .fadesWithNotchContent(!closedNotchShowsMusic(vm: vm))
     }
     
     // MARK: - Progress Bar (Full Width)
@@ -784,7 +786,23 @@ struct MinimalisticAlbumArtView: View {
         .buttonStyle(PlainButtonStyle())
         .opacity(musicManager.isPlaying ? 1 : 0.4)
         .scaleEffect(musicManager.isPlaying ? 1 : 0.85)
+        // Nothing to glide from when the closed notch shows no music: blur in/out instead.
+        .fadesWithNotchContent(!closedNotchShowsMusic(vm: vm))
     }
+}
+
+/// Whether the closed notch is showing the music live activity, i.e. whether the
+/// open player's album art and visualizer have something to glide from.
+/// Mirrors `closedMusicPairingEligible` in ContentView.
+@MainActor
+func closedNotchShowsMusic(vm: NooriViewModel) -> Bool {
+    let music = MusicManager.shared
+    let hasMetadata = !music.songTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        || !music.artistName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    let hasActiveMusic = music.isPlaying || (!music.isPlayerIdle && hasMetadata)
+    return hasActiveMusic
+        && NooriViewCoordinator.shared.musicLiveActivityEnabled
+        && !vm.hideOnClosed
 }
 
 // MARK: - Hover-highlighted control button
