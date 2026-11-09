@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Turning Bluetooth on or off shows "Bluetooth · On/Off" in the notch (part of "Show Bluetooth device connections").
 - Disconnecting a Bluetooth audio device shows "<device> · Disconnected" in the notch instead of the Mac's volume level.
 - Clicking Noori's app icon while it's running (Finder, Launchpad, Spotlight) opens the notch; clicking it again while the notch is open opens Settings.
 - Sparkle updates are set up: Noori has its own update signing key, an update feed (`Updates/appcast.xml`) and a release script (`scripts/release.sh <version>`) that picks the next build number itself, then builds, zips, signs and adds the version to the feed.

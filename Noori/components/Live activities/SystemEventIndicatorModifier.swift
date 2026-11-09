@@ -108,6 +108,13 @@ struct SystemEventIndicatorModifier: View {
                         .foregroundStyle(.white)
                         .lineLimit(1)
                         .allowsTightening(true)
+                } else if let powerState = BluetoothAudioManager.shared.bluetoothPowerHUDState {
+                    Text(powerState ? "Bluetooth on" : "Bluetooth off")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(powerState ? .white : .gray)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 } else if BluetoothAudioManager.shared.disconnectedHUDDevice != nil {
                     Text("Disconnected")
                         .font(.caption)

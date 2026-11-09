@@ -79,6 +79,8 @@ struct InlineHUD: View {
         let hasBatteryLevel = value > 0 && !isListeningModeEvent
         let isDisconnectEvent = type == .bluetoothAudio && !isListeningModeEvent
             && bluetoothManager.disconnectedHUDDevice != nil
+        let bluetoothPowerState = (type == .bluetoothAudio && !isListeningModeEvent)
+            ? bluetoothManager.bluetoothPowerHUDState : nil
         let capsLockAccentColor = capsLockTintMode.color
 
         // Widths stay constant whether hovered or not so HUD text/icons do
@@ -316,6 +318,13 @@ struct InlineHUD: View {
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
+                    } else if let bluetoothPowerState {
+                        Text(bluetoothPowerState ? "On" : "Off")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundStyle(bluetoothPowerState ? .white : .gray)
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
                     } else if isDisconnectEvent {
                         Text("Disconnected")
                             .font(.caption)
@@ -409,6 +418,9 @@ struct InlineHUD: View {
             displayName = Type2Name(type)
         }
         .onChange(of: bluetoothManager.disconnectedHUDDevice?.name) { _, _ in
+            displayName = Type2Name(type)
+        }
+        .onChange(of: bluetoothManager.bluetoothPowerHUDState) { _, _ in
             displayName = Type2Name(type)
         }
     }
@@ -523,6 +535,7 @@ struct InlineHUD: View {
                 return String(localized: "Mic")
             case .bluetoothAudio:
                 let manager = BluetoothAudioManager.shared
+                if manager.bluetoothPowerHUDState != nil { return "Bluetooth" }
                 return manager.disconnectedHUDDevice?.name ?? manager.lastConnectedDevice?.name ?? "Bluetooth"
             case .capsLock:
                 return String(localized: "Caps Lock")
