@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Bluetooth connection HUD shows the battery percentage as a number next to the ring by default.
 - The Bluetooth device-connected HUD stays up for 5 seconds (was 2.5).
 - The Bluetooth connection HUD shows the device name by default ("Show device name" is on for new installs).
-- The Settings window fades in when it opens and fades out when you close it (close button or ⌘W) instead of appearing and vanishing instantly.
+- The Settings window opens and closes instantly, with no fade (macOS's own window animation is off too).
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
 - In the open notch the two time labels use the slider color (white, the album color, or the accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
 - The notch no longer bounces when it closes; it just shrinks smoothly onto the closed notch.

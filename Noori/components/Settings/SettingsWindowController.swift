@@ -29,10 +29,6 @@ import Sparkle
 class SettingsWindowController: NSWindowController {
     static let shared = SettingsWindowController()
     private var updaterController: SPUStandardUpdaterController?
-    /// True while the window fades out after the close button or ⌘W. Opening
-    /// fades in over the same duration.
-    private var isFadingOut = false
-    private let closeFadeDuration: TimeInterval = 0.2
     
     private init() {
         let window = NSWindow(
@@ -69,6 +65,8 @@ class SettingsWindowController: NSWindowController {
         window.toolbarStyle = .unified
         window.isMovableByWindowBackground = true
         window.level = .normal
+        // Open and close instantly, with no fade or zoom.
+        window.animationBehavior = .none
         
         // Make it behave like a regular app window with proper Spaces support
         window.collectionBehavior = [.managed, .participatesInCycle]
@@ -108,18 +106,11 @@ class SettingsWindowController: NSWindowController {
             return
         }
         
-        // Show the window with proper ordering, fading in like it fades out.
-        window?.alphaValue = 0
+        // Show the window with proper ordering
+        window?.alphaValue = 1
         window?.center()
         window?.orderFrontRegardless()
         window?.makeKeyAndOrderFront(nil)
-        if let window {
-            NSAnimationContext.runAnimationGroup { context in
-                context.duration = closeFadeDuration
-                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
-                window.animator().alphaValue = 1
-            }
-        }
         
         // Activate the app and ensure window gets focus
         NSApp.activate(ignoringOtherApps: true)
@@ -154,21 +145,9 @@ extension SettingsWindowController: NSWindowDelegate {
         relinquishFocus()
     }
     
-    /// macOS closes normal windows instantly; fade out first, then hide the
-    /// window (it's reused next time, so it's ordered out, not closed).
+    /// Hide the window right away instead of closing it (it's reused next time).
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        guard !isFadingOut else { return false }
-        isFadingOut = true
-        NSAnimationContext.runAnimationGroup({ context in
-            context.duration = closeFadeDuration
-            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
-            sender.animator().alphaValue = 0
-        }, completionHandler: { [weak self] in
-            sender.orderOut(nil)
-            sender.alphaValue = 1
-            self?.isFadingOut = false
-            self?.relinquishFocus()
-        })
+        relinquishFocus()
         return false
     }
     
