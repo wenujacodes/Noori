@@ -177,10 +177,12 @@ final class DoNotDisturbManager: ObservableObject {
                     withAnimation(.smooth(duration: 0.25)) {
                         self.isDoNotDisturbActive = isActive
                     }
-                    // First activation with no prior mode: default to DND.
+                    // First activation with no prior mode: macOS only said "a Focus is
+                    // on" (e.g. no Full Disk Access to read which one). Show a neutral
+                    // "Focus" rather than claiming Do Not Disturb.
                     if isActive && previousIdentifier.isEmpty {
-                        self.currentFocusModeIdentifier = FocusModeType.doNotDisturb.rawValue
-                        self.currentFocusModeName = FocusModeType.doNotDisturb.displayName
+                        self.currentFocusModeIdentifier = FocusModeType.genericIdentifier
+                        self.currentFocusModeName = ""
                     }
                     debugPrint("[DoNotDisturbManager] Focus active-only update -> source: \(source) | isActive: \(isActive)")
                 }
@@ -777,7 +779,7 @@ enum FocusModeType: String, CaseIterable {
         case .reading: return "Reading"
         case .reduceInterruptions: return "Reduce Interr."
         case .custom: return "Focus"
-        case .unknown: return "Focus Mode"
+        case .unknown: return "Focus"
         }
     }
     
@@ -865,9 +867,17 @@ enum FocusModeType: String, CaseIterable {
 }
 
 extension FocusModeType {
+    /// Used when a Focus is on but macOS didn't say which one.
+    static let genericIdentifier = "com.apple.focus"
+
     init(identifier: String) {
         let normalized = identifier.trimmingCharacters(in: .whitespacesAndNewlines)
         let normalizedLowercased = normalized.lowercased()
+
+        if normalizedLowercased == Self.genericIdentifier {
+            self = .unknown
+            return
+        }
 
         guard !normalized.isEmpty else {
             self = .doNotDisturb
