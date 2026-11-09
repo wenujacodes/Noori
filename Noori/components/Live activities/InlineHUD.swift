@@ -254,8 +254,9 @@ struct InlineHUD: View {
                     } else if showBluetoothDeviceNameMarquee {
                         MarqueeText(
                             $displayName,
-                            font: .system(size: 13, weight: .medium),
-                            nsFont: .body,
+                            // Same style as the other HUD titles (Wi-Fi, AirDrop, Volume…).
+                            font: .subheadline.weight(.medium),
+                            nsFont: .subheadline,
                             textColor: .white,
                             minDuration: 0.2,
                             frameWidth: infoWidth,
