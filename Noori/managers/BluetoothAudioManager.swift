@@ -81,6 +81,8 @@ class BluetoothAudioManager: ObservableObject {
     private var hudBatteryWaitTasks: [UUID: Task<Void, Never>] = [:]
     private let hudBatteryWaitInterval: TimeInterval = 0.3
     private let hudBatteryWaitTimeout: TimeInterval = 1.8
+    /// How long the device-connected HUD stays up.
+    private let connectedHUDDuration: TimeInterval = 5
     private var listeningModeClearTask: Task<Void, Never>?
     private var listeningModePresentationTask: Task<Void, Never>?
     private var lastListeningModeByAddress: [String: AirPodsListeningMode] = [:]
@@ -1801,6 +1803,11 @@ class BluetoothAudioManager: ObservableObject {
     private func showDeviceConnectedHUD(_ device: BluetoothAudioDevice) {
         guard Defaults[.showBluetoothDeviceConnections] else { return }
 
+        // Connecting switches the audio output, which fires a volume change. Keep the
+        // volume HUD out of the way while we wait for the battery level and show
+        // this one, or it takes the spot and the connection HUD never appears.
+        HUDSuppressionCoordinator.shared.suppressVolumeHUD(for: hudBatteryWaitTimeout + 1.5)
+
         cancelHUDBatteryWait(for: device)
 
         if let battery = bestBatteryLevel(for: device) {
@@ -1861,7 +1868,7 @@ class BluetoothAudioManager: ObservableObject {
             coordinator.toggleSneakPeek(
                 status: true,
                 type: .bluetoothAudio,
-                duration: 2.5,
+                duration: connectedHUDDuration,
                 value: batteryValue,
                 icon: device.deviceType.sfSymbol
             )

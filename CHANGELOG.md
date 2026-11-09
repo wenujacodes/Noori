@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The Bluetooth device-connected HUD stays up for 5 seconds (was 2.5).
+- The Bluetooth connection HUD shows the device name by default ("Show device name" is on for new installs).
 - The Settings window fades in when it opens and fades out when you close it (close button or ⌘W) instead of appearing and vanishing instantly.
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
 - In the open notch the two time labels use the slider color (white, the album color, or the accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
@@ -58,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- Connecting Bluetooth earphones that report their battery late (e.g. Soundcore) showed the volume HUD instead of the connection HUD; the volume HUD is now held back while the connection HUD waits for the battery level.
 - When nothing is playing (no music in the closed notch), the open player's album art and visualizer now blur in and out with the notch instead of popping; they still glide from the closed notch when a song is showing there.
 - Possible cause of the whole Mac freezing while Noori runs: Noori kept macOS's OSD helper (OSDUIHelper) paused with SIGSTOP to hide the native volume/brightness popup, and anything waiting on that helper could hang until Noori quit. Noori no longer pauses it (it already swallows the media keys itself) and resumes it if an older run left it paused.
 - Scrolling song titles and artist names no longer jump sideways when a scroll loop ends (the text was measured 10 pt too wide).
@@ -102,6 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
+- The Bluetooth device-connected HUD stays up for 5 seconds (was 2.5).
+- The Bluetooth connection HUD shows the device name by default ("Show device name" is on for new installs).
 - The Settings window fades in when it opens and fades out when you close it (close button or ⌘W) instead of appearing and vanishing instantly.
 - Settings section titles and labels use one style (sentence case, e.g. "Notch height", "Music visualizer", "Skip button behavior"); "Noori Progress Bars" is now "Progress bars" and "Battery Indicator Styling" is "Battery indicator style".
 - In the open notch the two time labels use the slider color (white, the album color, or the accent color), and the extra player buttons (shuffle, repeat, media output, AirPlay, lyrics) are grey so previous, play/pause and next stand out.
