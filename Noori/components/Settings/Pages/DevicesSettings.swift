@@ -76,11 +76,11 @@ struct DevicesSettingsView: View {
                 Text("Battery indicator style")
             } footer: {
                 if progressBarStyle == .segmented {
-                    Text("Color-coded fills are unavailable in Segmented mode. Switch to Hierarchical or Gradient in Settings › Controls to adjust advanced options.")
+                    Text("Color-coded fills are unavailable in Segmented mode. Switch to Hierarchical or Gradient in Settings › Volume & Brightness to adjust advanced options.")
                         .foregroundStyle(.secondary)
                         .font(.caption)
                 } else if Defaults[.useSmoothColorGradient] {
-                    Text("Smooth transitions blend Green (0–60%), Yellow (60–85%), and Red (85–100%) through the entire fill. Adjust gradient behavior in Settings › Controls.")
+                    Text("Smooth transitions blend Green (0–60%), Yellow (60–85%), and Red (85–100%) through the entire fill. Adjust gradient behavior in Settings › Volume & Brightness.")
                         .foregroundStyle(.secondary)
                         .font(.caption)
                 } else {

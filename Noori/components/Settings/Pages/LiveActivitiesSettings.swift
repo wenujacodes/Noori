@@ -34,12 +34,12 @@ struct LiveActivitiesSettings: View {
         Form {
             Section {
                 Defaults.Toggle(key: .enableScreenRecordingDetection) {
-                    Text("Enable Screen Recording Detection")
+                    Text("Detect screen recording")
                 }
                 .settingsHighlight(id: highlightID("Enable Screen Recording Detection"))
 
                 Defaults.Toggle(key: .showRecordingIndicator) {
-                    Text("Show Recording Indicator")
+                    Text("Show recording indicator")
                 }
                 .disabled(!enableScreenRecordingDetection)
                 .settingsHighlight(id: highlightID("Show Recording Indicator"))
@@ -57,7 +57,7 @@ struct LiveActivitiesSettings: View {
                                     .foregroundColor(.red)
                             }
                         } else {
-                            Text("Active - No Recording")
+                            Text("Active, not recording")
                                 .foregroundColor(.green)
                         }
                     }
@@ -65,30 +65,30 @@ struct LiveActivitiesSettings: View {
             } header: {
                 Text("Screen recording")
             } footer: {
-                Text("Uses event-driven private API for real-time screen recording detection")
+                Text("Shows an indicator in the notch while the screen is being recorded.")
             }
 
             Section {
                 Defaults.Toggle(key: .enableDoNotDisturbDetection) {
-                    Text("Enable Focus Detection")
+                    Text("Detect Focus")
                 }
                 .settingsHighlight(id: highlightID("Enable Focus Detection"))
 
                 Defaults.Toggle(key: .showDoNotDisturbIndicator) {
-                    Text("Show Focus Indicator")
+                    Text("Show Focus indicator")
                 }
                 .disabled(!enableDoNotDisturbDetection)
                 .settingsHighlight(id: highlightID("Show Focus Indicator"))
 
                 Defaults.Toggle(key: .showDoNotDisturbLabel) {
-                    Text("Show Focus Label")
+                    Text("Show Focus name")
                 }
                 .disabled(!enableDoNotDisturbDetection || focusIndicatorNonPersistent)
                 .help(focusIndicatorNonPersistent ? "Labels are forced to compact on/off text while brief toast mode is enabled." : "Show the active Focus name inside the indicator.")
                 .settingsHighlight(id: highlightID("Show Focus Label"))
 
                 Defaults.Toggle(key: .focusIndicatorNonPersistent) {
-                    Text("Show Focus as brief toast")
+                    Text("Show Focus changes briefly")
                 }
                 .disabled(!enableDoNotDisturbDetection)
                 .settingsHighlight(id: highlightID("Show Focus as brief toast"))
@@ -107,7 +107,7 @@ struct LiveActivitiesSettings: View {
                                     .foregroundColor(.purple)
                             }
                         } else {
-                            Text("Active - No Focus")
+                            Text("Active, no Focus on")
                                 .foregroundColor(.green)
                         }
                     }
@@ -120,14 +120,14 @@ struct LiveActivitiesSettings: View {
                     }
                 }
             } header: {
-                Text("Do Not Disturb")
+                Text("Focus")
             } footer: {
-                Text("Listens for Focus session changes via distributed notifications")
+                Text("Shows the current Focus (Do Not Disturb, Work, Sleep…) in the notch.")
             }
 
             Section {
                 Defaults.Toggle(key: .enableCapsLockIndicator) {
-                    Text("Show Caps Lock Indicator")
+                    Text("Show Caps Lock indicator")
                 }
                 .settingsHighlight(id: highlightID("Show Caps Lock Indicator"))
 
@@ -153,11 +153,11 @@ struct LiveActivitiesSettings: View {
 
             Section {
                 Defaults.Toggle(key: .enableCameraDetection) {
-                    Text("Enable Camera Detection")
+                    Text("Detect camera use")
                 }
                 .settingsHighlight(id: highlightID("Enable Camera Detection"))
                 Defaults.Toggle(key: .enableMicrophoneDetection) {
-                    Text("Enable Microphone Detection")
+                    Text("Detect microphone use")
                 }
                 .settingsHighlight(id: highlightID("Enable Microphone Detection"))
 
@@ -199,7 +199,7 @@ struct LiveActivitiesSettings: View {
             } header: {
                 Text("Privacy indicators")
             } footer: {
-                Text("Shows green camera icon and yellow microphone icon when in use. Uses event-driven CoreAudio and CoreMediaIO APIs.")
+                Text("Shows a green camera icon and a yellow microphone icon in the notch while they're in use.")
             }
 
             Section {
@@ -211,7 +211,7 @@ struct LiveActivitiesSettings: View {
             } header: {
                 Text("Media live activity")
             } footer: {
-                Text("Use the Media tab to configure sneak peek.")
+                Text("Sneak peek and the music live activity are in Settings › Music.")
             }
 
         }

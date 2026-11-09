@@ -196,7 +196,7 @@ struct Media: View {
                 Text("Full screen")
             }
         }
-        .navigationTitle("Media")
+        .navigationTitle("Music")
         .onReceive(MusicManager.shared.$bundleIdentifier.removeDuplicates()) { playerBundleIdentifier = $0 }
     }
 

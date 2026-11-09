@@ -292,7 +292,7 @@ struct HUD: View {
                         .disabled(enableThirdPartyDDCIntegration)
                         .help(enableThirdPartyDDCIntegration ? "Disabled while external display integration is active \u{2014} brightness keys are handled by the external app." : "")
                 } header: {
-                    Text("Controls")
+                    Text("Show in the notch")
                 } footer: {
                     Text("Choose which system controls should display HUD notifications.")
                         .foregroundStyle(.secondary)
@@ -373,7 +373,7 @@ struct HUD: View {
             // Step size and third-party display integrations
             ExternalDisplayIntegrationsSection()
         }
-        .navigationTitle("Controls")
+        .navigationTitle("Volume & Brightness")
         .onAppear {
             accessibilityPermission.refreshStatus()
         }

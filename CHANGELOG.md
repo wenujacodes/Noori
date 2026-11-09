@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Settings pages say what they control: Media is now **Music** and Controls is now **Volume & Brightness**. Live Activities labels use the same sentence case as the rest ("Detect screen recording", "Show Focus name"…) and its notes explain what each one does instead of which macOS API it uses.
 - Settings › Appearance now has all the notch's size and shape settings: Notch height moved there from General, next to Notch width, and the two pickers for the style on screens without a notch (one in General, one in Appearance) are now one, "Style on screens without a notch", always shown in Appearance.
-- Settings clean-up: the artist color setting in Media had the wrong label ("Enable colored spectograms"); it's now "Color the artist name with the album art". The loose "Hide Noori Options" picker is now "Hide Noori in full screen" in its own Full screen section. "Visualizer candles" is "Visualizer bars", "Progressbar style" is "Progress bar style", and the Devices notes point to Settings › Controls instead of a page that doesn't exist.
+- Settings clean-up: the artist color setting in Media had the wrong label ("Enable colored spectograms"); it's now "Color the artist name with the album art". The loose "Hide Noori Options" picker is now "Hide Noori in full screen" in its own Full screen section. "Visualizer candles" is "Visualizer bars", "Progressbar style" is "Progress bar style", and the Devices notes point to the right page instead of one that doesn't exist.
 - Smaller download: releases are stripped of debugging symbols (the universal app is about 19 MB instead of 48 MB, the zip about 7.5 MB instead of 11 MB). Nothing changes in how Noori works.
 
 ### Fixed
@@ -18,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Long lyric lines no longer get cut off in the closed notch: when a song's lyrics load, the notch widens to fit its longest line (once per song, between 260 and 620 pt), and the window widens with it.
 - With Second line › Next line, the line that moves up into the top row of the closed notch no longer disappears after each line change.
 - Scrolling in Settings is smoother: rows no longer each draw an invisible search-highlight outline with a shadow, and the Media and Lyrics pages no longer redraw on every playback update while music plays.
-- The layout preview in Settings › Media no longer shows the shuffle and repeat icons in red when they're on in the player.
+- The layout preview in Settings › Music no longer shows the shuffle and repeat icons in red when they're on in the player.
 - With Second line › Next line, the top row no longer looks empty in a pause: the upcoming line shows there, dimmed with a music note, and lights up in place when it's sung while the line after it slides in below.
 
 ## [1.0.0] - 2026-11-09
