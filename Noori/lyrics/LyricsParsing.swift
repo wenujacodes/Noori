@@ -114,6 +114,7 @@ enum LyricsParsing {
     /// `(wordStartMs,wordDurationMs,0)word` pieces. Lines without words are skipped.
     static func parseYRC(_ text: String) -> [LyricsLine] {
         var out: [LyricsLine] = []
+        var endTimes: [Int: Int] = [:]
         let normalized = text.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
         for rawLine in normalized.split(separator: "\n", omittingEmptySubsequences: false) {
             let rawLineString = String(rawLine)
@@ -148,20 +149,27 @@ enum LyricsParsing {
             let text = words.map(\.text).joined().trimmingCharacters(in: .whitespaces)
             guard !text.isEmpty else { continue }
             out.append(LyricsLine(timeMs: lineTimeMs, text: text, words: words))
-            // A gap after the line, so its text doesn't stay up through a long instrumental.
-            if lineDurationMs > 0 {
-                out.append(LyricsLine(timeMs: lineTimeMs + lineDurationMs + 1500, text: "", words: nil))
-            }
+            // When the line is sung to the end: its declared length or its last word, whichever is later.
+            let lastWordEnd = words.map { $0.startMs + $0.durationMs }.max() ?? 0
+            endTimes[lineTimeMs] = max(lineTimeMs + lineDurationMs, lastWordEnd)
         }
         out.sort { $0.timeMs < $1.timeMs }
-        // A gap that lands after the next line has started isn't a gap.
-        var cleaned: [LyricsLine] = []
+        // A gap (music note) only where nothing is sung for a while: a line stays up
+        // until the next one starts, unless there's a pause of more than `gapAfterMs` after it.
+        var withGaps: [LyricsLine] = []
         for (index, line) in out.enumerated() {
-            if line.text.isEmpty, index + 1 < out.count, out[index + 1].timeMs <= line.timeMs { continue }
-            cleaned.append(line)
+            withGaps.append(line)
+            guard let end = endTimes[line.timeMs] else { continue }
+            let nextStart = index + 1 < out.count ? out[index + 1].timeMs : Int.max
+            if nextStart - end > gapAfterMs * 2 {
+                withGaps.append(LyricsLine(timeMs: end + gapAfterMs, text: "", words: nil))
+            }
         }
-        return cleaned
+        return withGaps
     }
+
+    /// How long a finished line stays up before a long pause shows the music note.
+    private static let gapAfterMs = 1500
 
     // MARK: - Cleanup
 
