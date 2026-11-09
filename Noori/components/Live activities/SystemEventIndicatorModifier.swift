@@ -78,6 +78,11 @@ struct SystemEventIndicatorModifier: View {
                             .contentTransition(.interpolate)
                             .frame(width: 20, height: 15)
                             .foregroundStyle(.white)
+                    } else if BluetoothGlyph.handles(icon) {
+                        let isOff = icon == BluetoothGlyph.offIcon
+                        BluetoothGlyph(isOff: isOff)
+                            .foregroundStyle(.white)
+                            .frame(width: 20, height: 15)
                     } else if !icon.isEmpty {
                         Image(systemName: icon)
                             .contentTransition(.interpolate)
@@ -112,7 +117,7 @@ struct SystemEventIndicatorModifier: View {
                     Text(powerState ? "Bluetooth on" : "Bluetooth off")
                         .font(.caption)
                         .fontWeight(.medium)
-                        .foregroundStyle(powerState ? .white : .gray)
+                        .foregroundStyle(powerState ? Color.green : Color.red)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else if BluetoothAudioManager.shared.disconnectedHUDDevice != nil {
@@ -120,7 +125,7 @@ struct SystemEventIndicatorModifier: View {
                     Text(batteryDead ? "Battery dead" : "Disconnected")
                         .font(.caption)
                         .fontWeight(.medium)
-                        .foregroundStyle(batteryDead ? .red : .gray)
+                        .foregroundStyle(.red)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {

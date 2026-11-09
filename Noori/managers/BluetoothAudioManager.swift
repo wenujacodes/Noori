@@ -1965,7 +1965,7 @@ class BluetoothAudioManager: ObservableObject {
                 type: .bluetoothAudio,
                 duration: bluetoothPowerHUDDuration,
                 value: 0,
-                icon: isOn ? "antenna.radiowaves.left.and.right" : "antenna.radiowaves.left.and.right.slash"
+                icon: isOn ? BluetoothGlyph.onIcon : BluetoothGlyph.offIcon
             )
         }
 

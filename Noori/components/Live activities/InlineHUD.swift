@@ -218,6 +218,11 @@ struct InlineHUD: View {
                                 AirPodsListeningModeSymbol(mode: listeningMode)
                                     .contentTransition(.interpolate)
                                     .frame(width: 20, height: 15, alignment: .center)
+                            } else if BluetoothGlyph.handles(icon) {
+                                let isOff = icon == BluetoothGlyph.offIcon
+                                BluetoothGlyph(isOff: isOff)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 20, height: 15, alignment: .center)
                             } else {
                                 Image(systemName: icon.isEmpty ? "dot.radiowaves.left.and.right" : icon)
                                     .symbolRenderingMode(.hierarchical)
@@ -322,14 +327,14 @@ struct InlineHUD: View {
                         Text(bluetoothPowerState ? "On" : "Off")
                             .font(.caption)
                             .fontWeight(.medium)
-                            .foregroundStyle(bluetoothPowerState ? .white : .gray)
+                            .foregroundStyle(bluetoothPowerState ? Color.green : Color.red)
                             .lineLimit(1)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     } else if isDisconnectEvent {
                         Text(bluetoothManager.disconnectedHUDBatteryDead ? "Battery dead" : "Disconnected")
                             .font(.caption)
                             .fontWeight(.medium)
-                            .foregroundStyle(bluetoothManager.disconnectedHUDBatteryDead ? .red : .gray)
+                            .foregroundStyle(.red)
                             .lineLimit(1)
                             .allowsTightening(true)
                             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -436,7 +441,7 @@ struct InlineHUD: View {
 
         private var indicatorColor: Color {
             if useColorCoding {
-                return ColorCodedProgressBar.paletteColor(for: clampedValue, mode: .battery, smoothGradient: smoothGradient)
+                return BluetoothBatteryColor.color(for: clampedValue)
             }
             return .white
         }
@@ -470,7 +475,7 @@ struct InlineHUD: View {
 
         private var fillColor: Color {
             if useColorCoding {
-                return ColorCodedProgressBar.paletteColor(for: clampedValue, mode: .battery, smoothGradient: smoothGradient)
+                return BluetoothBatteryColor.color(for: clampedValue)
             }
             return .white
         }
