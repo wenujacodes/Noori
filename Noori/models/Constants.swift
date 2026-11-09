@@ -587,8 +587,6 @@ extension Defaults.Keys {
     static let lyricsColorStyle = Key<LyricsColorStyle>("lyricsColorStyle", default: .white)
     static let lyricsFontSize = Key<Double>("lyricsFontSize", default: 12)
     static let lyricsFontWeight = Key<LyricsFontWeight>("lyricsFontWeight", default: .semibold)
-    /// Width of the notch's middle while lyrics show.
-    static let lyricsNotchWidth = Key<Double>("lyricsNotchWidth", default: 260)
     // Lyrics: behavior
     static let lyricsHideWhenPaused = Key<Bool>("lyricsHideWhenPaused", default: true)
 }

@@ -28,7 +28,6 @@ struct LyricsSettingsView: View {
     @Default(.lyricsColorStyle) private var colorStyle
     @Default(.lyricsFontSize) private var fontSize
     @Default(.lyricsFontWeight) private var fontWeight
-    @Default(.lyricsNotchWidth) private var notchWidth
 
     private func highlightID(_ title: String) -> String { "lyrics-\(title)" }
 
@@ -165,20 +164,10 @@ struct LyricsSettingsView: View {
                         .frame(width: 40, alignment: .trailing)
                 }
                 .settingsHighlight(id: highlightID("Text size"))
-
-                HStack {
-                    Text("Notch width")
-                    Slider(value: $notchWidth, in: 200...420, step: 10)
-                    Text("\(Int(notchWidth)) pt")
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                        .frame(width: 48, alignment: .trailing)
-                }
-                .settingsHighlight(id: highlightID("Notch width"))
             } header: {
                 Text("Look")
             } footer: {
-                Text("Two lines shows the next line under the current one, dimmed, and slides it up when it's sung. Words fill in only when the lyrics have word-by-word timing. The notch widens to this width while lyrics show.")
+                Text("Two lines shows the next line under the current one, dimmed, and slides it up when it's sung. Words fill in only when the lyrics have word-by-word timing.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

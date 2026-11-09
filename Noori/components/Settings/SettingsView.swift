@@ -678,7 +678,6 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .lyrics, title: "Fill in words as they're sung", keywords: ["karaoke", "word by word"], highlightID: SettingsTab.lyrics.highlightID(for: "Fill in words as they're sung")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics color", keywords: ["color", "album", "accent"], highlightID: SettingsTab.lyrics.highlightID(for: "Color")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics text size", keywords: ["font", "size"], highlightID: SettingsTab.lyrics.highlightID(for: "Text size")),
-            SettingsSearchEntry(tab: .lyrics, title: "Lyrics notch width", keywords: ["width", "wide"], highlightID: SettingsTab.lyrics.highlightID(for: "Notch width")),
             SettingsSearchEntry(tab: .lyrics, title: "Hide lyrics when paused", keywords: ["pause", "hide"], highlightID: SettingsTab.lyrics.highlightID(for: "Hide when paused")),
             SettingsSearchEntry(tab: .media, title: "Skip buttons", keywords: ["skip", "controls", "±10"], highlightID: SettingsTab.media.highlightID(for: "Skip buttons")),
             SettingsSearchEntry(tab: .media, title: "Sneak peek style", keywords: ["sneak peek", "preview"], highlightID: SettingsTab.media.highlightID(for: "Sneak peek style")),

@@ -43,7 +43,6 @@ struct ContentView: View {
     @ObservedObject private var lyricsManager = LyricsManager.shared
     @Default(.showLyrics) private var showLyrics
     @Default(.lyricsHideWhenPaused) private var lyricsHideWhenPaused
-    @Default(.lyricsNotchWidth) private var lyricsNotchWidth
     @ObservedObject var batteryModel = BatteryStatusViewModel.shared
     @ObservedObject var recordingManager = ScreenRecordingManager.shared
     @ObservedObject var privacyManager = PrivacyIndicatorManager.shared
@@ -716,7 +715,7 @@ struct ContentView: View {
         // wider so lines fit.
         let showLyricRow = showLyrics && !lyricsManager.lines.isEmpty
             && (musicManager.isPlaying || (!lyricsHideWhenPaused && musicManager.hasActiveSession))
-        let effectiveCenterWidth = inlineSneakPeekActive ? 380 : (showLyricRow ? max(centerBaseWidth, lyricsNotchWidth) : centerBaseWidth)
+        let effectiveCenterWidth = inlineSneakPeekActive ? 380 : (showLyricRow ? max(centerBaseWidth, 260) : centerBaseWidth)
         let notchWidth = wingBaseWidth + effectiveCenterWidth + rightWingWidth
         let badgeBaseSize = max(13, notchContentHeight * 0.36)
         let badgeDisplaySize = badgeDisplaySize(for: secondary, baseSize: badgeBaseSize)
