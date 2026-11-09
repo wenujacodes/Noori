@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The extra player buttons (shuffle, repeat, lyrics, media output, AirPlay) animate when clicked: they squeeze and spring back with a bounce, and their color fades between on and off.
 - The album art in the open notch stays full size and full brightness when the song is paused.
 - Word-by-word lyrics animate like Apple Music: each word lights up with a soft edge, rises slightly as it's sung, and long held words glow; lines drift up and blur out as the next one rises in.
 - The Bluetooth icon in the HUD is a little smaller (14 pt tall, was 16).

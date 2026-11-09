@@ -608,11 +608,11 @@ struct MinimalisticMusicPlayerView: View {
                 action: { musicManager.seek(by: seekInterval) }
             )
         case .shuffle:
-            controlButton(icon: "shuffle", isActive: musicManager.isShuffled, isSecondary: true) {
+            controlButton(icon: "shuffle", isActive: musicManager.isShuffled, pressEffect: .pop, isSecondary: true) {
                 musicManager.toggleShuffle()
             }
         case .repeatMode:
-            controlButton(icon: repeatIcon, isActive: musicManager.repeatMode != .off, symbolEffect: .replace, isSecondary: true) {
+            controlButton(icon: repeatIcon, isActive: musicManager.repeatMode != .off, pressEffect: .pop, symbolEffect: .replace, isSecondary: true) {
                 musicManager.toggleRepeat()
             }
         case .mediaOutput:
@@ -621,7 +621,7 @@ struct MinimalisticMusicPlayerView: View {
             MinimalisticAirPlayButton()
         case .lyrics:
             // Turns the lyrics under the closed notch on and off.
-            controlButton(icon: "quote.bubble", isActive: showLyrics, isSecondary: true) {
+            controlButton(icon: "quote.bubble", isActive: showLyrics, pressEffect: .pop, isSecondary: true) {
                 showLyrics.toggle()
             }
         }
@@ -658,6 +658,7 @@ struct MinimalisticMusicPlayerView: View {
                 frameSize: CGSize(width: 36, height: 36),
                 cornerRadius: 14,
                 foregroundColor: .gray,
+                pressEffect: .pop,
                 symbolEffectStyle: .replace
             ) {
                 isPopoverPresented.toggle()
@@ -718,6 +719,7 @@ struct MinimalisticMusicPlayerView: View {
                 frameSize: CGSize(width: 36, height: 36),
                 cornerRadius: 14,
                 foregroundColor: .gray,
+                pressEffect: .pop,
                 symbolEffectStyle: .replace
             ) {
                 isPopoverPresented.toggle()
@@ -844,6 +846,8 @@ private struct MinimalisticSquircircleButton: View {
     @State private var pressOffset: CGFloat = 0
     @State private var rotationAngle: Double = 0
     @State private var wiggleToken: Int = 0
+    @State private var pressScale: CGFloat = 1
+    @State private var popToken: Int = 0
     @State private var lastExternalTriggerToken: Int?
 
     init(
@@ -886,8 +890,11 @@ private struct MinimalisticSquircircleButton: View {
                 .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         }
         .buttonStyle(PlainButtonStyle())
+        .scaleEffect(pressScale)
         .offset(x: pressOffset)
         .rotationEffect(.degrees(rotationAngle))
+        // Turning a toggle (shuffle, repeat, lyrics) on or off fades its color.
+        .animation(NooriMotion.change, value: foregroundColor)
         .onHover { hovering in
             withAnimation(.easeOut(duration: 0.18)) {
                 isHovering = hovering
@@ -916,6 +923,17 @@ private struct MinimalisticSquircircleButton: View {
                     pressOffset = 0
                 }
             }
+        case .pop:
+            // Squeeze, spring back, and bounce the symbol.
+            popToken += 1
+            withAnimation(.spring(response: 0.14, dampingFraction: 0.7)) {
+                pressScale = 0.82
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) {
+                    pressScale = 1
+                }
+            }
         case .wiggle(let direction):
             guard #available(macOS 14.0, *) else { return }
             wiggleToken += 1
@@ -938,6 +956,7 @@ private struct MinimalisticSquircircleButton: View {
         let image = Image(systemName: icon)
             .font(.system(size: fontSize, weight: fontWeight))
             .foregroundColor(foregroundColor)
+            .symbolEffect(.bounce, value: popToken)
 
         switch symbolEffectStyle {
         case .none:
@@ -979,6 +998,8 @@ private struct MinimalisticSquircircleButton: View {
         case none
         case nudge(CGFloat)
         case wiggle(WiggleDirection)
+        /// For the extra buttons (shuffle, repeat, lyrics, output…).
+        case pop
     }
 
     enum SymbolEffectStyle {
