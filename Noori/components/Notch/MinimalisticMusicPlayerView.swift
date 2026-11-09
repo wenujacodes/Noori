@@ -142,6 +142,7 @@ struct MinimalisticMusicPlayerView: View {
                     .frame(height: NotchLyricLine.rowHeight)
                     .padding(.top, 6)
                     .fadesWithNotchContent()
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
 
             }
@@ -150,6 +151,8 @@ struct MinimalisticMusicPlayerView: View {
             .padding(.bottom, shouldUseNooriMode(for: vm.screen) ? 14 : (batteryOffNotchMode ? 10 : minimalisticBaselineBottomPadding))
             .frame(maxWidth: .infinity)
             .frame(height: calculateDynamicHeight(), alignment: .top)
+            // Turning lyrics on or off grows or shrinks the player smoothly.
+            .animation(NooriMotion.notchOpen, value: lyricsManager.showsInOpenNotch)
         }
     }
 

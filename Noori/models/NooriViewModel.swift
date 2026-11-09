@@ -125,18 +125,27 @@ class NooriViewModel: NSObject, ObservableObject {
             Defaults.publisher(.lyricsHideWhenPaused).map { _ in () }
         )
         Publishers.Merge3(lyricsChanged, sessionChanged, settingsChanged)
-            .debounce(for: .milliseconds(50), scheduler: RunLoop.main)
+            .receive(on: RunLoop.main)
             .sink { [weak self] in
                 guard let self, self.notchState == .open else { return }
                 let target = self.calculateDynamicNotchSize()
                 guard self.notchSize != target else { return }
-                AppDelegate.shared?.ensureWindowSize(
-                    addShadowPadding(to: target, isMinimalistic: true),
-                    animated: true,
-                    force: false
-                )
-                withAnimation(NooriMotion.change) {
+                let windowSize = addShadowPadding(to: target, isMinimalistic: true)
+                let growing = target.height > self.notchSize.height
+                // Growing: make room first, so the animation isn't cut off.
+                if growing {
+                    AppDelegate.shared?.ensureWindowSize(windowSize, animated: false, force: true)
+                }
+                withAnimation(NooriMotion.notchOpen) {
                     self.notchSize = target
+                }
+                // Shrinking: give the room back once the animation is done.
+                if !growing {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak self] in
+                        guard let self, self.notchState == .open,
+                              self.calculateDynamicNotchSize() == target else { return }
+                        AppDelegate.shared?.ensureWindowSize(windowSize, animated: false, force: true)
+                    }
                 }
             }
             .store(in: &cancellables)

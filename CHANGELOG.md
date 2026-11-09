@@ -78,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- Turning lyrics on or off with the lyrics button in the open notch now grows or shrinks the notch smoothly, with the lyric line sliding in, instead of jumping.
 - Moving the song slider (or skipping ±10 seconds) now moves the lyrics right away. Some players, like Spotify through Now Playing, don't report a seek, so the lyrics kept going from the old spot until the song was paused and played again.
 - Lyrics and the song progress bar could run up to a second early, by a different amount after each update: macOS's Now Playing times were read rounded down to the whole second. Noori now reads them to the microsecond.
 - The Bluetooth device HUD could show up as an empty wide notch with only the headphones icon (the device name didn't draw). The name is now always drawn, and the HUD isn't shown when it would have neither a name nor a battery level.

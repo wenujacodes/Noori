@@ -415,6 +415,8 @@ struct ContentView: View {
                     }
             }
             .compositingGroup()
+            // The open notch grows and shrinks with the lyric row.
+            .animation(NooriMotion.notchOpen, value: lyricsManager.showsInOpenNotch)
             .shadow(
                 color: ((vm.notchState == .open || isHovering) && Defaults[.enableShadow])
                     ? .black.opacity(0.6)
