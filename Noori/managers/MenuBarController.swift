@@ -84,6 +84,10 @@ final class MenuBarController: NSObject {
         updates.isEnabled = updater?.canCheckForUpdates ?? false
         menu.addItem(updates)
 
+        let welcome = NSMenuItem(title: String(localized: "Welcome to Noori…"), action: #selector(openWelcome), keyEquivalent: "")
+        welcome.target = self
+        menu.addItem(welcome)
+
         menu.addItem(.separator())
 
         let restart = NSMenuItem(title: String(localized: "Restart Noori"), action: #selector(restart), keyEquivalent: "")
@@ -102,6 +106,10 @@ final class MenuBarController: NSObject {
 
     @objc private func openSettings() {
         SettingsWindowController.shared.showWindow()
+    }
+
+    @objc private func openWelcome() {
+        WelcomeWindowController.shared.show()
     }
 
     @objc private func checkForUpdates() {

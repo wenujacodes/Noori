@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- A small welcome window on first launch: what Noori does (Now Playing, live activities, volume/brightness HUDs, Bluetooth/Wi-Fi/AirDrop) and a Continue button. It can be reopened from the menu bar icon's right-click menu ("Welcome to Noori…").
 - Menu bar icon (a bolt for now): click it to open or close the notch; right-click (or Control-click) for Settings…, Check for Updates…, Restart Noori and Quit Noori. It can be hidden with "Show menu bar icon" in Settings › General.
 - AirDrop HUD: the notch shows "AirDrop · Off/Contacts Only/Everyone" when the AirDrop setting changes (red for Off, green otherwise), with a "Show AirDrop changes" toggle in Settings › Devices. AirDrop has no connected device to show, and macOS posts no notification for the setting, so Noori checks it every 2 seconds.
 - Wi-Fi HUD: the notch shows "Wi-Fi · On/Off" and "Wi-Fi · Connected/Disconnected" when they change (green for on/connected, red for off/disconnected), with a "Show Wi-Fi changes" toggle in Settings › Devices. The network name isn't shown, since macOS only gives it to apps with Location permission.
