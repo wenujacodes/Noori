@@ -109,6 +109,12 @@ struct NotchLyricLine: View {
                 }
             }
             .fixedSize()
+            // One layer for the whole line: the per-word masks are redrawn every
+            // frame, so flattening them keeps the notch's own animations smooth.
+            // The padding leaves room for the glow and the rise, which the layer would clip.
+            .padding(8)
+            .drawingGroup()
+            .padding(-8)
         } else {
             Text(line.text)
                 .font(font)
@@ -149,9 +155,25 @@ struct NotchLyricLine: View {
     }
 
     private func textWidth(_ text: String, size: CGFloat) -> CGFloat {
+        LyricTextWidths.width(of: text, size: size, weight: fontWeight.nsFontWeight)
+    }
+}
+
+/// Measured line widths. The row redraws up to 60 times a second; measuring the
+/// same line with AppKit every frame made the notch's animations stutter.
+@MainActor
+private enum LyricTextWidths {
+    private static var cache: [String: CGFloat] = [:]
+
+    static func width(of text: String, size: CGFloat, weight: NSFont.Weight) -> CGFloat {
         guard !text.isEmpty else { return 0 }
-        let font = NSFont.systemFont(ofSize: size, weight: fontWeight.nsFontWeight)
-        return ceil((text as NSString).size(withAttributes: [.font: font]).width)
+        let key = "\(size)|\(weight.rawValue)|\(text)"
+        if let cached = cache[key] { return cached }
+        let font = NSFont.systemFont(ofSize: size, weight: weight)
+        let width = ceil((text as NSString).size(withAttributes: [.font: font]).width)
+        if cache.count > 500 { cache.removeAll() }
+        cache[key] = width
+        return width
     }
 }
 
@@ -193,7 +215,8 @@ private struct SungWord: View {
                             endPoint: .trailing
                         )
                     }
-                    .shadow(color: color.opacity(0.7 * glow), radius: 5)
+                    // Only held notes glow; no shadow to draw for the rest.
+                    .shadow(color: color.opacity(0.7 * glow), radius: glow > 0 ? 5 : 0)
             }
             .offset(y: -1.5 * lift)
             .lineLimit(1)
