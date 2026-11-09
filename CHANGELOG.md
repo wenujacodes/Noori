@@ -88,6 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub logo on the About page now follows the text color instead of always being white.
 
 ### Removed
+- Noori no longer asks for Full Disk Access (the Focus settings callout and the Permissions menu items are gone). Without it, a Focus other than one Noori can identify shows as a neutral "Focus" pill. If Full Disk Access is granted manually, Focus names and icons are still read.
 - The Apple Music permission text, which was only used for the removed animated artwork.
 - Live canvas (Apple Music animated album art) and its "Show live canvas in Noori" setting. The album cover is always the still artwork.
 - The "HUD Tests" buttons (test charging / low / full battery HUD) in the Battery settings.

@@ -261,7 +261,7 @@ enum FocusMonitoringMode: String, CaseIterable, Identifiable, Defaults.Serializa
     var displayName: String {
         switch self {
         case .withoutDevTools:
-            return "Standard (needs Full Disk Access)"
+            return "Standard"
         case .useDevTools:
             return "Faster, via system logs (needs Developer Tools permission)"
         }

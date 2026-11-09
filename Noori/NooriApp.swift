@@ -793,20 +793,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         permissionsMenuItem.identifier = NSUserInterfaceItemIdentifier("Noori.Permissions.Menu")
         let permissionsSubmenu = NSMenu(title: "Permissions")
 
-        let requestFullDisk = NSMenuItem(
-            title: "Request Full Disk Access",
-            action: #selector(requestFullDiskAccess),
-            keyEquivalent: ""
-        )
-        requestFullDisk.target = self
-
-        let openFullDisk = NSMenuItem(
-            title: "Open Full Disk Access Settings",
-            action: #selector(openFullDiskAccessSettings),
-            keyEquivalent: ""
-        )
-        openFullDisk.target = self
-
         let openDevTools = NSMenuItem(
             title: "Open Developer Tools Settings",
             action: #selector(openDeveloperToolsSettingsFromMenu),
@@ -814,9 +800,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
         openDevTools.target = self
 
-        permissionsSubmenu.addItem(requestFullDisk)
-        permissionsSubmenu.addItem(openFullDisk)
-        permissionsSubmenu.addItem(NSMenuItem.separator())
         permissionsSubmenu.addItem(openDevTools)
         permissionsMenuItem.submenu = permissionsSubmenu
         mainMenu.insertItem(permissionsMenuItem, at: insertionIndex + 2)
@@ -890,14 +873,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openAccessibilitySettings() {
         AccessibilityPermissionStore.shared.openSystemSettings()
-    }
-
-    @objc private func requestFullDiskAccess() {
-        FullDiskAccessPermissionStore.shared.requestAccessPrompt()
-    }
-
-    @objc private func openFullDiskAccessSettings() {
-        FullDiskAccessPermissionStore.shared.openSystemSettings()
     }
 
     @objc private func openDeveloperToolsSettingsFromMenu() {

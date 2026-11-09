@@ -1941,7 +1941,6 @@ struct LiveActivitiesSettings: View {
     @ObservedObject var recordingManager = ScreenRecordingManager.shared
     @ObservedObject var privacyManager = PrivacyIndicatorManager.shared
     @ObservedObject var doNotDisturbManager = DoNotDisturbManager.shared
-    @ObservedObject private var fullDiskAccessPermission = FullDiskAccessPermissionStore.shared
 
     @Default(.enableScreenRecordingDetection) var enableScreenRecordingDetection
     @Default(.enableDoNotDisturbDetection) var enableDoNotDisturbDetection
@@ -1991,19 +1990,6 @@ struct LiveActivitiesSettings: View {
             }
 
             Section {
-                if !fullDiskAccessPermission.isAuthorized {
-                    SettingsPermissionCallout(
-                        title: String(localized: "Custom Focus metadata"),
-                        message: String(localized: "Full Disk Access unlocks custom Focus icons, colors, and labels. Standard Focus detection still works without it—grant access only if you need personalized indicators."),
-                        icon: "externaldrive.fill",
-                        iconColor: .purple,
-                        requestButtonTitle: String(localized: "Request Full Disk Access"),
-                        openSettingsButtonTitle: String(localized: "Open Privacy & Security"),
-                        requestAction: { fullDiskAccessPermission.requestAccessPrompt() },
-                        openSettingsAction: { fullDiskAccessPermission.openSystemSettings() }
-                    )
-                }
-
                 Defaults.Toggle(key: .enableDoNotDisturbDetection) {
                     Text("Enable Focus Detection")
                 }
@@ -2151,9 +2137,6 @@ struct LiveActivitiesSettings: View {
 
         }
         .navigationTitle("Live Activities")
-        .onAppear {
-            fullDiskAccessPermission.refreshStatus()
-        }
     }
 }
 
