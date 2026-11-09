@@ -787,8 +787,6 @@ struct MinimalisticAlbumArtView: View {
                     .albumArtFlip(angle: musicManager.flipAngle)
         }
         .buttonStyle(PlainButtonStyle())
-        .opacity(musicManager.isPlaying ? 1 : 0.4)
-        .scaleEffect(musicManager.isPlaying ? 1 : 0.85)
         // Nothing to glide from when the closed notch shows no music: blur in/out instead.
         .fadesWithNotchContent(!closedNotchShowsMusic(vm: vm))
     }
