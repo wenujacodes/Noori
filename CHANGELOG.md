@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Smaller download: releases are stripped of debugging symbols (the universal app is about 19 MB instead of 48 MB, the zip about 7.5 MB instead of 11 MB). Nothing changes in how Noori works.
 
 ### Fixed
+- With Spotify as the music source, the notch catches up by itself after an ad: Spotify doesn't always announce when an ad hands over to the next song, so Noori now also checks shortly after each change, every 2 seconds during an ad, and when the current track should end.
 - The open notch with lyrics is tall enough again: the lyric line was cut off at the bottom and the notch lost its rounded bottom corners, because the space reserved for the line didn't count the 11 pt the controls already take beyond their estimate.
 - The open notch no longer slides up under the camera when lyrics load right after launch: the notch content is pinned to the top of its window, so if it's briefly taller than the window it runs past the bottom instead.
 - Releases run on Intel Macs again: 1.0.0 was built for Apple Silicon only. Releases are now universal (Apple Silicon and Intel in one download).

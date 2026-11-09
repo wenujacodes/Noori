@@ -51,6 +51,9 @@ class SpotifyController: MediaControllerProtocol {
     private let trackMetadataResolver = SpotifyTrackMetadataResolver()
     private var artistMetadataFetchTask: Task<Void, Never>?
     private var currentArtistTrackURI: String?
+    /// Extra checks (see `scheduleFollowUpChecks`).
+    private var followUpTask: Task<Void, Never>?
+    private var trackEndTask: Task<Void, Never>?
 
     init() {
         setupPlaybackStateChangeObserver()
@@ -69,14 +72,47 @@ class SpotifyController: MediaControllerProtocol {
 
             for await _ in notifications {
                 await self?.updatePlaybackInfo()
+                // Spotify can still report the old state at the moment it posts the
+                // change (around ads especially): check once more shortly after.
+                try? await Task.sleep(for: .milliseconds(800))
+                await self?.updatePlaybackInfo()
             }
         }
     }
 
     deinit {
         notificationTask?.cancel()
+        followUpTask?.cancel()
+        trackEndTask?.cancel()
         artworkFetchTask?.cancel()
         artistMetadataFetchTask?.cancel()
+    }
+
+    /// Spotify doesn't always post a change when an ad hands over to the next song,
+    /// which left the notch on the old track until it was opened. While playing:
+    /// during an ad, check every 2 s until a song is back; otherwise check once when
+    /// the current track should end.
+    private func scheduleFollowUpChecks(isPlaying: Bool, trackIdentifier: String, currentTime: Double, duration: Double) {
+        followUpTask?.cancel()
+        trackEndTask?.cancel()
+        guard isPlaying else { return }
+
+        if trackIdentifier.hasPrefix("spotify:ad:") {
+            followUpTask = Task { [weak self] in
+                try? await Task.sleep(for: .seconds(2))
+                guard !Task.isCancelled else { return }
+                await self?.updatePlaybackInfo()
+            }
+            return
+        }
+
+        let remaining = duration - currentTime
+        guard duration > 0, remaining > 0, remaining < 60 * 60 else { return }
+        trackEndTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(remaining + 1))
+            guard !Task.isCancelled else { return }
+            await self?.updatePlaybackInfo()
+        }
     }
 
     // MARK: - Protocol Implementation
@@ -157,6 +193,7 @@ class SpotifyController: MediaControllerProtocol {
         }
 
         playbackState = state
+        scheduleFollowUpChecks(isPlaying: isPlaying, trackIdentifier: trackIdentifier, currentTime: currentTime, duration: duration)
 
         if !trackURI.isEmpty {
             if cachedArtistResult == nil {
