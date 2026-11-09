@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Releases run on Intel Macs again: 1.0.0 was built for Apple Silicon only. Releases are now universal (Apple Silicon and Intel in one download).
 - Long lyric lines no longer get cut off in the closed notch: when a song's lyrics load, the notch widens to fit its longest line (once per song, between 260 and 620 pt), and the window widens with it.
 - With Second line › Next line, the line that moves up into the top row of the closed notch no longer disappears after each line change.
 - Scrolling in Settings is smoother: rows no longer each draw an invisible search-highlight outline with a shadow, and the Media and Lyrics pages no longer redraw on every playback update while music plays.
