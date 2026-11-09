@@ -391,6 +391,7 @@ extension Defaults.Keys {
     // MARK: Bluetooth Audio Devices
     static let showBluetoothDeviceConnections = Key<Bool>("showBluetoothDeviceConnections", default: true)
     static let showWiFiChanges = Key<Bool>("showWiFiChanges", default: true)
+    static let showAirDropChanges = Key<Bool>("showAirDropChanges", default: true)
     static let useColorCodedBatteryDisplay = Key<Bool>("useColorCodedBatteryDisplay", default: true)
     static let useSmoothColorGradient = Key<Bool>("useSmoothColorGradient", default: true)
     static let useCircularBluetoothBatteryIndicator = Key<Bool>("useCircularBluetoothBatteryIndicator", default: true)

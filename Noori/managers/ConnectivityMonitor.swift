@@ -23,8 +23,8 @@ final class ConnectivityHUDState: ObservableObject {
     @Published var isPositive = true
 }
 
-/// Watches Wi-Fi (on/off, connected/disconnected) and shows a notch HUD when
-/// it changes. The Wi-Fi network name isn't shown: macOS
+/// Watches Wi-Fi (on/off, connected/disconnected) and the AirDrop setting, and
+/// shows a notch HUD when one changes. The Wi-Fi network name isn't shown: macOS
 /// only gives it to apps with Location permission, which Noori doesn't ask for.
 @MainActor
 final class ConnectivityMonitor: NSObject {
@@ -38,12 +38,17 @@ final class ConnectivityMonitor: NSObject {
     private var wifiConnected: Bool?
     private var wifiLinkCheck: DispatchWorkItem?
 
+    // AirDrop
+    private var airDropMode: String?
+    private var airDropTimer: Timer?
+
     private override init() {
         super.init()
     }
 
     func start() {
         startWiFi()
+        startAirDrop()
     }
 
     // MARK: - Wi-Fi
@@ -91,6 +96,42 @@ final class ConnectivityMonitor: NSObject {
         wifiConnected = connected
         show(title: "Wi-Fi", status: connected ? "Connected" : "Disconnected", isPositive: connected,
              icon: connected ? "wifi" : "wifi.exclamationmark", enabled: Defaults[.showWiFiChanges])
+    }
+
+    // MARK: - AirDrop
+
+    private func startAirDrop() {
+        airDropMode = Self.readAirDropMode()
+        // sharingd posts no public notification for this setting, so check it
+        // every couple of seconds (a cheap preferences read).
+        airDropTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+            MainActor.assumeIsolated { ConnectivityMonitor.shared.checkAirDrop() }
+        }
+    }
+
+    /// "Off", "Contacts Only" or "Everyone" (sometimes "Everyone for 10 Minutes").
+    nonisolated private static func readAirDropMode() -> String? {
+        let domain = "com.apple.sharingd" as CFString
+        CFPreferencesAppSynchronize(domain)
+        return CFPreferencesCopyAppValue("DiscoverableMode" as CFString, domain) as? String
+    }
+
+    private func checkAirDrop() {
+        let mode = Self.readAirDropMode()
+        guard let mode, mode != airDropMode else { return }
+        let hadValue = airDropMode != nil
+        airDropMode = mode
+        guard hadValue else { return }
+
+        let isOff = mode == "Off"
+        let status: String
+        switch mode {
+        case "Off": status = String(localized: "Off")
+        case "Contacts Only": status = String(localized: "Contacts Only")
+        default: status = String(localized: "Everyone")
+        }
+        show(title: "AirDrop", status: status, isPositive: !isOff,
+             icon: "dot.radiowaves.up.forward", enabled: Defaults[.showAirDropChanges])
     }
 
     // MARK: - HUD

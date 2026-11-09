@@ -639,6 +639,7 @@ struct SettingsView: View {
             // HUDs
             SettingsSearchEntry(tab: .devices, title: "Show Bluetooth device connections", keywords: ["bluetooth", "hud"], highlightID: SettingsTab.devices.highlightID(for: "Show Bluetooth device connections")),
             SettingsSearchEntry(tab: .devices, title: "Show Wi-Fi changes", keywords: ["wifi", "wi-fi", "network", "internet", "hud"], highlightID: SettingsTab.devices.highlightID(for: "Show Wi-Fi changes")),
+            SettingsSearchEntry(tab: .devices, title: "Show AirDrop changes", keywords: ["airdrop", "sharing", "hud"], highlightID: SettingsTab.devices.highlightID(for: "Show AirDrop changes")),
             SettingsSearchEntry(tab: .devices, title: "Use circular battery indicator", keywords: ["battery", "circular"], highlightID: SettingsTab.devices.highlightID(for: "Use circular battery indicator")),
             SettingsSearchEntry(tab: .devices, title: "Show battery percentage text in HUD", keywords: ["battery text"], highlightID: SettingsTab.devices.highlightID(for: "Show battery percentage text in HUD")),
             SettingsSearchEntry(tab: .devices, title: "Scroll device name in HUD", keywords: ["marquee", "device name"], highlightID: SettingsTab.devices.highlightID(for: "Scroll device name in HUD")),
@@ -1466,6 +1467,11 @@ private struct DevicesSettingsView: View {
                 }
                 .settingsHighlight(id: highlightID("Show Wi-Fi changes"))
                 .help("Shows when Wi-Fi turns on or off and when it connects to or disconnects from a network.")
+                Defaults.Toggle(key: .showAirDropChanges) {
+                    Text("Show AirDrop changes")
+                }
+                .settingsHighlight(id: highlightID("Show AirDrop changes"))
+                .help("Shows when AirDrop is set to Off, Contacts Only or Everyone.")
                 Defaults.Toggle(key: .useCircularBluetoothBatteryIndicator) {
                     Text("Use circular battery indicator")
                 }
