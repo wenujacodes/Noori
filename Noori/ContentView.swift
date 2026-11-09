@@ -615,7 +615,7 @@ struct ContentView: View {
                             styleOverride: batteryModel.activeTemporaryHUDKind.map { resolvedBatteryNotificationStyle(for: $0) }
                         )
                         .id(batteryModel.activeTemporaryHUDToken)
-                      } else if isSneakPeekVisibleOnCurrentScreen && (Defaults[.inlineHUD] || isAirPodsListeningModeSneak) && (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
+                      } else if isSneakPeekVisibleOnCurrentScreen && !controlHUDUnderLyrics && (Defaults[.inlineHUD] || isAirPodsListeningModeSneak) && (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
                           InlineHUD(type: $coordinator.sneakPeek.type, value: $coordinator.sneakPeek.value, icon: $coordinator.sneakPeek.icon, hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
                               .transition(
                                   coordinator.sneakPeek.type == .capsLock
@@ -643,7 +643,7 @@ struct ContentView: View {
                        }
                       
                       if isSneakPeekVisibleOnCurrentScreen {
-                          if (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && (coordinator.sneakPeek.type != .capsLock) && !Defaults[.inlineHUD] && !isAirPodsListeningModeSneak && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
+                          if (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && (coordinator.sneakPeek.type != .capsLock) && !controlHUDUnderLyrics && !Defaults[.inlineHUD] && !isAirPodsListeningModeSneak && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
                               SystemEventIndicatorModifier(eventType: $coordinator.sneakPeek.type, value: $coordinator.sneakPeek.value, icon: $coordinator.sneakPeek.icon, sendEventBack: { _ in
                                   //
                               })
@@ -715,8 +715,8 @@ struct ContentView: View {
         )
         // Lyrics: a row under the notch for the line being sung, with the notch a bit
         // wider so lines fit.
-        let showLyricRow = showLyrics && !lyricsManager.lines.isEmpty
-            && (musicManager.isPlaying || (!lyricsHideWhenPaused && musicManager.hasActiveSession))
+        let showLyricRow = closedLyricRowVisible
+        let showsControlHUD = controlHUDUnderLyrics
         let effectiveCenterWidth = inlineSneakPeekActive ? 380 : (showLyricRow ? max(centerBaseWidth, 260) : centerBaseWidth)
         let notchWidth = wingBaseWidth + effectiveCenterWidth + rightWingWidth
         let badgeBaseSize = max(13, notchContentHeight * 0.36)
@@ -814,13 +814,44 @@ struct ContentView: View {
         .frame(height: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0), alignment: .center)
 
             if showLyricRow {
-                NotchLyricLine(width: max(0, notchWidth - 16))
-                    .padding(.bottom, 6)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+                ZStack {
+                    if showsControlHUD {
+                        // Volume / brightness under the notch, in place of the lyrics for a moment.
+                        NotchLyricHUDRow(
+                            type: coordinator.sneakPeek.type,
+                            value: coordinator.sneakPeek.value,
+                            width: max(0, notchWidth - 16)
+                        )
+                        .transition(.opacity)
+                    } else {
+                        NotchLyricLine(width: max(0, notchWidth - 16))
+                            .transition(.opacity)
+                    }
+                }
+                .frame(height: NotchLyricLine.rowHeight)
+                .padding(.bottom, 6)
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
         .animation(NooriMotion.appear, value: secondary?.id)
         .animation(NooriMotion.change, value: showLyricRow)
+        .animation(NooriMotion.change, value: showsControlHUD)
+    }
+
+    /// The lyric row under the closed notch is showing.
+    private var closedLyricRowVisible: Bool {
+        showLyrics && !lyricsManager.lines.isEmpty && lyricsManager.isWithinLyrics
+            && (musicManager.isPlaying || (!lyricsHideWhenPaused && musicManager.hasActiveSession))
+    }
+
+    /// A volume, brightness or keyboard backlight change while lyrics show under the
+    /// closed notch: it goes in the lyric row instead of the wide inline HUD.
+    private var controlHUDUnderLyrics: Bool {
+        guard vm.notchState == .closed, isSneakPeekVisibleOnCurrentScreen, closedLyricRowVisible else { return false }
+        switch coordinator.sneakPeek.type {
+        case .volume, .brightness, .backlight: return true
+        default: return false
+        }
     }
 
     private func resolveMusicSecondaryLiveActivity(isMusicPairingEligible: Bool = true) -> MusicSecondaryLiveActivity? {
@@ -1352,7 +1383,7 @@ struct ContentView: View {
     }
 
     private func shouldFixSizeForSneakPeek() -> Bool {
-        guard isSneakPeekVisibleOnCurrentScreen else { return false }
+        guard isSneakPeekVisibleOnCurrentScreen, !controlHUDUnderLyrics else { return false }
         let style = resolvedSneakPeekStyle()
         
         // Original logic for other types

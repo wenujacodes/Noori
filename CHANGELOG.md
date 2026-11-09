@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- While lyrics show under the closed notch, changing the volume, brightness or keyboard backlight shows a bar in the lyric row (icon, level, percentage) instead of the wide inline HUD; the lyrics come back when it's done.
+- During a pause in the lyrics (and just before the first line), the notch shows the upcoming line, dimmed, with the music note instead of the note alone.
 - The extra player buttons (shuffle, repeat, lyrics, media output, AirPlay) animate when clicked: they squeeze and spring back with a bounce, and their color fades between on and off.
 - The album art in the open notch stays full size and full brightness when the song is paused.
 - Word-by-word lyrics animate like Apple Music: each word lights up with a soft edge, rises slightly as it's sung, and long held words glow; when a line is done it slides up and out as the next one slides up from below, both staying sharp.
@@ -79,6 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- The closed notch no longer shows an empty lyrics strip during a song's intro or after its last line (the ending): the lyric row shows from just before the first line until the last one is sung.
 - With Second line › Next line, the two lines no longer move as one block: when a line is done it slides up and out on its own, and the next line moves up and grows into its place.
 - The open player could sit too high, with the album art and controls under the camera notch, right after launch: lyrics loaded while the notch was closed didn't make the window taller, so the taller open player didn't fit. The window now grows for lyrics while the notch is closed too.
 - Opening and closing the notch is smooth again while lyrics show: the lyric line no longer measures its text every frame, only draws the glow on held notes, and draws word-by-word lines as one layer.
