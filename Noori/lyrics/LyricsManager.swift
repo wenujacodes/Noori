@@ -29,6 +29,10 @@ final class LyricsManager: ObservableObject {
     @Published private(set) var source = ""
     /// Language code of the current lyrics, when known.
     @Published private(set) var languageCode: String?
+    /// True between just before the first line and the end of the last one. The
+    /// closed notch only shows the lyric row then, not during the intro or after
+    /// the last line (the song's ending), where it would be an empty strip.
+    @Published private(set) var isWithinLyrics = false
 
     @Published private(set) var translationRequest: LyricsTranslationRequest?
     @Published private(set) var translationStatus: LyricsTranslationStatus = .idle
@@ -48,6 +52,12 @@ final class LyricsManager: ObservableObject {
     private let memoryCacheLimit = 40
 
     private init() {
+        // Cheap: returns at once when nothing is playing or there are no lyrics.
+        Timer.publish(every: 0.5, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in self?.updateWithinLyrics() }
+            .store(in: &cancellables)
+
         Publishers.CombineLatest4(music.$songTitle, music.$artistName, music.$album, music.$songDuration)
             .combineLatest(Defaults.publisher(.showLyrics).map(\.newValue))
             // Title, artist and length arrive one by one on a track change.
@@ -87,6 +97,24 @@ final class LyricsManager: ObservableObject {
 
     /// Whether the open notch shows the lyric row: whenever the song has lyrics
     /// (pausing doesn't hide it there, so the open notch doesn't jump in size).
+    private func updateWithinLyrics() {
+        let within: Bool = {
+            guard let first = lines.firstIndex(where: { !$0.text.isEmpty }),
+                  let last = lines.lastIndex(where: { !$0.text.isEmpty }) else { return false }
+            let ms = Int(music.estimatedPlaybackPosition() * 1000) + 150 + Defaults[.lyricsOffsetMs]
+            // Show the row a moment before the first line, so it's there when it starts.
+            let start = lines[first].timeMs - 1000
+            // The last line ends at the pause after it, its last sung word, or after 6 s.
+            let end: Int = {
+                if last + 1 < lines.count { return lines[last + 1].timeMs }
+                if let lastWord = lines[last].words?.last { return lastWord.startMs + lastWord.durationMs + 1500 }
+                return lines[last].timeMs + 6000
+            }()
+            return ms >= start && ms < end
+        }()
+        if isWithinLyrics != within { isWithinLyrics = within }
+    }
+
     var showsInOpenNotch: Bool {
         Defaults[.showLyrics] && !lines.isEmpty && music.hasActiveSession
     }

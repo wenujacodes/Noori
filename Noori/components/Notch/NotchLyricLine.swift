@@ -76,11 +76,9 @@ struct NotchLyricLine: View {
                         )
                     ))
                 } else {
-                    // Before the first line and in instrumental parts.
-                    Image(systemName: "music.note")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.35))
-                        .frame(width: width, alignment: frameAlignment)
+                    // Before the first line and in instrumental parts: a music note,
+                    // and the line that comes next, dimmed.
+                    pauseView(upcoming: nextLyricIndex(after: index).map { lyrics.lines[$0].text })
                         .transition(.opacity)
                 }
             }
@@ -140,6 +138,25 @@ struct NotchLyricLine: View {
         }
         .frame(width: width, height: primaryHeight + secondaryHeight, alignment: .top)
         .animation(.spring(response: 0.5, dampingFraction: 1), value: index)
+    }
+
+    /// A pause (or before the first line): the line that comes next, dimmed, in the
+    /// main row with a music note, so the notch isn't an empty band.
+    private func pauseView(upcoming: String?) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "music.note")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.4))
+            if let upcoming {
+                Text(upcoming)
+                    .font(.system(size: fittingFontSize(for: upcoming) * 0.92, weight: fontWeight.fontWeight))
+                    .foregroundStyle(sungColor.opacity(0.4))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+            }
+        }
+        .frame(width: width, height: primaryHeight, alignment: frameAlignment)
+        .frame(height: primaryHeight + secondaryHeight, alignment: .top)
     }
 
     /// The first line with words after `index` (or the first line of the song).
