@@ -83,9 +83,14 @@ func minimalisticOpenNotchSize(isNooriMode: Bool) -> CGSize {
 }
 
 /// Extra height of the open notch for the lyric row under the player controls.
+/// The player's height formula counts the progress bar as 4 pt and the controls as
+/// 56 pt, but they draw 11 pt and 60 pt; without lyrics that spill fits in the
+/// notch's bottom padding, but the lyric row below it then ran past the notch (cut
+/// text, square corners). The row's space includes that spill.
 @MainActor
 func openNotchLyricsExtraHeight() -> CGFloat {
-    LyricsManager.shared.showsInOpenNotch ? NotchLyricLine.rowHeight + 6 : 0
+    let controlsSpill: CGFloat = 11
+    return LyricsManager.shared.showsInOpenNotch ? NotchLyricLine.rowHeight + 6 + controlsSpill : 0
 }
 let cornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 19, bottom: 24), closed: (top: 6, bottom: 14))
 let minimalisticCornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 35, bottom: 35), closed: cornerRadiusInsets.closed)
