@@ -1979,6 +1979,8 @@ class BluetoothAudioManager: ObservableObject {
 
     private func presentDeviceConnectedHUD(device: BluetoothAudioDevice, batteryLevel: Int?) {
         guard Defaults[.showBluetoothDeviceConnections] else { return }
+        // With no battery level and device names hidden, the HUD would be just an icon.
+        guard batteryLevel != nil || Defaults[.showBluetoothDeviceNameMarquee] else { return }
 
         disconnectedHUDClearTask?.cancel()
         disconnectedHUDDevice = nil

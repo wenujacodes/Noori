@@ -59,7 +59,6 @@ struct InlineHUD: View {
     @ObservedObject private var volumeMuteState = VolumeMuteState.shared
     @ObservedObject private var connectivityState = ConnectivityHUDState.shared
     
-    @State private var displayName: String = ""
 
     static func airPodsListeningModeWidth(
         closedNotchWidth: CGFloat,
@@ -253,7 +252,9 @@ struct InlineHUD: View {
                         EmptyView()
                     } else if showBluetoothDeviceNameMarquee {
                         MarqueeText(
-                            $displayName,
+                            // Read fresh on every render; a stored copy could be
+                            // empty and leave the HUD showing only its icon.
+                            .constant(Type2Name(type)),
                             // Same style as the other HUD titles (Wi-Fi, AirDrop, Volume…).
                             font: .subheadline.weight(.medium),
                             nsFont: .subheadline,
@@ -436,21 +437,6 @@ struct InlineHUD: View {
             .frame(width: trailingWidth, height: vm.closedNotchSize.height - (hoverAnimation ? 0 : 12), alignment: .center)
         }
         .frame(height: vm.closedNotchSize.height + (hoverAnimation ? 8 : 0), alignment: .center)
-        .onAppear {
-            displayName = Type2Name(type)
-        }
-        .onChange(of: type) { _, _ in
-            displayName = Type2Name(type)
-        }
-        .onChange(of: bluetoothManager.lastConnectedDevice?.name) { _, _ in
-            displayName = Type2Name(type)
-        }
-        .onChange(of: bluetoothManager.disconnectedHUDDevice?.name) { _, _ in
-            displayName = Type2Name(type)
-        }
-        .onChange(of: bluetoothManager.bluetoothPowerHUDState) { _, _ in
-            displayName = Type2Name(type)
-        }
     }
     
     private struct CircularBatteryIndicator: View {

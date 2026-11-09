@@ -74,6 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- The Bluetooth device HUD could show up as an empty wide notch with only the headphones icon (the device name didn't draw). The name is now always drawn, and the HUD isn't shown when it would have neither a name nor a battery level.
 - Turning on a Focus other than Do Not Disturb (e.g. Reduce Interruptions) no longer shows the Do Not Disturb pill when Noori can't tell which Focus it is (no Full Disk Access): it shows a neutral "Focus". With Full Disk Access, each Focus shows its own name and icon.
 - The volume HUD no longer flashes for a moment when the audio output switches, e.g. when Bluetooth earphones disconnect.
 - Connecting Bluetooth earphones that report their battery late (e.g. Soundcore) showed the volume HUD instead of the connection HUD; the volume HUD is now held back while the connection HUD waits for the battery level.

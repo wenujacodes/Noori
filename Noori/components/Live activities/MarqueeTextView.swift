@@ -106,7 +106,9 @@ struct MarqueeText: View {
         }
         .frame(width: frameWidth, alignment: .leading)
         .clipped()
-        .frame(height: textSize.height * 1.3)
+        // Sized from the font, not the measured text, which is 0 until the first
+        // measurement and would hide the text if that never comes.
+        .frame(height: NSFont.preferredFont(forTextStyle: nsFont).pointSize * 1.3)
     }
     
     private func resetAndStart() {
