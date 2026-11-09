@@ -79,6 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- The open player could sit too high, with the album art and controls under the camera notch, right after launch: lyrics loaded while the notch was closed didn't make the window taller, so the taller open player didn't fit. The window now grows for lyrics while the notch is closed too.
 - Opening and closing the notch is smooth again while lyrics show: the lyric line no longer measures its text every frame, only draws the glow on held notes, and draws word-by-word lines as one layer.
 - The player controls stay centered when only one end slot has a button (for example the lyrics button on the right and nothing on the left); the empty slot used to stretch and push the controls to one side.
 - Turning lyrics on or off with the lyrics button in the open notch now grows or shrinks the notch smoothly, with the lyric line sliding in, instead of jumping.

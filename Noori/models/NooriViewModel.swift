@@ -127,7 +127,19 @@ class NooriViewModel: NSObject, ObservableObject {
         Publishers.Merge3(lyricsChanged, sessionChanged, settingsChanged)
             .receive(on: RunLoop.main)
             .sink { [weak self] in
-                guard let self, self.notchState == .open else { return }
+                guard let self else { return }
+                // Closed: still make the window tall enough for the open notch with
+                // lyrics. Lyrics usually load while the notch is closed (right after
+                // launch, too), and a window sized without them left the open player
+                // taller than its window, pushing its top up under the notch.
+                guard self.notchState == .open else {
+                    AppDelegate.shared?.ensureWindowSize(
+                        addShadowPadding(to: self.calculateDynamicNotchSize(), isMinimalistic: true),
+                        animated: false,
+                        force: false
+                    )
+                    return
+                }
                 let target = self.calculateDynamicNotchSize()
                 guard self.notchSize != target else { return }
                 let windowSize = addShadowPadding(to: target, isMinimalistic: true)
