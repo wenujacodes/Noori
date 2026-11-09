@@ -61,15 +61,15 @@ struct NotchLyricLine: View {
                         }
                     }
                     .id(index)
-                    // Like Apple Music: the old line drifts up and blurs out, the new one rises in.
+                    // The finished line slides up and out as the next one slides up from below.
                     .transition(.asymmetric(
                         insertion: .modifier(
-                            active: LyricLineMotion(offset: 9, blur: 5, opacity: 0, scale: 0.97),
-                            identity: LyricLineMotion(offset: 0, blur: 0, opacity: 1, scale: 1)
+                            active: LyricLineMotion(offset: primaryHeight + secondaryHeight, opacity: 0.4),
+                            identity: LyricLineMotion(offset: 0, opacity: 1)
                         ),
                         removal: .modifier(
-                            active: LyricLineMotion(offset: -9, blur: 5, opacity: 0, scale: 0.97),
-                            identity: LyricLineMotion(offset: 0, blur: 0, opacity: 1, scale: 1)
+                            active: LyricLineMotion(offset: -(primaryHeight + secondaryHeight), opacity: 0.4),
+                            identity: LyricLineMotion(offset: 0, opacity: 1)
                         )
                     ))
                 } else {
@@ -82,7 +82,8 @@ struct NotchLyricLine: View {
                 }
             }
             .frame(width: width, height: primaryHeight + secondaryHeight)
-            .animation(.spring(response: 0.55, dampingFraction: 0.9), value: index)
+            // A smooth slide up, without bounce.
+            .animation(.spring(response: 0.5, dampingFraction: 1), value: index)
         }
         .clipped()
     }
@@ -224,18 +225,14 @@ private struct SungWord: View {
     }
 }
 
-/// Offset, blur, fade and scale for a lyric line coming in or going out.
+/// Position and fade for a lyric line sliding in or out.
 private struct LyricLineMotion: ViewModifier {
     let offset: CGFloat
-    let blur: CGFloat
     let opacity: Double
-    let scale: CGFloat
 
     func body(content: Content) -> some View {
         content
-            .scaleEffect(scale)
             .offset(y: offset)
-            .blur(radius: blur)
             .opacity(opacity)
     }
 }
