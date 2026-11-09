@@ -125,20 +125,42 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Clicking Noori's app icon while it's running (Finder, Launchpad, Spotlight,
     /// Dock): the first click opens the notch, a click while it's open opens Settings.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        let viewModel: NooriViewModel = {
-            if Defaults[.showOnAllDisplays], let main = NSScreen.main, let screenVM = viewModels[main] {
-                return screenVM
-            }
-            return vm
-        }()
-
-        closeNotchWorkItem?.cancel()
-        closeNotchWorkItem = nil
+        let viewModel = mainScreenViewModel()
 
         if viewModel.notchState == .open {
+            closeNotchWorkItem?.cancel()
+            closeNotchWorkItem = nil
             SettingsWindowController.shared.showWindow()
             return false
         }
+
+        openNotchBriefly(viewModel)
+        return false
+    }
+
+    /// Left-click on the menu bar icon: open the notch, or close it if it's open.
+    func toggleNotchFromMenuBar() {
+        let viewModel = mainScreenViewModel()
+        if viewModel.notchState == .open {
+            closeNotchWorkItem?.cancel()
+            closeNotchWorkItem = nil
+            viewModel.close()
+        } else {
+            openNotchBriefly(viewModel)
+        }
+    }
+
+    /// The notch on the main display (or the single notch when not on all displays).
+    private func mainScreenViewModel() -> NooriViewModel {
+        if Defaults[.showOnAllDisplays], let main = NSScreen.main, let screenVM = viewModels[main] {
+            return screenVM
+        }
+        return vm
+    }
+
+    private func openNotchBriefly(_ viewModel: NooriViewModel) {
+        closeNotchWorkItem?.cancel()
+        closeNotchWorkItem = nil
 
         viewModel.open()
         // Close again after a few seconds unless the pointer is over it, like the
@@ -150,7 +172,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         closeNotchWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: workItem)
-        return false
     }
 
     
@@ -480,6 +501,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         LockScreenManager.shared.configure(viewModel: vm)
         LockScreenIndicatorWindowManager.shared.configure(viewModel: vm)
         ConnectivityMonitor.shared.start()
+        MenuBarController.shared.install(updater: SettingsWindowController.shared.updater)
         
         // Migrate legacy progress bar settings
         Defaults.Keys.migrateProgressBarStyle()

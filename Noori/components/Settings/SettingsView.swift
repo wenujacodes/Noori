@@ -589,6 +589,7 @@ struct SettingsView: View {
         [
             // General
             SettingsSearchEntry(tab: .general, title: "Launch at login", keywords: ["autostart", "startup"], highlightID: SettingsTab.general.highlightID(for: "Launch at login")),
+            SettingsSearchEntry(tab: .general, title: "Show menu bar icon", keywords: ["menu bar", "status bar", "icon", "tray"], highlightID: SettingsTab.general.highlightID(for: "Show menu bar icon")),
             SettingsSearchEntry(tab: .general, title: "Show on all displays", keywords: ["multi-display", "external monitor"], highlightID: SettingsTab.general.highlightID(for: "Show on all displays")),
             SettingsSearchEntry(tab: .general, title: "Show on a specific display", keywords: ["preferred screen", "display picker"], highlightID: SettingsTab.general.highlightID(for: "Show on a specific display")),
             SettingsSearchEntry(tab: .general, title: "Automatically switch displays", keywords: ["auto switch", "displays"], highlightID: SettingsTab.general.highlightID(for: "Automatically switch displays")),
@@ -780,6 +781,11 @@ struct GeneralSettings: View {
                     Text("Launch at login")
                 }
                 .settingsHighlight(id: highlightID("Launch at login"))
+                Defaults.Toggle(key: .showMenuBarIcon) {
+                    Text("Show menu bar icon")
+                }
+                .settingsHighlight(id: highlightID("Show menu bar icon"))
+                .help("Click the icon to open the notch; right-click it for Settings, updates, Restart and Quit.")
                 Defaults.Toggle(key: .showOnAllDisplays) {
                     Text("Show on all displays")
                 }

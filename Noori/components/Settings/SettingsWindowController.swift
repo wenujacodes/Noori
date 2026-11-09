@@ -51,6 +51,9 @@ class SettingsWindowController: NSWindowController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// Sparkle's updater, for "Check for Updates…" outside Settings (menu bar icon).
+    var updater: SPUUpdater? { updaterController?.updater }
+
     func setUpdaterController(_ controller: SPUStandardUpdaterController) {
         self.updaterController = controller
         // Recreate the content view with the proper updater controller
