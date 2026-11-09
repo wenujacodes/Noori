@@ -713,7 +713,7 @@
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.6.4;
+				minimumVersion = 2.10.1;
 			};
 		};
 		7E61181F2E24071E0050006C /* XCRemoteSwiftPackageReference "SkyLightWindow" */ = {
