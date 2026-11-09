@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The Bluetooth connection HUD shows the battery percentage as a number next to the ring by default.
 - The Bluetooth device-connected HUD stays up for 5 seconds (was 2.5).
 - The Bluetooth connection HUD shows the device name by default ("Show device name" is on for new installs).
 - The Settings window fades in when it opens and fades out when you close it (close button or ⌘W) instead of appearing and vanishing instantly.
@@ -105,6 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
+- The Bluetooth connection HUD shows the battery percentage as a number next to the ring by default.
 - The Bluetooth device-connected HUD stays up for 5 seconds (was 2.5).
 - The Bluetooth connection HUD shows the device name by default ("Show device name" is on for new installs).
 - The Settings window fades in when it opens and fades out when you close it (close button or ⌘W) instead of appearing and vanishing instantly.
