@@ -18,12 +18,10 @@
 # one more than the newest build in Updates/appcast.xml (Sparkle uses it to
 # decide what is newer), or the project's current build for the first release.
 # Set BUILD=<n> to choose it yourself.
-# --publish also creates the GitHub release v<version> (with the zip and the
-# version's CHANGELOG.md notes) in the public repo wenujacodes/Noori-releases,
-# and pushes the updated appcast there. Noori's own repo is private, so
-# installed copies read the feed and download updates from that public repo.
-# Its local checkout is ../Noori-releases (set RELEASES_DIR to change it).
-# Updates/appcast.xml here is the master copy and still has to be committed.
+# --publish also creates the GitHub release v<version> in wenujacodes/Noori (with
+# the zip and the version's CHANGELOG.md notes), then commits the version bump,
+# the changelog and Updates/appcast.xml and pushes them. Installed copies read
+# that appcast on main and download from the release.
 #
 # Signing: SIGN_IDENTITY (default "-", ad-hoc) is used for the app itself.
 # The Sparkle signature uses the "Noori" EdDSA key in the login Keychain
@@ -63,8 +61,7 @@ SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 DERIVED="$ROOT/build/release"
 DIST="$ROOT/dist"
 APPCAST="$ROOT/Updates/appcast.xml"
-RELEASES_REPO="wenujacodes/Noori-releases"
-RELEASES_DIR="${RELEASES_DIR:-$ROOT/../Noori-releases}"
+RELEASES_REPO="wenujacodes/Noori"
 DOWNLOAD_PREFIX="https://github.com/$RELEASES_REPO/releases/download/v$VERSION/"
 ZIP="$DIST/Noori-$VERSION.zip"
 
@@ -125,9 +122,8 @@ cp "$DIST/appcast.xml" "$APPCAST"
 echo "Updated $APPCAST"
 
 # 5. Optionally publish: the GitHub release (zip + this version's changelog
-#    notes) and the appcast, both in the public releases repo.
+#    notes), then the appcast on main.
 if [[ "$PUBLISH" == "--publish" ]]; then
-    [[ -d "$RELEASES_DIR/.git" ]] || git clone -q "https://github.com/$RELEASES_REPO.git" "$RELEASES_DIR"
     NOTES="$DIST/notes-$VERSION.md"
     awk -v v="$VERSION" '
         index($0, "## [" v "]") == 1 { found = 1; next }
@@ -143,13 +139,13 @@ if [[ "$PUBLISH" == "--publish" ]]; then
     echo "Published release v$VERSION in $RELEASES_REPO"
 
     # Release first, feed second: the feed must never point at a missing download.
-    cp "$APPCAST" "$RELEASES_DIR/appcast.xml"
-    git -C "$RELEASES_DIR" pull -q --ff-only
-    git -C "$RELEASES_DIR" add appcast.xml
-    git -C "$RELEASES_DIR" commit -q -m "Noori $VERSION ($BUILD)"
-    git -C "$RELEASES_DIR" push -q
-    echo "Pushed the appcast to $RELEASES_REPO"
+    git add VERSION Noori.xcodeproj/project.pbxproj CHANGELOG.md Updates/appcast.xml
+    git commit -q -m "Release $VERSION"
+    git push -q
+    echo "Committed and pushed the version bump and the appcast"
 fi
 
-echo
-echo "Next: commit VERSION, the project file and Updates/appcast.xml here, then push."
+if [[ "$PUBLISH" != "--publish" ]]; then
+    echo
+    echo "Not published. To publish: run again with --publish (or create the release and push the appcast yourself)."
+fi

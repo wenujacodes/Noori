@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Noori's repository is public, and updates and downloads now come from its own GitHub releases (github.com/wenujacodes/Noori/releases) instead of the separate Noori-releases repository.
 - Removed about 2,800 lines of code nothing used anymore (the custom update window, TipKit tips, old Atoll helpers, views, settings keys and functions). Noori works the same; it's just smaller and quicker to build.
 - Settings pages say what they control: Media is now **Music** and Controls is now **Volume & Brightness**. Live Activities labels use the same sentence case as the rest ("Detect screen recording", "Show Focus name"…) and its notes explain what each one does instead of which macOS API it uses.
 - Settings › Appearance now has all the notch's size and shape settings: Notch height moved there from General, next to Notch width, and the two pickers for the style on screens without a notch (one in General, one in Appearance) are now one, "Style on screens without a notch", always shown in Appearance.

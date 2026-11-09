@@ -12,7 +12,7 @@
 	<key>SUEnableInstallerLauncherService</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>https://raw.githubusercontent.com/wenujacodes/Noori-releases/main/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/wenujacodes/Noori/main/Updates/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>NZH68asfVQBGNEW3CtKl12XHMBLJnCbjDxFr0KwUeAk=</string>
 	<key>UTImportedTypeDeclarations</key>
