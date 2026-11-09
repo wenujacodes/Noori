@@ -12,10 +12,11 @@ import AppKit
 import Defaults
 import SwiftUI
 
-/// The line being sung, under the closed notch, with an optional smaller second
+/// The line being sung (under the closed notch, and under the controls in the open
+/// notch), with an optional smaller second
 /// line (translation, pronunciation or the next line). With word timing, the
 /// words fill in as they're sung.
-struct ClosedNotchLyricLine: View {
+struct NotchLyricLine: View {
     let width: CGFloat
 
     @ObservedObject private var lyrics = LyricsManager.shared
@@ -34,6 +35,13 @@ struct ClosedNotchLyricLine: View {
     private var primaryHeight: CGFloat { (fontSize + 10).rounded() }
     private var secondaryFontSize: CGFloat { max(9, fontSize - 2) }
     private var secondaryHeight: CGFloat { secondaryLine == .none ? 0 : (secondaryFontSize + 5).rounded() }
+
+    /// Height of the row with the current settings.
+    static var rowHeight: CGFloat {
+        let size = CGFloat(Defaults[.lyricsFontSize])
+        let secondary: CGFloat = Defaults[.lyricsSecondaryLine] == .none ? 0 : (max(9, size - 2) + 5).rounded()
+        return (size + 10).rounded() + secondary
+    }
 
     var body: some View {
         let fillsWords = karaoke && lyrics.isWordTimed

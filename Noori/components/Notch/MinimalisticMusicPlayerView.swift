@@ -32,6 +32,7 @@ struct MinimalisticMusicPlayerView: View {
     @Default(.showMediaOutputControl) private var showMediaOutputControl
     @Default(.musicSkipBehavior) private var musicSkipBehavior
     @Default(.showLyrics) private var showLyrics
+    @ObservedObject private var lyricsManager = LyricsManager.shared
     @ObservedObject private var coordinator = NooriViewCoordinator.shared
     @State private var hudValue: Double = 0
     @State private var hudDragging: Bool = false
@@ -133,6 +134,16 @@ struct MinimalisticMusicPlayerView: View {
                         .fadesWithNotchContent()
                 }
 
+                // The line being sung, under the controls.
+                if lyricsManager.showsInOpenNotch {
+                    GeometryReader { geo in
+                        NotchLyricLine(width: geo.size.width)
+                    }
+                    .frame(height: NotchLyricLine.rowHeight)
+                    .padding(.top, 6)
+                    .fadesWithNotchContent()
+                }
+
             }
             .padding(.horizontal, shouldUseNooriMode(for: vm.screen) ? -4 : 12)
             .padding(.top, shouldUseNooriMode(for: vm.screen) ? 14 : (batteryOffNotchMode ? 10 : 6))
@@ -170,6 +181,7 @@ struct MinimalisticMusicPlayerView: View {
 
             height += isNoori ? 14 : 15 // top padding
             height += isNoori ? 14 : minimalisticBaselineBottomPadding
+            height += openNotchLyricsExtraHeight()
             return height
         }
 
@@ -182,6 +194,7 @@ struct MinimalisticMusicPlayerView: View {
 
         height += 10 // top padding
         height += 10 // bottom padding
+        height += openNotchLyricsExtraHeight()
         return height
     }
 

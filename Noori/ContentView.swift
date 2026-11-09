@@ -813,7 +813,7 @@ struct ContentView: View {
         .frame(height: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0), alignment: .center)
 
             if showLyricRow {
-                ClosedNotchLyricLine(width: max(0, notchWidth - 16))
+                NotchLyricLine(width: max(0, notchWidth - 16))
                     .padding(.bottom, 6)
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }

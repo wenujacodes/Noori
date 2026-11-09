@@ -78,7 +78,14 @@ func minimalisticOpenNotchSize(isNooriMode: Bool) -> CGSize {
         size.height = 144 // Exact height of the minimalistic music player view
     }
 
+    size.height += openNotchLyricsExtraHeight()
     return size
+}
+
+/// Extra height of the open notch for the lyric row under the player controls.
+@MainActor
+func openNotchLyricsExtraHeight() -> CGFloat {
+    LyricsManager.shared.showsInOpenNotch ? NotchLyricLine.rowHeight + 6 : 0
 }
 let cornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 19, bottom: 24), closed: (top: 6, bottom: 14))
 let minimalisticCornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 35, bottom: 35), closed: cornerRadiusInsets.closed)

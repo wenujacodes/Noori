@@ -110,7 +110,36 @@ class NooriViewModel: NSObject, ObservableObject {
         closedNotchSize = notchSize
 
         setupDetectorObserver()
+        observeLyricsForOpenNotchSize()
+    }
 
+    /// The open notch grows for the lyric row under the player: resize it when lyrics
+    /// come or go, or their size settings change, while it's open.
+    private func observeLyricsForOpenNotchSize() {
+        let lyricsChanged = LyricsManager.shared.$lines.map { _ in () }
+        let sessionChanged = MusicManager.shared.$songTitle.map { _ in () }
+        let settingsChanged = Publishers.Merge4(
+            Defaults.publisher(.showLyrics).map { _ in () },
+            Defaults.publisher(.lyricsFontSize).map { _ in () },
+            Defaults.publisher(.lyricsSecondaryLine).map { _ in () },
+            Defaults.publisher(.lyricsHideWhenPaused).map { _ in () }
+        )
+        Publishers.Merge3(lyricsChanged, sessionChanged, settingsChanged)
+            .debounce(for: .milliseconds(50), scheduler: RunLoop.main)
+            .sink { [weak self] in
+                guard let self, self.notchState == .open else { return }
+                let target = self.calculateDynamicNotchSize()
+                guard self.notchSize != target else { return }
+                AppDelegate.shared?.ensureWindowSize(
+                    addShadowPadding(to: target, isMinimalistic: true),
+                    animated: true,
+                    force: false
+                )
+                withAnimation(NooriMotion.change) {
+                    self.notchSize = target
+                }
+            }
+            .store(in: &cancellables)
     }
 
     

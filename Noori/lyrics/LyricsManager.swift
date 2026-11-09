@@ -85,6 +85,12 @@ final class LyricsManager: ObservableObject {
         .store(in: &cancellables)
     }
 
+    /// Whether the open notch shows the lyric row: whenever the song has lyrics
+    /// (pausing doesn't hide it there, so the open notch doesn't jump in size).
+    var showsInOpenNotch: Bool {
+        Defaults[.showLyrics] && !lines.isEmpty && music.hasActiveSession
+    }
+
     /// The index of the line at `ms` into the song, or nil before the first line.
     func lineIndex(at ms: Int) -> Int? {
         var low = 0, high = lines.count - 1, found: Int?
