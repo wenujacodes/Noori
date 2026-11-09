@@ -76,7 +76,7 @@ sed -i '' -E "s/CURRENT_PROJECT_VERSION = [^;]+;/CURRENT_PROJECT_VERSION = $BUIL
 # 2. Build.
 echo "Building Noori $VERSION ($BUILD)…"
 # Universal: Apple Silicon and Intel in one app ("generic" so it isn't built
-# only for this Mac's chip).
+# only for this Mac's chip), stripped of debugging symbols.
 xcodebuild build \
     -project Noori.xcodeproj \
     -scheme Noori \
@@ -84,6 +84,8 @@ xcodebuild build \
     -destination "generic/platform=macOS" \
     -derivedDataPath "$DERIVED" \
     ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO \
+    DEPLOYMENT_POSTPROCESSING=YES STRIP_INSTALLED_PRODUCT=YES STRIP_STYLE=non-global \
+    DEBUG_INFORMATION_FORMAT=dwarf-with-dsym \
     CODE_SIGN_IDENTITY="$SIGN_IDENTITY" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES \
     | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
 APP="$DERIVED/Build/Products/Release/Noori.app"
@@ -93,6 +95,15 @@ for arch in arm64 x86_64; do
     lipo "$APP/Contents/MacOS/Noori" -verify_arch "$arch" \
         || { echo "Noori.app has no $arch code; it wouldn't run on every Mac" >&2; exit 1; }
 done
+
+# The release is stripped of debugging symbols (much smaller). They're kept in
+# a .dSYM next to the zip, to read crash reports from this version.
+DSYM="$DERIVED/Build/Products/Release/Noori.app.dSYM"
+mkdir -p "$DIST"
+if [[ -d "$DSYM" ]]; then
+    rm -rf "$DIST/Noori-$VERSION.app.dSYM"
+    cp -R "$DSYM" "$DIST/Noori-$VERSION.app.dSYM"
+fi
 
 # 3. Zip.
 mkdir -p "$DIST"

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Smaller download: releases are stripped of debugging symbols (the universal app is about 19 MB instead of 48 MB, the zip about 7.5 MB instead of 11 MB). Nothing changes in how Noori works.
+
 ### Fixed
 - The open notch no longer slides up under the camera when lyrics load right after launch: the notch content is pinned to the top of its window, so if it's briefly taller than the window it runs past the bottom instead.
 - Releases run on Intel Macs again: 1.0.0 was built for Apple Silicon only. Releases are now universal (Apple Silicon and Intel in one download).
