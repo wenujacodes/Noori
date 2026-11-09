@@ -1,5 +1,17 @@
 <h1 align="center">Noori for macOS</h1>
 
+<p align="center">
+  <a href="https://github.com/wenujacodes/Noori/releases/latest"><img src="https://img.shields.io/github/v/release/wenujacodes/Noori?style=for-the-badge&label=Download&color=0A84FF&logo=github" alt="Latest release"></a>
+  <a href="https://github.com/wenujacodes/Noori/releases"><img src="https://img.shields.io/github/downloads/wenujacodes/Noori/total?style=for-the-badge&color=30D158&logo=icloud&logoColor=white" alt="Downloads"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/wenujacodes/Noori?style=for-the-badge&color=BF5AF2" alt="License: GPL-3.0"></a>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/macOS-14.6%2B-000000?style=for-the-badge&logo=apple&logoColor=white" alt="macOS 14.6+">
+  <img src="https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-Universal-555555?style=for-the-badge&logo=apple&logoColor=white" alt="Universal: Apple Silicon and Intel">
+  <img src="https://img.shields.io/badge/Swift-6.1%2B-F05138?style=for-the-badge&logo=swift&logoColor=white" alt="Swift 6.1+">
+  <a href="https://github.com/wenujacodes/Noori/stargazers"><img src="https://img.shields.io/github/stars/wenujacodes/Noori?style=for-the-badge&color=FFD60A&logo=github" alt="GitHub stars"></a>
+</p>
+
 Noori turns the MacBook notch into a lightweight island for music, lyrics, live activities and system controls. It stays out of the way until you need it, then opens with smooth, native SwiftUI animations.
 
 ## Features
