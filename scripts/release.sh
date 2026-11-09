@@ -70,8 +70,11 @@ echo "$VERSION" > VERSION
 sed -i '' -E "s/MARKETING_VERSION = [^;]+;/MARKETING_VERSION = $VERSION;/" Noori.xcodeproj/project.pbxproj
 sed -i '' -E "s/CURRENT_PROJECT_VERSION = [^;]+;/CURRENT_PROJECT_VERSION = $BUILD;/" Noori.xcodeproj/project.pbxproj
 
-# 2. Build.
+# 2. Build, from scratch: leftovers from an earlier release (an old app, cached
+#    modules from older package versions) must never end up in this one.
 echo "Building Noori $VERSION ($BUILD)…"
+rm -rf "$DERIVED/Build" "$DERIVED/ModuleCache.noindex"
+mkdir -p "$DERIVED"
 # Universal: Apple Silicon and Intel in one app ("generic" so it isn't built
 # only for this Mac's chip), stripped of debugging symbols.
 xcodebuild build \
@@ -84,7 +87,9 @@ xcodebuild build \
     DEPLOYMENT_POSTPROCESSING=YES STRIP_INSTALLED_PRODUCT=YES STRIP_STYLE=non-global \
     DEBUG_INFORMATION_FORMAT=dwarf-with-dsym \
     CODE_SIGN_IDENTITY="$SIGN_IDENTITY" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES \
-    | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
+    > "$DERIVED/build.log" 2>&1 \
+    || { grep -E "error:" "$DERIVED/build.log" | sort -u | head -20 >&2; echo "Build failed; nothing was released (full log: $DERIVED/build.log)" >&2; exit 1; }
+echo "Build succeeded."
 APP="$DERIVED/Build/Products/Release/Noori.app"
 [[ -d "$APP" ]] || { echo "Build failed: $APP not found" >&2; exit 1; }
 # Refuse to ship an app that won't start on one kind of Mac.
