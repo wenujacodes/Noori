@@ -746,7 +746,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if coordinator.firstLaunch {
             applyDefaultSetup()
             coordinator.firstLaunch = false
-            WelcomeWindowController.shared.show()
         }
         
         previousScreens = NSScreen.screens
