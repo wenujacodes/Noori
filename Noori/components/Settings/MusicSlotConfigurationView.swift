@@ -28,7 +28,8 @@ import UniformTypeIdentifiers
 struct MusicSlotConfigurationView: View {
     @Default(.musicControlSlots) private var musicControlSlots
     @Default(.showMediaOutputControl) private var showMediaOutputControl
-    @ObservedObject private var musicManager = MusicManager.shared
+    /// Only the player app is needed (see the Media page).
+    @State private var playerBundleIdentifier = MusicManager.shared.bundleIdentifier
     @State private var hoveredSlotIndex: Int? = nil
     @State private var targetedSlotIndex: Int? = nil
     @State private var trashDropIsTargeted: Bool = false
@@ -36,7 +37,7 @@ struct MusicSlotConfigurationView: View {
     private let slotCount = MusicControlButton.slotCount
 
     private var isAppleMusicActive: Bool {
-        musicManager.bundleIdentifier == "com.apple.Music"
+        playerBundleIdentifier == "com.apple.Music"
     }
 
     var body: some View {
@@ -54,6 +55,7 @@ struct MusicSlotConfigurationView: View {
         .onChange(of: showMediaOutputControl) { _, _ in
             removeDisallowedControls()
         }
+        .onReceive(MusicManager.shared.$bundleIdentifier.removeDuplicates()) { playerBundleIdentifier = $0 }
     }
 
     private var header: some View {

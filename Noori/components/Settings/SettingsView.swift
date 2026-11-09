@@ -165,7 +165,11 @@ private struct SettingsHighlightModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .id(id)
-            .background(highlightBackground)
+            // Only the highlighted row draws the outline and glow. Drawing an invisible
+            // one (with a shadow) behind every row made scrolling lag.
+            .background {
+                if isActive { highlightBackground }
+            }
             .onChange(of: isActive) { _, active in
                 animatePulse = active
             }
@@ -1710,10 +1714,12 @@ struct Media: View {
     @Default(.sliderColor) private var sliderColor
 
     
-    @ObservedObject private var musicManager = MusicManager.shared
+    /// Only the player app is needed; watching the whole MusicManager redrew this
+    /// page on every playback update, which made scrolling lag while music played.
+    @State private var playerBundleIdentifier = MusicManager.shared.bundleIdentifier
 
     private var isAppleMusicActive: Bool {
-        musicManager.bundleIdentifier == "com.apple.Music"
+        playerBundleIdentifier == "com.apple.Music"
     }
 
     private func highlightID(_ title: String) -> String {
@@ -1876,6 +1882,7 @@ struct Media: View {
             }
         }
         .navigationTitle("Media")
+        .onReceive(MusicManager.shared.$bundleIdentifier.removeDuplicates()) { playerBundleIdentifier = $0 }
     }
 
     // Only show controller options that are available on this macOS version

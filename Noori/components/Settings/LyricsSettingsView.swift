@@ -11,13 +11,16 @@
  * (at your option) any later version.
  */
 
+import Combine
 import Defaults
 import SwiftUI
 
 /// Settings › Lyrics.
 struct LyricsSettingsView: View {
     @ObservedObject private var lyrics = LyricsManager.shared
-    @ObservedObject private var music = MusicManager.shared
+    /// Whether something is playing; watching the whole MusicManager redrew this
+    /// page on every playback update.
+    @State private var hasActiveSession = MusicManager.shared.hasActiveSession
 
     @Default(.showLyrics) private var showLyrics
     @Default(.lyricsSecondaryLine) private var secondaryLine
@@ -45,7 +48,7 @@ struct LyricsSettingsView: View {
                         Text(currentStatus)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
-                        if music.hasActiveSession {
+                        if hasActiveSession {
                             Button("Search again") { lyrics.reload() }
                         }
                     }
@@ -177,6 +180,14 @@ struct LyricsSettingsView: View {
             }
         }
         .navigationTitle("Lyrics")
+        .onReceive(
+            Publishers.CombineLatest3(MusicManager.shared.$songTitle, MusicManager.shared.$artistName, MusicManager.shared.$isPlaying)
+                .map { _ in () }
+                .receive(on: RunLoop.main)
+        ) { _ in
+            let active = MusicManager.shared.hasActiveSession
+            if hasActiveSession != active { hasActiveSession = active }
+        }
     }
 
     // MARK: - Helpers
@@ -201,7 +212,7 @@ struct LyricsSettingsView: View {
     }
 
     private var currentStatus: String {
-        guard music.hasActiveSession else { return String(localized: "Nothing playing") }
+        guard hasActiveSession else { return String(localized: "Nothing playing") }
         guard !lyrics.lines.isEmpty else { return String(localized: "No lyrics found") }
         let timing = lyrics.isWordTimed ? String(localized: "word by word") : String(localized: "line by line")
         return "\(lyrics.source) · \(timing)"
