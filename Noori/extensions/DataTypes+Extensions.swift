@@ -49,13 +49,6 @@ extension Date {
         dateFormatter.dateFormat = "MMMM"
         return dateFormatter.string(from: self)
     }
-    
-    func dayOfTheWeek(dayOfWeek: Int) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEE"
-        let date = Calendar.current.date(bySetting: .weekday, value: dayOfWeek, of: self) ?? self
-        return dateFormatter.string(from: date)
-    }
 }
 
 extension NSSize {

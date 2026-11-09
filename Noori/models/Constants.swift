@@ -375,18 +375,13 @@ extension Defaults.Keys {
     
     
         // MARK: Fullscreen Media Detection
-    static let alwaysHideInFullscreen = Key<Bool>("alwaysHideInFullscreen", default: false)
     
     static let hideNotchOption = Key<HideNotchOption>("hideNotchOption", default: .nowPlayingOnly)
     
     // MARK: Wobble Animation
-    static let enableWobbleAnimation = Key<Bool>("enableWobbleAnimation", default: false)
     
     // MARK: Media Controller
     static let mediaController = Key<MediaControllerType>("mediaController", default: defaultMediaController)
-    static let spotifyAuthAccessToken = Key<String>("spotifyAuthAccessToken", default: "")
-    static let spotifyAuthAccessTokenExpiration = Key<Double>("spotifyAuthAccessTokenExpiration", default: 0)
-    static let spotifyAuthLastValidatedAt = Key<Double>("spotifyAuthLastValidatedAt", default: 0)
     
     // MARK: Bluetooth Audio Devices
     static let showBluetoothDeviceConnections = Key<Bool>("showBluetoothDeviceConnections", default: true)
@@ -444,7 +439,6 @@ extension Defaults.Keys {
     static let enableScreenRecordingDetection = Key<Bool>("enableScreenRecordingDetection", default: true)
     static let showRecordingIndicator = Key<Bool>("showRecordingIndicator", default: true)
     // Polling removed - now uses event-driven private API detection (CGSIsScreenWatcherPresent)
-    // static let enableScreenRecordingPolling = Key<Bool>("enableScreenRecordingPolling", default: false)
 
     // MARK: Focus / Do Not Disturb Detection
     static let enableDoNotDisturbDetection = Key<Bool>("enableDoNotDisturbDetection", default: true)
@@ -458,7 +452,6 @@ extension Defaults.Keys {
     static let enableMicrophoneDetection = Key<Bool>("enableMicrophoneDetection", default: true)
     
     // MARK: Lock Screen Features
-    static let enableLockSounds = Key<Bool>("enableLockSounds", default: true)
     
     // MARK: Caps Lock Indicator
     static let enableCapsLockIndicator = Key<Bool>("enableCapsLockIndicator", default: true)

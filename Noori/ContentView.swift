@@ -1242,19 +1242,6 @@ struct ContentView: View {
             }
         }
     }
-
-    private func isPointInsideNotchWindow(_ point: CGPoint) -> Bool {
-        if let appDelegate = AppDelegate.shared {
-            if Defaults[.showOnAllDisplays] {
-                return appDelegate.windows.values.contains(where: { $0.frame.contains(point) })
-            }
-            if let window = appDelegate.window {
-                return window.frame.contains(point)
-            }
-        }
-
-        return NSApp.windows.contains(where: { $0.frame.contains(point) })
-    }
     
     // Helper function to check if any popovers are active
     private func hasAnyActivePopovers() -> Bool {
@@ -1445,15 +1432,6 @@ private typealias MusicSupplementFont = NSFont
 #elseif canImport(UIKit)
 private typealias MusicSupplementFont = UIFont
 #endif
-
-
-
-private func musicMeasureText(_ text: String, font: MusicSupplementFont) -> CGFloat {
-    guard !text.isEmpty else { return 0 }
-    let attributes: [NSAttributedString.Key: Any] = [.font: font]
-    return CGFloat(ceil(NSAttributedString(string: text, attributes: attributes).size().width))
-}
-
 /// Lays its content out from the top of the window, whatever its height.
 private struct PinnedToWindowTop: ViewModifier {
     func body(content: Content) -> some View {

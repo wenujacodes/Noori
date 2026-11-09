@@ -127,11 +127,6 @@ class NooriViewCoordinator: ObservableObject {
         Date() < hoverOpenSuppressedUntil
     }
 
-    func suppressHoverOpen(for duration: TimeInterval = 0.35) {
-        hoverOpenSuppressedUntil = Date().addingTimeInterval(max(0, duration))
-    }
-
-
 
 
 
@@ -282,11 +277,6 @@ class NooriViewCoordinator: ObservableObject {
                 expandingViewTask?.cancel()
             }
         }
-    }
-
-    
-    func showEmpty() {
-        currentView = .home
     }
     
     

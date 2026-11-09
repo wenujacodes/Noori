@@ -245,15 +245,6 @@ class PrivacyIndicatorManager: ObservableObject {
         }
     }
     
-    /// Get detailed status string for debugging
-    func getStatusString() -> String {
-        var status = "Privacy Indicators:\n"
-        status += "  Camera: \(cameraActive ? "🟢 Active" : "⚪ Inactive")\n"
-        status += "  Microphone: \(microphoneActive ? "🟢 Active" : "⚪ Inactive")\n"
-        status += "  Screen Recording: \(screenRecordingActive ? "🟢 Active" : "⚪ Inactive")\n"
-        status += "  Layout: \(indicatorLayout.description)"
-        return status
-    }
 }
 
 // MARK: - Extensions

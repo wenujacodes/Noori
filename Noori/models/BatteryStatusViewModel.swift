@@ -221,30 +221,6 @@ class BatteryStatusViewModel: ObservableObject {
 
         return NSScreen.screens.first?.localizedName
     }
-
-    private func preferredNooriTargetScreenName() -> String? {
-        let mainScreenName = NSScreen.main?.localizedName
-        let preferredNames = [coordinator.selectedScreen, coordinator.preferredScreen]
-
-        for candidate in preferredNames where shouldUseNooriMode(for: candidate) {
-            return candidate
-        }
-
-        if let externalNooriScreen = NSScreen.screens.first(where: {
-            $0.localizedName != mainScreenName && shouldUseNooriMode(for: $0.localizedName)
-        }) {
-            return externalNooriScreen.localizedName
-        }
-
-        if let anyNooriScreen = NSScreen.screens.first(where: {
-            shouldUseNooriMode(for: $0.localizedName)
-        }) {
-            return anyNooriScreen.localizedName
-        }
-
-        return nil
-    }
-
     private func handleLowBatteryAlertIfNeeded(previousLevel: Float, newLevel: Float) {
         guard !isPluggedIn, !isCharging else { return }
         guard newLevel < previousLevel else { return }

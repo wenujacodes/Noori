@@ -1012,25 +1012,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func updateFeatureShortcutAvailability() {
     }
 
-    @MainActor
-    private func updateShortcut(_ name: KeyboardShortcuts.Name, isEnabled: Bool) {
-        if isEnabled {
-            KeyboardShortcuts.enable(name)
-        } else {
-            KeyboardShortcuts.disable(name)
-        }
-    }
-    
-    func deviceHasNotch() -> Bool {
-        if #available(macOS 12.0, *) {
-            for screen in NSScreen.screens {
-                if screen.safeAreaInsets.top > 0 {
-                    return true
-                }
-            }
-        }
-        return false
-    }
     
     @objc func screenConfigurationDidChange() {
         let currentScreens = NSScreen.screens

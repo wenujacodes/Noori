@@ -204,14 +204,6 @@ extension View {
         modifier(SettingsHighlightModifier(id: id))
     }
 
-    @ViewBuilder
-    func settingsHighlightIfPresent(_ id: String?) -> some View {
-        if let id {
-            settingsHighlight(id: id)
-        } else {
-            self
-        }
-    }
 }
 
 private struct SettingsForm<Content: View>: View {

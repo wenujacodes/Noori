@@ -30,13 +30,6 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
     private let keyboardBacklightController = SystemKeyboardBacklightController.shared
     private let mediaKeyInterceptor = MediaKeyInterceptor.shared
 
-    private static let headsetIconSymbols: Set<String> = [
-        "airpods",
-        "airpodspro",
-        "airpodsmax",
-        "beats.headphones",
-        "headphones"
-    ]
 
     private var standardVolumeStep: Float {
         Float(Defaults[.volumeStepPercent]) / 100.0
@@ -275,15 +268,6 @@ final class SystemChangesObserver: MediaKeyInterceptorDelegate {
                 )
             }
         }
-    }
-
-    @MainActor
-    private func resolvedVolumeIcon(isMuted: Bool) -> String {
-        guard let icon = BluetoothAudioManager.shared.activeDeviceIconSymbol() else { return "" }
-        if isMuted && Self.headsetIconSymbols.contains(icon) {
-            return "headphones.slash"
-        }
-        return icon
     }
 
     private func sendBrightnessNotification(value: Float) {

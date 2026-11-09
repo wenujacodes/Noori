@@ -66,19 +66,4 @@ final class MacBatteryManager {
 
         return BatteryStatus(timeRemainingMinutes: nil, isCharging: false, percentage: nil)
     }
-
-    func formattedTimeToFullCharge() -> String? {
-        let status = currentStatus()
-        guard status.isCharging, let minutes = status.timeRemainingMinutes, minutes > 0 else {
-            return nil
-        }
-
-        let hours = minutes / 60
-        let remainingMinutes = minutes % 60
-
-        if hours > 0 {
-            return "\(hours)h \(remainingMinutes)m"
-        }
-        return "\(remainingMinutes)m"
-    }
 }

@@ -76,16 +76,6 @@ public enum NotchViews {
 }
 
 
-enum SettingsEnum {
-    case general
-    case about
-    case charge
-    case mediaPlayback
-    case hud
-}
-
-
-
 
 enum WindowHeightMode: String, Defaults.Serializable {
     case matchMenuBar = "Match menubar height"

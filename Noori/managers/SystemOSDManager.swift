@@ -504,13 +504,4 @@ class SystemOSDManager {
         }
     }
 
-    /// Async version of status checking to avoid main thread blocking
-    public static func isOSDUIHelperRunningAsync() async -> Bool {
-        return await withCheckedContinuation { continuation in
-            Task.detached(priority: .background) {
-                let result = isOSDUIHelperRunning()
-                continuation.resume(returning: result)
-            }
-        }
-    }
 }

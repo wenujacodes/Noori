@@ -284,12 +284,6 @@ struct MinimalisticMusicPlayerView: View {
     }
 
 
-    private func displayFont(size: CGFloat) -> Font {
-        .custom("SF Pro Display", size: size)
-    }
-
-
-
     
 
 

@@ -72,24 +72,6 @@ final class FullDiskAccessPermissionStore: ObservableObject {
     func refreshStatus() {
         updateAuthorizationStatus(to: FullDiskAccessAuthorization.hasPermission())
     }
-
-    func requestAccessPrompt() {
-#if os(macOS)
-        let alert = NSAlert()
-        alert.messageText = "Full Disk Access Required"
-        alert.informativeText = "Noori needs Full Disk Access to detect custom Focus indicators. Click Continue to open Full Disk Access settings, then press the + button and select Noori (we'll reveal it in Finder for you)."
-        alert.alertStyle = .informational
-        alert.addButton(withTitle: "Continue")
-        alert.addButton(withTitle: "Cancel")
-
-        if alert.runModal() == .alertFirstButtonReturn {
-            openSystemSettings()
-            revealAppBundleInFinder()
-        }
-#endif
-        beginPollingForStatusChanges()
-    }
-
     func openSystemSettings() {
 #if os(macOS)
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
@@ -97,14 +79,6 @@ final class FullDiskAccessPermissionStore: ObservableObject {
         }
 #endif
     }
-
-    private func revealAppBundleInFinder() {
-#if os(macOS)
-        let bundleURL = Bundle.main.bundleURL
-        NSWorkspace.shared.activateFileViewerSelecting([bundleURL])
-#endif
-    }
-
     private func beginPollingForStatusChanges() {
         pollingTask?.cancel()
         pollingTask = Task { [weak self] in

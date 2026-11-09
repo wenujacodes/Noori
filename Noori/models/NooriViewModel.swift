@@ -46,36 +46,10 @@ class NooriViewModel: NSObject, ObservableObject {
     private var scrollGestureSuppressionTokens: Set<UUID> = []
     @Published private(set) var isAutoCloseSuppressed: Bool = false
     private var autoCloseSuppressionTokens: Set<UUID> = []
-
-    func setScrollGestureSuppression(_ active: Bool, token: UUID) {
-        if active {
-            let inserted = scrollGestureSuppressionTokens.insert(token).inserted
-            if inserted {
-                isScrollGestureActive = true
-            }
-        } else {
-            if scrollGestureSuppressionTokens.remove(token) != nil {
-                isScrollGestureActive = !scrollGestureSuppressionTokens.isEmpty
-            }
-        }
-    }
-
     private func resetScrollGestureSuppression() {
         scrollGestureSuppressionTokens.removeAll()
         isScrollGestureActive = false
     }
-
-    func setAutoCloseSuppression(_ active: Bool, token: UUID) {
-        if active {
-            let inserted = autoCloseSuppressionTokens.insert(token).inserted
-            if inserted {
-                isAutoCloseSuppressed = true
-            }
-        } else if autoCloseSuppressionTokens.remove(token) != nil {
-            isAutoCloseSuppressed = !autoCloseSuppressionTokens.isEmpty
-        }
-    }
-
     private func resetAutoCloseSuppression() {
         autoCloseSuppressionTokens.removeAll()
         isAutoCloseSuppressed = false
