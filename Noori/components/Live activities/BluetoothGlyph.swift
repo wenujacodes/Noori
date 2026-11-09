@@ -27,8 +27,8 @@ struct BluetoothGlyph: View {
 
     var body: some View {
         BluetoothRuneShape()
-            .stroke(style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
-            .frame(width: 12, height: 16)
+            .stroke(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+            .frame(width: 10.5, height: 14)
     }
 }
 

@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copyright line (© 2026 Wenuja Liyanamana) in the About window.
 
 ### Changed
+- The Bluetooth icon in the HUD is a little smaller (14 pt tall, was 16).
 - Wi-Fi, AirDrop and Bluetooth HUD words (On/Off, Connected/Disconnected, Contacts Only/Everyone, and the Wi-Fi/AirDrop title) roll to the new value like the brightness percentage when they change while the HUD is showing.
 - The Bluetooth device name in the HUD uses the same font as the other HUD titles (Wi-Fi, AirDrop, Volume) instead of a larger one.
 - The Bluetooth and Wi-Fi HUD icons no longer get a slash when off or disconnected; the colored On/Off/Disconnected text shows the state.
@@ -119,6 +120,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0]
 
 ### Changed
+- The Bluetooth icon in the HUD is a little smaller (14 pt tall, was 16).
 - Wi-Fi, AirDrop and Bluetooth HUD words (On/Off, Connected/Disconnected, Contacts Only/Everyone, and the Wi-Fi/AirDrop title) roll to the new value like the brightness percentage when they change while the HUD is showing.
 - The Bluetooth device name in the HUD uses the same font as the other HUD titles (Wi-Fi, AirDrop, Volume) instead of a larger one.
 - The Bluetooth and Wi-Fi HUD icons no longer get a slash when off or disconnected; the colored On/Off/Disconnected text shows the state.
