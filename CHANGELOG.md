@@ -69,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated swiftui-introspect from 1.3.0 to 26.2.0 (fixes the deprecated package manifest warning in Xcode).
 
 ### Fixed
+- The volume HUD no longer flashes for a moment when the audio output switches, e.g. when Bluetooth earphones disconnect.
 - Connecting Bluetooth earphones that report their battery late (e.g. Soundcore) showed the volume HUD instead of the connection HUD; the volume HUD is now held back while the connection HUD waits for the battery level.
 - When nothing is playing (no music in the closed notch), the open player's album art and visualizer now blur in and out with the notch instead of popping; they still glide from the closed notch when a song is showing there.
 - Possible cause of the whole Mac freezing while Noori runs: Noori kept macOS's OSD helper (OSDUIHelper) paused with SIGSTOP to hide the native volume/brightness popup, and anything waiting on that helper could hang until Noori quit. Noori no longer pauses it (it already swallows the media keys itself) and resumes it if an older run left it paused.

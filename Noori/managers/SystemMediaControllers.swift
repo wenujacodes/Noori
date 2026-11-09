@@ -233,6 +233,10 @@ final class SystemVolumeController {
     }
 
     private func handleDefaultDeviceChanged() {
+        // Switching the output (e.g. Bluetooth earphones connecting or
+        // disconnecting) reports the new device's volume, which isn't a volume
+        // change by the user: keep the volume HUD from flashing.
+        HUDSuppressionCoordinator.shared.suppressVolumeHUD(for: 1.0)
         callbackQueue.async { [weak self] in
             guard let self else { return }
             self.currentDeviceID = self.resolveDefaultDevice()
