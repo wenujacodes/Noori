@@ -12,6 +12,7 @@ import AppKit
 import Combine
 import Defaults
 import Foundation
+import SwiftUI
 import NaturalLanguage
 
 /// Finds synced lyrics for the current song and prepares them for the notch.
@@ -113,7 +114,13 @@ final class LyricsManager: ObservableObject {
             }()
             return ms >= start && ms < end
         }()
-        if isWithinLyrics != within { isWithinLyrics = within }
+        if isWithinLyrics != within {
+            // Animated, so the closed notch grows and shrinks smoothly with the
+            // lyric row instead of snapping when the lyrics start or end.
+            withAnimation(within ? NooriMotion.notchOpen : NooriMotion.notchClose) {
+                isWithinLyrics = within
+            }
+        }
     }
 
     /// Width of the closed notch's middle while lyrics show: wide enough for the

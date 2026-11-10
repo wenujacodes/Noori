@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
 
 ### Fixed
+- When a song's lyrics end (or start), the closed notch now shrinks (or grows) smoothly with the lyric row instead of snapping back.
+- The album art flip on a track change is kept inside the cover's own frame; mid-flip it could make the closed notch show as a square-cornered black rectangle for a moment.
 - The progress slider no longer vanishes before the rest of the player when the notch opens or closes: it used the same strong blur as the text, which smeared the thin bar away almost at once.
 - Turning on Caps Lock while the notch was open put the closed notch's Caps Lock indicator over the album art (and could freeze the notch). It now only shows in the closed notch.
 - The open notch's rounded bottom corners could be cut off when it was taller than its window (for example when the lyric row appeared without the window growing). The window now always makes room for the notch it shows, checking the window's real height (turning lyrics on for the first time could still cut off the second lyric line).
