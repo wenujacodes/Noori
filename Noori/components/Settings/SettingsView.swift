@@ -249,6 +249,8 @@ struct SettingsView: View {
                 )
                 .padding(.horizontal, 12)
                 .padding(.top, 12)
+                // Keeps the floating search results above the list.
+                .zIndex(1)
 
                 List(selection: selectionBinding) {
                     ForEach(groupedFilteredTabs, id: \.group) { section in
@@ -456,13 +458,17 @@ struct SettingsView: View {
         @State private var hoveredSuggestionID: SettingsSearchEntry.ID?
 
         var body: some View {
-            VStack(spacing: 6) {
-                searchField
-                if showSuggestions {
-                    suggestionList
+            // Results float over the sidebar just under the field, like a macOS
+            // menu, instead of pushing the list down and sliding from the top.
+            searchField
+                .overlay(alignment: .top) {
+                    if showSuggestions {
+                        suggestionList
+                            .offset(y: 42)
+                            .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .top)))
+                    }
                 }
-            }
-            .animation(.easeInOut(duration: 0.15), value: showSuggestions)
+                .animation(.easeOut(duration: 0.15), value: showSuggestions)
         }
 
         private var showSuggestions: Bool {
@@ -554,16 +560,17 @@ struct SettingsView: View {
                     }
                 }
             }
+            // A solid menu material: it floats over the sidebar list now.
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(.regularMaterial)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Color.white.opacity(0.08))
+                    .stroke(Color.primary.opacity(0.1))
             )
             .shadow(color: Color.black.opacity(0.2), radius: 8, y: 4)
-            .transition(.opacity.combined(with: .move(edge: .top)))
+
         }
 
         private func rowBackground(for suggestion: SettingsSearchEntry) -> some View {

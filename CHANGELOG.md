@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New messages in the notch: when an iMessage or text arrives, the notch drops down with the sender's photo (or initials), name and message, and a reply field. Press Return to send the reply, Esc to dismiss; it hides by itself after about 6 seconds unless you're pointing at it or typing. Click the message to open Messages. Turn it on in Settings › Live Activities › Messages. It needs Full Disk Access (to read new messages), Contacts (for names and photos, optional) and permission to control Messages (asked on the first reply). Nothing from your messages is saved; Noori only remembers which message it saw last.
 
 ### Changed
+- Settings search results now drop down from the search field over the sidebar like a macOS menu, instead of sliding in from the top of the sidebar and pushing the list down.
 - Lighter in the background: the lyrics clock only runs while lyrics are on and a song plays, the AirDrop check only while AirDrop changes are shown, repeating timers let macOS batch their wake-ups, and an unneeded blur on the open notch's top row and an unused test view are gone.
 - The shadow under the notch is off by default for new installs (Settings › Appearance › "Enable window shadow").
 - The music sneak peek uses the Default style for new installs (Inline is still in Settings › Music).
