@@ -495,11 +495,9 @@ extension Defaults.Keys {
     }
 
     static func migrateMusicAuxControls() {
+        // Atoll moved its old output button here; Noori never had that setting,
+        // so new installs keep the default controls.
         if Defaults[.didMigrateMusicAuxControls] == false {
-            if Defaults[.showMediaOutputControl] {
-                Defaults[.musicAuxRightControl] = .mediaOutput
-            }
-
             Defaults[.didMigrateMusicAuxControls] = true
         }
 
@@ -518,23 +516,9 @@ extension Defaults.Keys {
     }
 
     static func migrateMusicControlSlots() {
+        // Atoll built the slots from its older two-button settings. Noori never
+        // had those, so new installs keep the default layout (lyrics on the right).
         guard Defaults[.didMigrateMusicControlSlots] == false else { return }
-
-        let allowMediaOutput = Defaults[.showMediaOutputControl]
-        let baseLayout: [MusicControlButton]
-
-        if Defaults[.showShuffleAndRepeat] {
-            var slots = MusicControlButton.defaultLayout
-            let left = MusicControlButton(auxiliaryControl: Defaults[.musicAuxLeftControl])
-            let right = MusicControlButton(auxiliaryControl: Defaults[.musicAuxRightControl])
-            slots[0] = left
-            slots[4] = right
-            baseLayout = slots
-        } else {
-            baseLayout = MusicControlButton.minimalLayout
-        }
-
-        Defaults[.musicControlSlots] = baseLayout.normalized(allowingMediaOutput: allowMediaOutput)
         Defaults[.didMigrateMusicControlSlots] = true
     }
 

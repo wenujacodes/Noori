@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Lyrics are off by default for new installs. Turn them on with the lyrics button in the notch or in Settings › Lyrics.
+- The default player controls are shuffle, previous, play/pause, next and lyrics. New installs used to get the media output button on the right, from a setting migration inherited from Atoll.
 - The menu bar icon is off by default for new installs (Settings, Restart and Quit are in the notch's right-click menu; turn the icon on in Settings › General).
 - Music player: the three main controls stay together in the center, and the two side buttons sit apart toward the edges, mirrored for balance.
 - Volume bars are green and brightness bars yellow in every volume/brightness HUD (Settings › Volume & Brightness › "Green volume, yellow brightness", on by default).
