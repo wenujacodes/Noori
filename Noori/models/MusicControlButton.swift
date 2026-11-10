@@ -154,6 +154,24 @@ extension Array where Element == MusicControlButton {
 }
 
 extension MusicControlButton {
+    /// The buttons the open notch's player shows, from the user's settings.
+    static func displayedLayout(isAppleMusicActive: Bool) -> [MusicControlButton] {
+        if Defaults[.showShuffleAndRepeat] {
+            let normalized = Defaults[.musicControlSlots].normalized(
+                allowingMediaOutput: Defaults[.showMediaOutputControl],
+                isAppleMusicActive: isAppleMusicActive
+            )
+            return normalized.contains(where: { $0 != .none }) ? normalized : defaultLayout
+        }
+
+        switch Defaults[.musicSkipBehavior] {
+        case .track:
+            return minimalLayout
+        case .tenSecond:
+            return [.none, .seekBackward, .playPause, .seekForward, .none]
+        }
+    }
+
     init(auxiliaryControl: MusicAuxiliaryControl) {
         switch auxiliaryControl {
         case .shuffle:

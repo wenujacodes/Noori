@@ -143,8 +143,11 @@ final class LyricsManager: ObservableObject {
     private var widestLine: CGFloat = 0
     private var widestLineKey = ""
 
+    /// The open notch shows the lyric row only when its player has the lyrics
+    /// button, so the row can always be turned off from where it appears.
     var showsInOpenNotch: Bool {
         Defaults[.showLyrics] && !lines.isEmpty && music.hasActiveSession
+            && MusicControlButton.displayedLayout(isAppleMusicActive: music.bundleIdentifier == "com.apple.Music").contains(.lyrics)
     }
 
     /// The index of the line at `ms` into the song, or nil before the first line.

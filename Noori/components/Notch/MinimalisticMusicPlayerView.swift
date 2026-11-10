@@ -562,17 +562,9 @@ struct MinimalisticMusicPlayerView: View {
     }
 
     private var displayedSlots: [MusicControlButton] {
-        if showCustomControls {
-            let normalized = slotConfig.normalized(allowingMediaOutput: showMediaOutputControl, isAppleMusicActive: isAppleMusicActive)
-            return normalized.contains(where: { $0 != .none }) ? normalized : MusicControlButton.defaultLayout
-        }
-
-        switch musicSkipBehavior {
-        case .track:
-            return MusicControlButton.minimalLayout
-        case .tenSecond:
-            return [.none, .seekBackward, .playPause, .seekForward, .none]
-        }
+        // The @Default properties above keep this view updating when they change.
+        _ = (showCustomControls, slotConfig, showMediaOutputControl, musicSkipBehavior)
+        return MusicControlButton.displayedLayout(isAppleMusicActive: isAppleMusicActive)
     }
 
     @ViewBuilder

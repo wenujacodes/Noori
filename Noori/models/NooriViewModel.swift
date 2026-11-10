@@ -91,7 +91,17 @@ class NooriViewModel: NSObject, ObservableObject {
     /// come or go, or their size settings change, while it's open.
     private func observeLyricsForOpenNotchSize() {
         let lyricsChanged = LyricsManager.shared.$lines.map { _ in () }
-        let sessionChanged = MusicManager.shared.$songTitle.map { _ in () }
+        let sessionChanged = Publishers.Merge(
+            MusicManager.shared.$songTitle.map { _ in () },
+            MusicManager.shared.$bundleIdentifier.map { _ in () }
+        )
+        // The lyric row needs the lyrics button in the player.
+        let buttonsChanged = Publishers.Merge4(
+            Defaults.publisher(.musicControlSlots).map { _ in () },
+            Defaults.publisher(.showShuffleAndRepeat).map { _ in () },
+            Defaults.publisher(.showMediaOutputControl).map { _ in () },
+            Defaults.publisher(.musicSkipBehavior).map { _ in () }
+        )
         let settingsChanged = Publishers.Merge5(
             Defaults.publisher(.showLyrics).map { _ in () },
             Defaults.publisher(.lyricsFontWeight).map { _ in () },
@@ -99,7 +109,8 @@ class NooriViewModel: NSObject, ObservableObject {
             Defaults.publisher(.lyricsSecondaryLine).map { _ in () },
             Defaults.publisher(.lyricsHideWhenPaused).map { _ in () }
         )
-        Publishers.Merge3(lyricsChanged, sessionChanged, settingsChanged)
+        Publishers.Merge4(lyricsChanged, sessionChanged, settingsChanged, buttonsChanged)
+            // Published values arrive before they are stored; read them a tick later.
             .receive(on: RunLoop.main)
             .sink { [weak self] in
                 guard let self else { return }

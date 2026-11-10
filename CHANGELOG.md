@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Music player: the three main controls stay together in the center, and the two side buttons sit apart toward the edges, mirrored for balance.
 - Volume bars are green and brightness bars yellow in every volume/brightness HUD (Settings › Volume & Brightness › "Green volume, yellow brightness", on by default).
 
+### Fixed
+- The open notch's rounded bottom corners could be cut off when it was taller than its window (for example when the lyric row appeared without the window growing). The window now always makes room for the notch it shows.
+- The lyric row in the open notch only shows when the player has the lyrics button, so it can always be turned off where it appears; it used to show even after removing the button from the controls.
+
 ## [1.0.1] - 2026-11-09
 
 ### Changed

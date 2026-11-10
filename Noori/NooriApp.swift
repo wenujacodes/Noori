@@ -455,6 +455,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return adjusted
     }
 
+    /// Height the open notch actually needs, measured by ContentView (notch plus
+    /// shadow room). The size formulas can come up short (a lyric row that
+    /// appears without a resize, larger fonts); the window never gets shorter
+    /// than this while the notch is open, so its rounded bottom isn't cut off.
+    var openNotchHeightFloor: CGFloat = 0
+
     func ensureWindowSize(_ size: CGSize, animated: Bool, force: Bool = false) {
         resizeWindows(to: size, animated: animated, force: force)
     }
@@ -464,6 +470,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Always wide enough for the closed notch with the current song's lyrics.
         var size = size
         size.width = max(size.width, LyricsManager.shared.closedWindowWidth)
+        if vm.notchState == .open {
+            size.height = max(size.height, openNotchHeightFloor)
+        }
 
         if Defaults[.showOnAllDisplays] {
             for (screen, window) in windows {

@@ -151,6 +151,8 @@ struct ContentView: View {
     @State private var isHovering: Bool = false
     /// Counts notch openings; each change plays the open bounce once.
     @State private var notchOpenCount: Int = 0
+    /// Measured height of the notch body (see `keepWindowTallEnough`).
+    @State private var measuredNotchHeight: CGFloat = 0
     @State private var lastHapticTime: Date = Date()
     @State private var hoverClickMonitor: Any?
     @State private var hoverClickLocalMonitor: Any?
@@ -399,6 +401,10 @@ struct ContentView: View {
             .padding([.horizontal, .bottom], vm.notchState == .open ? 12 : 0)
             .background(.black)
             .clipShape(resolvedClipShape)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
+                measuredNotchHeight = height
+                keepWindowTallEnough()
+            }
             // The bounces are extra black shapes behind the notch, drawn only while
             // a bounce plays, so the content inside never moves or stretches and
             // the notch at rest renders exactly as a plain clipped black shape.
@@ -560,6 +566,20 @@ struct ContentView: View {
         .modifier(PinnedToWindowTop())
         .environmentObject(privacyManager)
         .environmentObject(vm)
+    }
+
+    /// Grows the window when the open notch is taller than the window, which
+    /// would cut off its rounded bottom corners.
+    private func keepWindowTallEnough() {
+        guard vm.notchState == .open, measuredNotchHeight > 0,
+              let delegate = AppDelegate.shared else { return }
+        // The same room below the notch that the root frame leaves.
+        let below = isNooriMode ? nooriTopOffset + nooriShadowInset * 2 : currentShadowPadding
+        let needed = (measuredNotchHeight + below).rounded(.up)
+        delegate.openNotchHeightFloor = needed
+        let base = addShadowPadding(to: dynamicNotchSize, isMinimalistic: true)
+        guard needed > base.height else { return }
+        delegate.ensureWindowSize(CGSize(width: base.width, height: needed), animated: false, force: false)
     }
 
     private func installRootLifecycleHandlers<Content: View>(on view: Content) -> some View {
