@@ -360,10 +360,6 @@ struct HUD: View {
                     Text("Enable glowing effect")
                 }
                 .settingsHighlight(id: highlightID("Enable glowing effect"))
-                Defaults.Toggle(key: .colorCodedHUDSliders) {
-                    Text("Green volume, yellow brightness")
-                }
-                .settingsHighlight(id: highlightID("Green volume, yellow brightness"))
                 Defaults.Toggle(key: .systemEventIndicatorUseAccent) {
                     Text("Use accent color")
                 }
