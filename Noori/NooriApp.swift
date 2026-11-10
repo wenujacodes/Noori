@@ -205,6 +205,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    /// Fades the visible notch windows in over a moment after a Space switch.
+    /// Windows that are hidden on purpose (alpha 0: lock screen, another display)
+    /// are left alone.
+    private func fadeInWindowsAfterSpaceChange() {
+        guard !windowsHiddenForLock else { return }
+        let all = Defaults[.showOnAllDisplays] ? Array(windows.values) : (window.map { [$0] } ?? [])
+        let visible = all.filter { $0.isVisible && $0.alphaValue > 0.99 }
+        guard !visible.isEmpty else { return }
+        visible.forEach { $0.alphaValue = 0 }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.3
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            visible.forEach { $0.animator().alphaValue = 1 }
+        }
+    }
+
     private func hideWindowsForLock() {
         guard !windowsHiddenForLock else { return }
         windowsHiddenForLock = true
@@ -531,6 +547,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // New iMessage/SMS alerts in the notch (follows its own setting).
         if !AppRuntimeEnvironment.isUITesting {
             MessagesNotificationManager.shared.start()
+        }
+        // The notch window is on every Space, so it popped in at once when switching
+        // Spaces (into a fullscreen app especially). Fade it in instead.
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.activeSpaceDidChangeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.fadeInWindowsAfterSpaceChange() }
         }
         // Pre-blurs the album art for the notch backgrounds (only while one is on),
         // so the first open already has it.
