@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
 
 ### Fixed
+- With the album art background on, opening and closing the notch could lose its rounded corners and stutter: the art's fade also animated the background's size on a different curve from the notch. The art now stays in place and only fades.
 - Switching Spaces (into a fullscreen app especially) no longer makes the notch pop in at once; it fades in.
 - The notch's shadow no longer stutters when it opens and closes: it's drawn from the plain notch outline and fades in and out, instead of shadowing everything inside the notch on every frame.
 - With the album art background on, the notch's opening bounce showed a dark rim around the art; the bounce is skipped then.

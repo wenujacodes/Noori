@@ -589,23 +589,28 @@ struct ContentView: View {
     /// Black, or the album art when that's turned on (open notch, or behind the
     /// closed notch's lyrics).
     private var notchBackground: some View {
-        ZStack {
+        let artAvailable = musicManager.hasActiveSession && !musicManager.isAdvertisement
+        return ZStack {
             Color.black
-            if showsAlbumArtBackground {
+            // The art layers stay in place while their setting is on and only fade.
+            // Adding and removing them, with an animation on the whole background,
+            // also animated the background's size on a different curve from the
+            // notch's outline, which left see-through gaps at the rounded corners
+            // while the notch opened and closed. The animation now covers opacity only.
+            if albumArtNotchBackground && artAvailable {
                 AlbumArtNotchBackground(style: .open, topBlack: max(24, vm.effectiveClosedNotchHeight))
-                    .transition(.opacity)
-            } else if showsClosedLyricsArtBackground {
+                    .animation(showsAlbumArtBackground ? .easeOut(duration: 0.3) : .easeIn(duration: 0.18)) {
+                        $0.opacity(showsAlbumArtBackground ? 1 : 0)
+                    }
+            }
+            if albumArtClosedLyricsBackground && artAvailable {
                 // The music row grows 8 pt while hovered; keep that band black too.
                 AlbumArtNotchBackground(style: .closedLyrics, topBlack: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0))
-                    .transition(.opacity)
+                    .animation(.easeInOut(duration: 0.3)) {
+                        $0.opacity(showsClosedLyricsArtBackground ? 1 : 0)
+                    }
             }
         }
-        // In with the notch's content, out a little faster as it closes.
-        .animation(
-            showsAlbumArtBackground ? .easeOut(duration: 0.3) : .easeIn(duration: 0.18),
-            value: showsAlbumArtBackground
-        )
-        .animation(.easeInOut(duration: 0.3), value: showsClosedLyricsArtBackground)
     }
 
     /// Grows the window when the open notch is taller than the window, which
