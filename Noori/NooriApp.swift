@@ -471,27 +471,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return adjusted
     }
 
-    /// Height the open notch actually needs, measured by ContentView (notch plus
-    /// shadow room). The size formulas can come up short (a lyric row that
-    /// appears without a resize, larger fonts); the window never gets shorter
-    /// than this while the notch is open, so its rounded bottom isn't cut off.
-    var openNotchHeightFloor: CGFloat = 0
-
-    /// Makes every notch window at least `height` tall, checking the windows'
-    /// real frames (not the size formulas, which can be the thing that's short).
-    func ensureOpenWindowHeight(_ height: CGFloat) {
-        openNotchHeightFloor = height
-        var all: [(screen: NSScreen, window: NSWindow)] = []
-        if Defaults[.showOnAllDisplays] {
-            all = windows.map { (screen: $0.key, window: $0.value) }
-        } else if let window, let screen = window.screen ?? NSScreen.main {
-            all = [(screen: screen, window: window)]
-        }
-        for item in all where item.window.frame.height < height - 0.5 {
-            resizeWindow(item.window, on: item.screen, to: CGSize(width: item.window.frame.width, height: height), animated: false)
-        }
-    }
-
     func ensureWindowSize(_ size: CGSize, animated: Bool, force: Bool = false) {
         resizeWindows(to: size, animated: animated, force: force)
     }
@@ -503,9 +482,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         size.width = max(size.width, LyricsManager.shared.closedWindowWidth)
         // Always room for the open notch with lyrics (see the function).
         size.height = max(size.height, openNotchWindowHeightWithLyricsRoom(isNooriMode: shouldUseNooriMode(for: vm.screen)))
-        if vm.notchState == .open {
-            size.height = max(size.height, openNotchHeightFloor)
-        }
 
         if Defaults[.showOnAllDisplays] {
             for (screen, window) in windows {

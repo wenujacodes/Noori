@@ -1341,11 +1341,6 @@ private struct AlbumArtFlipModifier: ViewModifier, Animatable {
             // At odd multiples of 180° the 3D rotation mirrors along X;
             // applying an opposite scaleEffect cancels that out.
             .scaleEffect(x: cosineSign(for: angle), y: 1)
-            // Flatten the 3D flip into the cover's own box. A live 3D layer can
-            // escape the notch's rounded clip mid-flip, showing the notch as a
-            // square-cornered black rectangle for a moment.
-            .compositingGroup()
-            .drawingGroup()
     }
 
     /// Returns +1 when the front face is showing, −1 when the back face is showing.

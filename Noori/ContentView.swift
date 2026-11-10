@@ -153,8 +153,6 @@ struct ContentView: View {
     @State private var isHovering: Bool = false
     /// Counts notch openings; each change plays the open bounce once.
     @State private var notchOpenCount: Int = 0
-    /// Measured height of the notch body (see `keepWindowTallEnough`).
-    @State private var measuredNotchHeight: CGFloat = 0
     @State private var lastHapticTime: Date = Date()
     @State private var hoverClickMonitor: Any?
     @State private var hoverClickLocalMonitor: Any?
@@ -403,10 +401,6 @@ struct ContentView: View {
             .padding([.horizontal, .bottom], vm.notchState == .open ? 12 : 0)
             .background { notchBackground }
             .clipShape(resolvedClipShape)
-            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
-                measuredNotchHeight = height
-                keepWindowTallEnough()
-            }
             // The bounces are extra black shapes behind the notch, drawn only while
             // a bounce plays, so the content inside never moves or stretches and
             // the notch at rest renders exactly as a plain clipped black shape.
@@ -610,24 +604,6 @@ struct ContentView: View {
                         $0.opacity(showsClosedLyricsArtBackground ? 1 : 0)
                     }
             }
-        }
-    }
-
-    /// Grows the window when the open notch is taller than the window, which
-    /// would cut off its rounded bottom corners.
-    private func keepWindowTallEnough() {
-        guard vm.notchState == .open, measuredNotchHeight > 0,
-              let delegate = AppDelegate.shared else { return }
-        // The same room below the notch that the root frame leaves.
-        let below = isNooriMode ? nooriTopOffset + nooriShadowInset * 2 : currentShadowPadding
-        let needed = (measuredNotchHeight + below).rounded(.up)
-        delegate.openNotchHeightFloor = needed
-        // Resize after this layout pass, never during it (resizing the window
-        // mid-layout can make SwiftUI lay out again and again). It only grows
-        // windows that are actually shorter, so it settles at once.
-        DispatchQueue.main.async {
-            guard vm.notchState == .open else { return }
-            delegate.ensureOpenWindowHeight(needed)
         }
     }
 

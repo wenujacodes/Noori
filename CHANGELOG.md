@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
 
 ### Fixed
+- Opening the notch feels light again: a height check measured the notch on every frame of the animation and made the whole notch redraw each time. It's gone (the window always has room now).
+- No more black rectangle flashing over the small album art when the notch opens or closes (it came from rendering the cover offscreen for the flip).
 - With the album art background on, opening and closing the notch could lose its rounded corners and stutter: the art's fade also animated the background's size on a different curve from the notch. The art now stays in place and only fades.
 - Switching Spaces (into a fullscreen app especially) no longer makes the notch pop in at once; it fades in.
 - The notch's shadow no longer stutters when it opens and closes: it's drawn from the plain notch outline and fades in and out, instead of shadowing everything inside the notch on every frame.
@@ -35,7 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - With blurred album art behind the closed-notch lyrics, the strip under the camera showed as a black bar over the art; the whole top band is now black and the art starts below it.
 - Opening and closing the notch with an album art background is smooth again: the cover is now blurred once per song in the background (like Lyrimuse does) instead of on every frame of the animation.
 - When a song's lyrics end (or start), the closed notch now shrinks (or grows) smoothly with the lyric row instead of snapping back.
-- The album art flip on a track change is kept inside the cover's own frame; mid-flip it could make the closed notch show as a square-cornered black rectangle for a moment.
 - The progress slider no longer vanishes before the rest of the player when the notch opens or closes: it used the same strong blur as the text, which smeared the thin bar away almost at once.
 - Turning on Caps Lock while the notch was open put the closed notch's Caps Lock indicator over the album art (and could freeze the notch). It now only shows in the closed notch.
 - The open notch's rounded bottom corners could be cut off when it was taller than its window (for example when the lyric row appeared without the window growing). The window now always makes room for the notch it shows, and the window always has room for a lyric row, so turning lyrics on while the notch is open no longer cuts off its bottom.
