@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-09
+
 ### Changed
 - Noori's repository is public, and updates and downloads now come from its own GitHub releases (github.com/wenujacodes/Noori/releases) instead of the separate Noori-releases repository.
 - Removed about 2,800 lines of code nothing used anymore (the custom update window, TipKit tips, old Atoll helpers, views, settings keys and functions). Noori works the same; it's just smaller and quicker to build.
