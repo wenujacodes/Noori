@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Music player: the three main controls stay together in the center, and the two side buttons sit apart toward the edges, mirrored for balance.
+- Volume bars are green and brightness bars yellow in every volume/brightness HUD (Settings › Volume & Brightness › "Green volume, yellow brightness", on by default).
+
 ## [1.0.1] - 2026-11-09
 
 ### Changed

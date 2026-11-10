@@ -363,9 +363,29 @@ struct MinimalisticMusicPlayerView: View {
     // MARK: - Playback Controls (Larger)
     
     private var playbackControls: some View {
-        HStack(spacing: 10) {
-            ForEach(Array(displayedSlots.enumerated()), id: \.offset) { _, slot in
-                slotView(for: slot)
+        let slots = displayedSlots
+        return Group {
+            if slots.count == 5 {
+                // The three middle controls stay together in the center; the two
+                // side buttons sit apart toward the edges, mirrored for balance.
+                HStack(spacing: 0) {
+                    slotView(for: slots[0])
+                    Spacer(minLength: 10)
+                    HStack(spacing: 10) {
+                        ForEach(1..<4, id: \.self) { index in
+                            slotView(for: slots[index])
+                        }
+                    }
+                    Spacer(minLength: 10)
+                    slotView(for: slots[4])
+                }
+                .padding(.horizontal, 8)
+            } else {
+                HStack(spacing: 10) {
+                    ForEach(Array(slots.enumerated()), id: \.offset) { _, slot in
+                        slotView(for: slot)
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)
@@ -425,7 +445,7 @@ struct MinimalisticMusicPlayerView: View {
                     }
                 ),
                 range: 0...1,
-                color: .white,
+                color: HUDSliderColor.tint(for: coordinator.sneakPeek.type) ?? .white,
                 dragging: $hudDragging,
                 lastDragged: $hudLastDragged,
                 onValueChange: { newValue in

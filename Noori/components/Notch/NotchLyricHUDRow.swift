@@ -48,7 +48,7 @@ struct NotchLyricHUDRow: View {
                 ZStack(alignment: .leading) {
                     Capsule().fill(.white.opacity(0.18))
                     Capsule()
-                        .fill(isMuted ? Color.red : .white)
+                        .fill(isMuted ? Color.red : (HUDSliderColor.tint(for: type) ?? .white))
                         .frame(width: geo.size.width * (isMuted ? max(clamped, muteState.level) : clamped))
                 }
             }

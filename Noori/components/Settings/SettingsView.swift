@@ -651,6 +651,7 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .hudAndOSD, title: "HUD style", keywords: ["inline", "compact"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "HUD style")),
             SettingsSearchEntry(tab: .hudAndOSD, title: "Progressbar style", keywords: ["progress", "style"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Progressbar style")),
             SettingsSearchEntry(tab: .hudAndOSD, title: "Enable glowing effect", keywords: ["glow", "indicator"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Enable glowing effect")),
+            SettingsSearchEntry(tab: .hudAndOSD, title: "Green volume, yellow brightness", keywords: ["color", "green", "yellow", "volume", "brightness", "slider"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Green volume, yellow brightness")),
             SettingsSearchEntry(tab: .hudAndOSD, title: "Use accent color", keywords: ["accent", "color"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Use accent color")),
 
             // Custom OSD

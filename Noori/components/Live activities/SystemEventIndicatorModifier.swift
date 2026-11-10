@@ -107,7 +107,7 @@ struct SystemEventIndicatorModifier: View {
             case .volume:
                 VolumeProgressSection(value: $value, showPercentages: showProgressPercentages)
             case .brightness:
-                ProgressSection(value: $value, showPercentages: showProgressPercentages)
+                ProgressSection(value: $value, showPercentages: showProgressPercentages, tint: HUDSliderColor.tint(for: .brightness))
             case .backlight:
                 ProgressSection(value: $value, showPercentages: showProgressPercentages)
             case .connectivity:
@@ -181,10 +181,11 @@ struct ProgressSection: View {
     @Binding var value: CGFloat
     var showPercentages: Bool
     var colorMode: ProgressColorMode? = nil
+    var tint: Color? = nil
     
     var body: some View {
         HStack(spacing: 8) {
-            DraggableProgressBar(value: $value, colorMode: colorMode)
+            DraggableProgressBar(value: $value, colorMode: colorMode, tint: tint)
             PercentageLabel(value: value, isVisible: showPercentages)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -244,7 +245,7 @@ struct VolumeProgressSection: View {
                     .foregroundStyle(.gray)
                     .contentTransition(.numericText())
             } else {
-                ProgressSection(value: $value, showPercentages: showPercentages, colorMode: .volume)
+                ProgressSection(value: $value, showPercentages: showPercentages, colorMode: .volume, tint: HUDSliderColor.tint(for: .volume))
                     .transition(.opacity.combined(with: .scale))
             }
         }
@@ -302,6 +303,8 @@ struct DraggableProgressBar: View {
     @EnvironmentObject var vm: NooriViewModel
     @Binding var value: CGFloat
     var colorMode: ProgressColorMode? = nil
+    /// Overrides the white/accent fill (green volume, yellow brightness).
+    var tint: Color? = nil
     
     @State private var isDragging = false
     @Default(.progressBarStyle) private var progressBarStyle
@@ -317,7 +320,7 @@ struct DraggableProgressBar: View {
                 Group {
                     if progressBarStyle == .segmented {
                         // Segmented progress bar - completely different layout
-                        SegmentedProgressContent(value: value, geometry: geo)
+                        SegmentedProgressContent(value: value, geometry: geo, tint: tint)
                     } else {
                         // Traditional capsule-based progress bar
                         ZStack(alignment: .leading) {
@@ -359,6 +362,7 @@ struct DraggableProgressBar: View {
         let accentColor = Defaults[.accentColor]
         let shadowColor: Color = {
             guard useShadow else { return .clear }
+            if let tint { return tint }
             if useAccentColor {
                 return accentColor.ensureMinimumBrightness(factor: 0.7)
             }
@@ -376,9 +380,10 @@ struct DraggableProgressBar: View {
                 case .gradient:
                     Capsule()
                         .fill(LinearGradient(
-                            colors: useAccentColor
-                                ? [accentColor, accentColor.ensureMinimumBrightness(factor: 0.2)]
-                                : [.white, .white.opacity(0.2)],
+                            colors: tint.map { [$0, $0.opacity(0.35)] }
+                                ?? (useAccentColor
+                                    ? [accentColor, accentColor.ensureMinimumBrightness(factor: 0.2)]
+                                    : [.white, .white.opacity(0.2)]),
                             startPoint: .trailing,
                             endPoint: .leading
                         ))
@@ -386,7 +391,7 @@ struct DraggableProgressBar: View {
                         .shadow(color: shadowColor, radius: useShadow ? 8 : 0, x: 3)
                 case .hierarchical:
                     Capsule()
-                        .fill(useAccentColor ? accentColor : .white)
+                        .fill(tint ?? (useAccentColor ? accentColor : .white))
                         .frame(width: clampedWidth)
                         .shadow(color: shadowColor, radius: useShadow ? 8 : 0, x: 3)
                 case .segmented:
@@ -411,6 +416,7 @@ struct DraggableProgressBar: View {
 struct SegmentedProgressContent: View {
     let value: CGFloat
     let geometry: GeometryProxy
+    var tint: Color? = nil
     
     private let segmentCount = 16
     @State private var glowIndex: Int? = nil
@@ -450,6 +456,7 @@ struct SegmentedProgressContent: View {
     
     private func segmentColor(isActive: Bool) -> Color {
         if isActive {
+            if let tint { return tint }
             if Defaults[.systemEventIndicatorUseAccent] {
                 return Defaults[.accentColor]
             }
@@ -461,6 +468,7 @@ struct SegmentedProgressContent: View {
     
     private func glowShadowColor(for isActive: Bool, index: Int) -> Color {
         if isActive {
+            if let tint { return tint }
             if let glowIndex = glowIndex, index == glowIndex {
                 return Defaults[.systemEventIndicatorUseAccent]
                     ? Defaults[.accentColor].ensureMinimumBrightness(factor: 0.8)

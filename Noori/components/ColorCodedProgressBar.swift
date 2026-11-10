@@ -198,3 +198,20 @@ enum ColorCodedPalette {
     .padding()
     .background(Color.black)
 }
+
+/// Colors of the volume and brightness bars: green for volume, yellow for
+/// screen brightness (Settings › Volume & Brightness). Nil means the default
+/// white (or accent) look.
+enum HUDSliderColor {
+    static let volume = Color(red: 0.19, green: 0.82, blue: 0.35)
+    static let brightness = Color(red: 1.0, green: 0.84, blue: 0.04)
+
+    static func tint(for type: SneakContentType) -> Color? {
+        guard Defaults[.colorCodedHUDSliders] else { return nil }
+        switch type {
+        case .volume: return volume
+        case .brightness: return brightness
+        default: return nil
+        }
+    }
+}

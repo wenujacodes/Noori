@@ -416,7 +416,7 @@ struct InlineHUD: View {
                                         .contentTransition(.numericText())
                                 } else {
                                     HStack(spacing: 6) {
-                                        DraggableProgressBar(value: $value, colorMode: .volume)
+                                        DraggableProgressBar(value: $value, colorMode: .volume, tint: HUDSliderColor.tint(for: .volume))
                                         PercentageLabel(value: value, isVisible: showProgressPercentages)
                                     }
                                     .transition(.opacity.combined(with: .scale))
@@ -425,7 +425,7 @@ struct InlineHUD: View {
                             .animation(NooriMotion.change, value: value.isZero)
                         } else {
                             HStack(spacing: 6) {
-                                DraggableProgressBar(value: $value)
+                                DraggableProgressBar(value: $value, tint: HUDSliderColor.tint(for: type))
                                 PercentageLabel(value: value, isVisible: showProgressPercentages)
                             }
                         }
