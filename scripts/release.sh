@@ -8,7 +8,7 @@
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Builds a Release of Noori, zips it, signs it for Sparkle and adds it to
+# Builds a Release of Noori, zips it (plus a DMG), signs the zip for Sparkle and adds it to
 # Updates/appcast.xml.
 #
 #   scripts/release.sh <version> [--publish]
@@ -19,7 +19,7 @@
 # decide what is newer), or the project's current build for the first release.
 # Set BUILD=<n> to choose it yourself.
 # --publish also creates the GitHub release v<version> in wenujacodes/Noori (with
-# the zip and the version's CHANGELOG.md notes), then commits the version bump,
+# the zip, the DMG and the version's CHANGELOG.md notes), then commits the version bump,
 # the changelog and Updates/appcast.xml and pushes them. Installed copies read
 # that appcast on main and download from the release.
 #
@@ -64,6 +64,7 @@ APPCAST="$ROOT/Updates/appcast.xml"
 RELEASES_REPO="wenujacodes/Noori"
 DOWNLOAD_PREFIX="https://github.com/$RELEASES_REPO/releases/download/v$VERSION/"
 ZIP="$DIST/Noori-$VERSION.zip"
+DMG="$DIST/Noori-$VERSION.dmg"
 
 # 1. Version numbers (kept in the repo so the next release starts from them).
 echo "$VERSION" > VERSION
@@ -112,6 +113,16 @@ mkdir -p "$DIST"
 rm -f "$ZIP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
+# 3b. DMG for first-time downloads: Noori.app next to an Applications link to
+#     drag it onto. Updates keep using the zip.
+DMG_SRC="$DERIVED/dmg"
+rm -rf "$DMG_SRC" "$DMG"
+mkdir -p "$DMG_SRC"
+ditto "$APP" "$DMG_SRC/Noori.app"
+ln -s /Applications "$DMG_SRC/Applications"
+hdiutil create -quiet -volname "Noori $VERSION" -srcfolder "$DMG_SRC" \
+    -fs HFS+ -format UDZO -imagekey zlib-level=9 "$DMG"
+
 # 4. Sign the zip and make the new appcast. generate_appcast works on a folder
 #    holding the archives and appcast.xml. Only this version's zip goes in, so
 #    the older entries are kept exactly as they are (with older zips in the
@@ -132,7 +143,7 @@ cp "$APPCAST" "$STAGE/appcast.xml"
 rm -f "$STAGE"/*.delta
 echo "Signed $ZIP"
 
-# 5. Optionally publish: the GitHub release (zip + this version's changelog
+# 5. Optionally publish: the GitHub release (zip, DMG + this version's changelog
 #    notes), then the appcast on main. Release first, feed second: the feed
 #    must never point at a missing download.
 if [[ "$PUBLISH" == "--publish" ]]; then
@@ -144,7 +155,7 @@ if [[ "$PUBLISH" == "--publish" ]]; then
     ' CHANGELOG.md > "$NOTES"
     [[ -s "$NOTES" ]] || echo "See the changelog for what's new." > "$NOTES"
 
-    # Create the release first, then upload the zip with retries (big uploads
+    # Create the release first, then upload the zip and DMG with retries (big uploads
     # sometimes time out).
     if ! gh release view "v$VERSION" --repo "$RELEASES_REPO" > /dev/null 2>&1; then
         gh release create "v$VERSION" \
@@ -153,8 +164,8 @@ if [[ "$PUBLISH" == "--publish" ]]; then
             --notes-file "$NOTES"
     fi
     for attempt in 1 2 3 4 5; do
-        gh release upload "v$VERSION" "$ZIP" --clobber --repo "$RELEASES_REPO" && break
-        [[ $attempt == 5 ]] && { echo "Upload failed; the release v$VERSION has no zip yet and the appcast wasn't changed" >&2; exit 1; }
+        gh release upload "v$VERSION" "$ZIP" "$DMG" --clobber --repo "$RELEASES_REPO" && break
+        [[ $attempt == 5 ]] && { echo "Upload failed; the release v$VERSION is missing its downloads and the appcast wasn't changed" >&2; exit 1; }
         echo "Upload failed, trying again ($attempt/5)…" >&2
         sleep 5
     done

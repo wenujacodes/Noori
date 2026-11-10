@@ -31,8 +31,8 @@ Noori turns the MacBook notch into a lightweight island for music, lyrics, live 
 - Permissions when you use the matching feature: Accessibility (volume and brightness HUDs), Bluetooth (device HUDs) and Automation (Spotify and Apple Music controls).
 
 ## Install
-1. Download `Noori-<version>.zip` from the [latest release](https://github.com/wenujacodes/Noori/releases/latest).
-2. Unzip it and move **Noori.app** to Applications.
+1. Download `Noori-<version>.dmg` (or the `.zip`) from the [latest release](https://github.com/wenujacodes/Noori/releases/latest).
+2. Open it and drag **Noori.app** to Applications.
 3. Noori isn't notarized yet, so the first time, right-click **Noori.app**, choose **Open**, then **Open** again.
 4. Grant the permissions it asks for.
 
