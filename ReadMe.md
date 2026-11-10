@@ -9,10 +9,14 @@
   <img src="https://img.shields.io/badge/macOS-14.6%2B-000000?style=for-the-badge&logo=apple&logoColor=white" alt="macOS 14.6+">
   <img src="https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-Universal-555555?style=for-the-badge&logo=apple&logoColor=white" alt="Universal: Apple Silicon and Intel">
   <img src="https://img.shields.io/badge/Swift-6.1%2B-F05138?style=for-the-badge&logo=swift&logoColor=white" alt="Swift 6.1+">
+  <img src="https://img.shields.io/badge/Status-Active%20development-FF9F0A?style=for-the-badge" alt="Status: active development">
   <a href="https://github.com/wenujacodes/Noori/stargazers"><img src="https://img.shields.io/github/stars/wenujacodes/Noori?style=for-the-badge&color=FFD60A&logo=github" alt="GitHub stars"></a>
 </p>
 
 Noori turns the MacBook notch into a lightweight island for music, lyrics, live activities and system controls. It stays out of the way until you need it, then opens with smooth, native SwiftUI animations.
+
+> [!NOTE]
+> Noori is still in active development. Expect frequent updates, and occasional rough edges. Bug reports and ideas are welcome in [Issues](https://github.com/wenujacodes/Noori/issues).
 
 ## Features
 - **Music:** now playing for Apple Music, Spotify and any app that shows up in macOS Now Playing, with album art, a visualizer and customizable controls.
