@@ -434,15 +434,18 @@ struct ContentView: View {
                         SpringKeyframe(0, duration: NooriMotion.notchBounceFall, spring: .smooth)
                     }
             }
-            .compositingGroup()
+            // The shadow comes from the plain notch outline behind everything, not
+            // from the whole notch (text, art, buttons): shadowing all of that made
+            // SwiftUI redraw the notch offscreen on every frame of opening and
+            // closing. It fades with opacity, which is cheap, instead of changing color.
+            .background {
+                resolvedClipShape
+                    .fill(.black)
+                    .shadow(color: .black.opacity(0.6), radius: 10)
+                    .opacity((vm.notchState == .open || isHovering) && Defaults[.enableShadow] ? 1 : 0)
+            }
             // The open notch grows and shrinks with the lyric row.
             .animation(NooriMotion.notchOpen, value: lyricsManager.showsInOpenNotch)
-            .shadow(
-                color: ((vm.notchState == .open || isHovering) && Defaults[.enableShadow])
-                    ? .black.opacity(0.6)
-                    : .clear,
-                radius: 10
-            )
             // Extra horizontal inset for Noori mode so the shadow
             // is not clipped by the outer frame constraint
             .padding(.horizontal, isIslandMode ? nooriShadowInset : 0)
