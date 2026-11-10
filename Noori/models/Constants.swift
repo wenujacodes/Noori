@@ -560,7 +560,7 @@ extension Defaults.Keys {
     static let lyricsUseNetEase = Key<Bool>("lyricsUseNetEase", default: true)
     static let lyricsUseQQ = Key<Bool>("lyricsUseQQ", default: true)
     // Lyrics: translation and pronunciation
-    static let lyricsSecondaryLine = Key<LyricsSecondaryLine>("lyricsSecondaryLine", default: .none)
+    static let lyricsSecondaryLine = Key<LyricsSecondaryLine>("lyricsSecondaryLine", default: .nextLine)
     /// Language code to translate into; empty = the system language.
     static let lyricsTranslationLanguage = Key<String>("lyricsTranslationLanguage", default: "")
     static let lyricsAutoTranslate = Key<Bool>("lyricsAutoTranslate", default: true)
