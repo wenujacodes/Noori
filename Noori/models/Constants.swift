@@ -364,7 +364,6 @@ extension Defaults.Keys {
         // MARK: Downloads
     
         // MARK: HUD
-    static let inlineHUD = Key<Bool>("inlineHUD", default: true)
     static let progressBarStyle = Key<ProgressBarStyle>("progressBarStyle", default: .hierarchical)
     // Legacy support - keeping for backward compatibility
     static let enableGradient = Key<Bool>("enableGradient", default: false)

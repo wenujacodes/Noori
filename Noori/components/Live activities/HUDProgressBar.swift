@@ -24,174 +24,6 @@
 import SwiftUI
 import Defaults
 
-struct SystemEventIndicatorModifier: View {
-    @EnvironmentObject var vm: NooriViewModel
-    @Binding var eventType: SneakContentType
-    @Binding var value: CGFloat {
-        didSet {
-            DispatchQueue.main.async {
-                self.sendEventBack(value)
-                self.vm.objectWillChange.send()
-            }
-        }
-    }
-    @Binding var icon: String
-    let showSlider: Bool = false
-    var sendEventBack: (CGFloat) -> Void
-    @Default(.showProgressPercentages) private var showProgressPercentages
-    
-    var body: some View {
-        HStack(spacing: 14) {
-            switch (eventType) {
-                case .volume:
-                    if icon.isEmpty {
-                        Image(systemName: SpeakerSymbol(value))
-                            .contentTransition(.interpolate)
-                            .symbolVariant(value > 0 ? .none : .slash)
-                            .frame(width: 20, height: 15, alignment: .leading)
-                    } else {
-                        Image(systemName: icon)
-                            .contentTransition(.interpolate)
-                            .opacity(value.isZero ? 0.6 : 1)
-                            .scaleEffect(value.isZero ? 0.85 : 1)
-                            .frame(width: 20, height: 15, alignment: .leading)
-                    }
-                case .brightness:
-                    Image(systemName: "sun.max.fill")
-                        .contentTransition(.symbolEffect)
-                        .frame(width: 20, height: 15)
-                        .foregroundStyle(.white)
-                case .backlight:
-                    Image(systemName: BacklightSymbol(value))
-                        .contentTransition(.symbolEffect)
-                        .frame(width: 20, height: 15)
-                        .foregroundStyle(.white)
-                case .mic:
-                    Image(systemName: "mic")
-                        .symbolVariant(value > 0 ? .none : .slash)
-                        .contentTransition(.interpolate)
-                        .frame(width: 20, height: 15)
-                        .foregroundStyle(.white)
-                case .connectivity:
-                    Image(systemName: icon)
-                        .contentTransition(.interpolate)
-                        .frame(width: 20, height: 15)
-                        .foregroundStyle(.white)
-                case .bluetoothAudio:
-                    if value < 0, let mode = AirPodsListeningMode.fromHUDSymbol(icon) {
-                        AirPodsListeningModeSymbol(mode: mode)
-                            .contentTransition(.interpolate)
-                            .frame(width: 20, height: 15)
-                            .foregroundStyle(.white)
-                    } else if BluetoothGlyph.handles(icon) {
-                        let isOff = icon == BluetoothGlyph.offIcon
-                        BluetoothGlyph(isOff: isOff)
-                            .foregroundStyle(.white)
-                            .frame(width: 20, height: 15)
-                    } else if !icon.isEmpty {
-                        Image(systemName: icon)
-                            .contentTransition(.interpolate)
-                            .frame(width: 20, height: 15)
-                            .foregroundStyle(.white)
-                    }
-                default:
-                    EmptyView()
-            }
-            switch eventType {
-            case .mic:
-                Text(value > 0 ? "Mic unmuted" : "Mic muted")
-                    .foregroundStyle(.gray)
-                    .lineLimit(1)
-                    .allowsTightening(true)
-                    .contentTransition(.numericText())
-            case .volume:
-                VolumeProgressSection(value: $value, showPercentages: showProgressPercentages)
-            case .brightness:
-                ProgressSection(value: $value, showPercentages: showProgressPercentages, tint: HUDSliderColor.tint(for: .brightness))
-            case .backlight:
-                ProgressSection(value: $value, showPercentages: showProgressPercentages)
-            case .connectivity:
-                let state = ConnectivityHUDState.shared
-                HStack(spacing: 6) {
-                    Text(state.title)
-                        .foregroundStyle(.white)
-                    Text(state.status)
-                        .foregroundStyle(state.isPositive ? Color.green : Color.red)
-                }
-                .font(.caption)
-                .fontWeight(.medium)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            case .bluetoothAudio:
-                if value < 0, let mode = AirPodsListeningMode.fromHUDSymbol(icon) {
-                    Text(mode.displayName)
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.white)
-                        .lineLimit(1)
-                        .allowsTightening(true)
-                } else if let powerState = BluetoothAudioManager.shared.bluetoothPowerHUDState {
-                    Text(powerState ? "Bluetooth on" : "Bluetooth off")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(powerState ? Color.green : Color.red)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else if BluetoothAudioManager.shared.disconnectedHUDDevice != nil {
-                    let batteryDead = BluetoothAudioManager.shared.disconnectedHUDBatteryDead
-                    Text(batteryDead ? "Battery dead" : "Disconnected")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.red)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else {
-                    ProgressSection(value: $value, showPercentages: showProgressPercentages, colorMode: .battery)
-                }
-            default:
-                ProgressSection(value: $value, showPercentages: showProgressPercentages)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .symbolVariant(.fill)
-        .imageScale(.large)
-    }
-    
-    func SpeakerSymbol(_ value: CGFloat) -> String {
-        switch(value) {
-            case 0:
-                return "speaker.slash"
-            case 0...0.3:
-                return "speaker.wave.1"
-            case 0.3...0.8:
-                return "speaker.wave.2"
-            case 0.8...1:
-                return "speaker.wave.3"
-            default:
-                return "speaker.wave.2"
-        }
-    }
-
-    func BacklightSymbol(_ value: CGFloat) -> String {
-        value >= 0.5 ? "light.max" : "light.min"
-    }
-}
-
-struct ProgressSection: View {
-    @Binding var value: CGFloat
-    var showPercentages: Bool
-    var colorMode: ProgressColorMode? = nil
-    var tint: Color? = nil
-    
-    var body: some View {
-        HStack(spacing: 8) {
-            DraggableProgressBar(value: $value, colorMode: colorMode, tint: tint)
-            PercentageLabel(value: value, isVisible: showPercentages)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
 /// Mute state for the volume HUD. While muted the HUD value is 0, so this keeps
 /// the real level to draw the bar in red instead of hiding it.
 @MainActor
@@ -211,7 +43,6 @@ final class VolumeMuteState: ObservableObject {
 /// Red volume bar shown while the output is muted.
 struct MutedVolumeBar: View {
     @ObservedObject private var muteState = VolumeMuteState.shared
-    @Default(.inlineHUD) private var inlineHUD
 
     var body: some View {
         GeometryReader { geo in
@@ -223,34 +54,8 @@ struct MutedVolumeBar: View {
                     .frame(width: geo.size.width * max(0, min(muteState.level, 1)))
             }
         }
-        .frame(height: inlineHUD ? 5 : 6)
+        .frame(height: 5)
         .frame(maxHeight: .infinity)
-    }
-}
-
-struct VolumeProgressSection: View {
-    @Binding var value: CGFloat
-    var showPercentages: Bool
-    @ObservedObject private var muteState = VolumeMuteState.shared
-    
-    var body: some View {
-        Group {
-            if value.isZero && muteState.showsMutedBar {
-                MutedVolumeBar()
-                    .transition(.opacity)
-            } else if value.isZero {
-                Text("muted")
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.gray)
-                    .contentTransition(.numericText())
-            } else {
-                ProgressSection(value: $value, showPercentages: showPercentages, colorMode: .volume, tint: HUDSliderColor.tint(for: .volume))
-                    .transition(.opacity.combined(with: .scale))
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .animation(NooriMotion.change, value: value.isZero)
     }
 }
 
@@ -312,7 +117,6 @@ struct DraggableProgressBar: View {
     @Default(.useSmoothColorGradient) private var useSmoothColorGradient
     @Default(.systemEventIndicatorUseAccent) private var useAccentColor
     @Default(.systemEventIndicatorShadow) private var useShadow
-    @Default(.inlineHUD) private var inlineHUD
     
     var body: some View {
         VStack {
@@ -346,7 +150,7 @@ struct DraggableProgressBar: View {
                         }
                 )
             }
-            .frame(height: inlineHUD ? (isDragging ? 8 : 5) : (isDragging ? 9 : 6))
+            .frame(height: isDragging ? 8 : 5)
         }
     }
     

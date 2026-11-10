@@ -241,7 +241,6 @@ struct ExternalDisplayIntegrationsSection: View {
 
 struct HUD: View {
     @EnvironmentObject var vm: NooriViewModel
-    @Default(.inlineHUD) var inlineHUD
     @Default(.progressBarStyle) var progressBarStyle
     @Default(.enableSystemHUD) var enableSystemHUD
     @Default(.enableVolumeHUD) var enableVolumeHUD
@@ -332,21 +331,6 @@ struct HUD: View {
             }
 
             Section {
-                Picker("HUD style", selection: $inlineHUD) {
-                    Text("Default")
-                        .tag(false)
-                    Text("Inline")
-                        .tag(true)
-                }
-                .settingsHighlight(id: highlightID("HUD style"))
-                .onChange(of: Defaults[.inlineHUD]) {
-                    if Defaults[.inlineHUD] {
-                        withAnimation {
-                            Defaults[.systemEventIndicatorShadow] = false
-                            Defaults[.progressBarStyle] = .hierarchical
-                        }
-                    }
-                }
                 Picker("Progress bar style", selection: $progressBarStyle) {
                     Text("Hierarchical")
                         .tag(ProgressBarStyle.hierarchical)
