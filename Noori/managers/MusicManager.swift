@@ -1315,41 +1315,27 @@ extension MusicManager {
 
 // MARK: - Album Art Flip Helper
 
+/// The cover turning over on a track change. A flat flip: the cover narrows to
+/// an edge and widens again (with a little blur at the edge), which reads as a
+/// page turn at this size. It used to be a real 3D rotation, but a 3D layer
+/// inside the notch made macOS drop the notch's rounded clip for the moment of
+/// the flip, showing the notch as a square-cornered black rectangle.
 private struct AlbumArtFlipModifier: ViewModifier, Animatable {
     var angle: Double
     /// Blur at the middle of the flip (edge-on); none when the cover faces front.
     private let maxBlur: CGFloat = 6
 
-    // Animating the angle frame by frame lets the blur follow the flip and the
-    // mirror fix below switch exactly when the cover is edge-on.
     var animatableData: Double {
         get { angle }
         set { angle = newValue }
     }
 
     func body(content: Content) -> some View {
+        let radians = angle * .pi / 180
         content
-            .blur(radius: abs(sin(angle * .pi / 180)) * maxBlur)
-            .rotation3DEffect(
-                .degrees(angle),
-                axis: (x: 0, y: 1, z: 0),
-                anchor: .center,
-                anchorZ: 0,
-                perspective: 0.5
-            )
-            // Counter-rotate the content so the image never appears mirrored.
-            // At odd multiples of 180° the 3D rotation mirrors along X;
-            // applying an opposite scaleEffect cancels that out.
-            .scaleEffect(x: cosineSign(for: angle), y: 1)
-    }
-
-    /// Returns +1 when the front face is showing, −1 when the back face is showing.
-    private func cosineSign(for degrees: Double) -> CGFloat {
-        let cos = Darwin.cos(degrees * .pi / 180)
-        // Use a small tolerance to avoid flickering exactly at 90°/270°.
-        if cos > 0.001 { return 1 }
-        if cos < -0.001 { return -1 }
-        return degrees.truncatingRemainder(dividingBy: 360) >= 0 ? -1 : 1
+            .blur(radius: abs(sin(radians)) * maxBlur)
+            // Width follows the cosine of the turn; never mirrored.
+            .scaleEffect(x: max(0.001, abs(cos(radians))), y: 1, anchor: .center)
     }
 }
 

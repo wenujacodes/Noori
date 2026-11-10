@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
 
 ### Fixed
+- On a track change, the closed notch could briefly turn into a square-cornered black rectangle cutting off the album art and visualizer. The cover's 3D flip caused it; it's now a flat flip (the cover narrows to an edge and widens again), which looks the same at this size and is lighter.
 - No black rectangle flashing over the album art background when the notch opens or closes (the closed music row drew a black box under the camera that faded over the art).
 - With both album art backgrounds on, opening and closing no longer crossfades between two differently blurred covers: the blurred cover stays and only the sharper top fades in and out.
 - The small album art's rounded corners change smoothly as it glides between the closed and open notch (they used to jump from 4 to 12 pt mid-glide).
