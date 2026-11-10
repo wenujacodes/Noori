@@ -17,6 +17,7 @@ class PrivacyConfigurationTests(unittest.TestCase):
         allowed = entitlements["com.apple.security.temporary-exception.apple-events"]
         self.assertIn("com.spotify.client", allowed)
         self.assertIn("com.apple.Music", allowed)
+        self.assertIn("com.apple.MobileSMS", allowed)
 
     def test_automation_usage_text_names_media_players(self):
         project = PROJECT.read_text()
@@ -24,7 +25,19 @@ class PrivacyConfigurationTests(unittest.TestCase):
         self.assertEqual(
             2,
             project.count(
-                'INFOPLIST_KEY_NSAppleEventsUsageDescription = "Noori uses AppleScripts to control Spotify and Apple Music.";'
+                'INFOPLIST_KEY_NSAppleEventsUsageDescription = "Noori uses AppleScripts to control Spotify and Apple Music, and to send your quick replies in Messages.";'
+            ),
+        )
+
+    def test_contacts_access_is_declared_for_message_alerts(self):
+        project = PROJECT.read_text()
+        entitlements = plistlib.loads(ENTITLEMENTS.read_bytes())
+
+        self.assertTrue(entitlements["com.apple.security.personal-information.addressbook"])
+        self.assertEqual(
+            2,
+            project.count(
+                'INFOPLIST_KEY_NSContactsUsageDescription = "Noori shows the names and photos of your contacts when a new message appears in the notch.";'
             ),
         )
 

@@ -464,6 +464,13 @@ extension Defaults.Keys {
     static let didMigrateCapsLockTintModeToGreen = Key<Bool>("didMigrateCapsLockTintModeToGreen", default: false)
     static let showCapsLockLabel = Key<Bool>("showCapsLockLabel", default: false)
     
+    // MARK: Message notifications
+    /// Off by default: reading new messages needs Full Disk Access.
+    static let showMessageNotifications = Key<Bool>("showMessageNotifications", default: false)
+    static let messageNotificationsQuickReply = Key<Bool>("messageNotificationsQuickReply", default: true)
+    /// ROWID of the newest message already seen in chat.db (the only thing kept on disk).
+    static let messagesLastSeenRowID = Key<Int>("messagesLastSeenRowID", default: 0)
+
     // MARK: ImageService
     static let didClearLegacyURLCacheV1 = Key<Bool>("didClearLegacyURLCacheV1", default: false)
     

@@ -504,6 +504,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         LockScreenManager.shared.configure(viewModel: vm)
         LockScreenIndicatorWindowManager.shared.configure(viewModel: vm)
         ConnectivityMonitor.shared.start()
+        // New iMessage/SMS alerts in the notch (follows its own setting).
+        if !AppRuntimeEnvironment.isUITesting {
+            MessagesNotificationManager.shared.start()
+        }
         MenuBarController.shared.install(updater: SettingsWindowController.shared.updater)
         
         // Migrate legacy progress bar settings

@@ -202,6 +202,8 @@ struct LiveActivitiesSettings: View {
                 Text("Shows a green camera icon and a yellow microphone icon in the notch while they're in use.")
             }
 
+            MessagesSettingsSection(highlightID: highlightID)
+
             Section {
                 Defaults.Toggle(key: .showCallLiveActivity) {
                     Text("Show calls in the notch")

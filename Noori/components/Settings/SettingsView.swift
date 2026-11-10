@@ -624,6 +624,10 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .liveActivities, title: "Show Caps Lock Indicator", keywords: ["caps lock", "indicator"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show Caps Lock Indicator")),
             SettingsSearchEntry(tab: .liveActivities, title: "Show Caps Lock label", keywords: ["caps lock", "label"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show Caps Lock label")),
             SettingsSearchEntry(tab: .liveActivities, title: "Caps Lock color", keywords: ["caps lock", "color", "green"], highlightID: SettingsTab.liveActivities.highlightID(for: "Caps Lock color")),
+            SettingsSearchEntry(tab: .liveActivities, title: "Show new messages in the notch", keywords: ["messages", "imessage", "sms", "text", "notification", "alert"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show new messages in the notch")),
+            SettingsSearchEntry(tab: .liveActivities, title: "Allow quick reply", keywords: ["messages", "reply", "imessage", "send"], highlightID: SettingsTab.liveActivities.highlightID(for: "Allow quick reply")),
+            SettingsSearchEntry(tab: .liveActivities, title: "Messages Full Disk Access", keywords: ["full disk access", "permission", "messages", "privacy"], highlightID: SettingsTab.liveActivities.highlightID(for: "Messages Full Disk Access")),
+            SettingsSearchEntry(tab: .liveActivities, title: "Messages Contacts access", keywords: ["contacts", "names", "photos", "permission"], highlightID: SettingsTab.liveActivities.highlightID(for: "Messages Contacts access")),
 
             // Battery (Charge)
             SettingsSearchEntry(tab: .battery, title: "Show power status notifications", keywords: ["notifications", "power"], highlightID: SettingsTab.battery.highlightID(for: "Show power status notifications")),

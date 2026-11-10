@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Music player: the three main controls stay together in the center, and the two side buttons sit apart toward the edges, mirrored for balance.
 - Volume bars are green and brightness bars yellow in every volume/brightness HUD (Settings › Volume & Brightness › "Green volume, yellow brightness", on by default).
+- New messages in the notch: when an iMessage or text arrives, the notch drops down with the sender's photo (or initials), name and message, and a reply field. Press Return to send the reply, Esc to dismiss; it hides by itself after about 6 seconds unless you're pointing at it or typing. Click the message to open Messages. Turn it on in Settings › Live Activities › Messages. It needs Full Disk Access (to read new messages), Contacts (for names and photos, optional) and permission to control Messages (asked on the first reply). Nothing from your messages is saved; Noori only remembers which message it saw last.
 
 ## [1.0.1] - 2026-11-09
 

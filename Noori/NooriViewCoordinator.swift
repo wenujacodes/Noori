@@ -127,6 +127,12 @@ class NooriViewCoordinator: ObservableObject {
         Date() < hoverOpenSuppressedUntil
     }
 
+    /// Stops hovering from opening the notch until `date` (e.g. while a message
+    /// alert covers it). Pass a past date to allow it again.
+    func suppressHoverOpen(until date: Date) {
+        hoverOpenSuppressedUntil = date
+    }
+
 
 
 

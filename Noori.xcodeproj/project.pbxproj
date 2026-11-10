@@ -568,7 +568,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_MetalCaptureEnabled = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Noori uses AppleScripts to control Spotify and Apple Music.";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Noori uses AppleScripts to control Spotify and Apple Music, and to send your quick replies in Messages.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Noori shows the names and photos of your contacts when a new message appears in the notch.";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Noori needs Bluetooth access to detect when audio devices connect and display their battery status in the HUD.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Wenuja Liyanamana";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -632,7 +633,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_MetalCaptureEnabled = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Noori uses AppleScripts to control Spotify and Apple Music.";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Noori uses AppleScripts to control Spotify and Apple Music, and to send your quick replies in Messages.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Noori shows the names and photos of your contacts when a new message appears in the notch.";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Noori needs Bluetooth access to detect when audio devices connect and display their battery status in the HUD.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Wenuja Liyanamana";
 				LD_RUNPATH_SEARCH_PATHS = (

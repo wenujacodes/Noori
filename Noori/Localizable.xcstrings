@@ -1,6 +1,75 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Photo" : {
+
+    },
+    "Video" : {
+
+    },
+    "Audio message" : {
+
+    },
+    "Attachment" : {
+
+    },
+    "Group conversation" : {
+
+    },
+    "Unknown sender" : {
+
+    },
+    "Open in Messages" : {
+
+    },
+    "Text Message" : {
+
+    },
+    "iMessage" : {
+
+    },
+    "Couldn't send. Check that Noori may control Messages in System Settings › Privacy & Security › Automation." : {
+
+    },
+    "Send" : {
+
+    },
+    "Show new messages in the notch" : {
+
+    },
+    "Allow quick reply" : {
+
+    },
+    "Full Disk Access" : {
+
+    },
+    "Allowed" : {
+
+    },
+    "Not allowed" : {
+
+    },
+    "Open Settings" : {
+
+    },
+    "Check Again" : {
+
+    },
+    "Contacts" : {
+
+    },
+    "Not asked yet" : {
+
+    },
+    "Allow" : {
+
+    },
+    "Messages" : {
+
+    },
+    "Shows new iMessages and texts in the notch, with a reply field. Reading them needs Full Disk Access: in System Settings › Privacy & Security › Full Disk Access, turn on Noori, then come back here (you may need to restart Noori). Contacts shows names and photos instead of phone numbers. The first reply asks to let Noori control Messages. Nothing from your messages is saved." : {
+
+    },
     "" : {
       "localizations" : {
         "ar" : {
