@@ -68,10 +68,12 @@ enum NooriMotion {
     static let contentFadeInDelay: TimeInterval = 0.03
     /// ...and are sharp and fully shown well before it reaches full size.
     static let contentFadeInDuration: TimeInterval = 0.13
-    /// How long the title and controls take to blur and fade out on close.
+    /// How long the title and controls take to fade out on close.
     static let contentFadeOutDuration: TimeInterval = 0.25
-    /// How blurred the title and controls are when fully faded out.
-    static let contentFadeBlur: CGFloat = 10
+    /// How blurred the title and controls are when fully faded out. Kept small:
+    /// a strong blur on white text spreads it into a bright haze, a white flash
+    /// as the notch opened or closed.
+    static let contentFadeBlur: CGFloat = 3
 }
 
 private struct NotchContentFadeModifier: ViewModifier, Animatable {

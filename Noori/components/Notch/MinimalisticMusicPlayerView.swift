@@ -351,9 +351,10 @@ struct MinimalisticMusicPlayerView: View {
                 draggingTrackHeight: 11
             )
         }
-        .onAppear {
-            sliderValue = musicManager.elapsedTime
-        }
+        // No onAppear here: MusicSliderView sets the estimated position itself,
+        // without animation. Setting `elapsedTime` here (the last reported, older
+        // position) ran after it, inside the opening animation, so the played part
+        // jumped back and slid in late.
         .onChange(of: musicManager.isLiveStream) { _, isLive in
             if isLive {
                 dragging = false

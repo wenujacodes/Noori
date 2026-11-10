@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
 
 ### Fixed
+- The song title and other text no longer flash white when the notch opens or closes: the fade used a strong blur that spread white text into a bright haze; it now fades with only a light blur.
+- The progress slider's played part no longer jumps back and slides in late when the notch opens (an extra step set it to an older position inside the opening animation).
 - On a track change, the closed notch could briefly turn into a square-cornered black rectangle cutting off the album art and visualizer. The cover's 3D flip caused it; it's now a flat flip (the cover narrows to an edge and widens again), which looks the same at this size and is lighter.
 - No black rectangle flashing over the album art background when the notch opens or closes (the closed music row drew a black box under the camera that faded over the art).
 - With both album art backgrounds on, opening and closing no longer crossfades between two differently blurred covers: the blurred cover stays and only the sharper top fades in and out.
