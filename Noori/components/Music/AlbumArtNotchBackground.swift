@@ -123,21 +123,23 @@ struct AlbumArtNotchBackground: View {
     let topBlack: CGFloat
 
     var body: some View {
-        ZStack {
-            layers
-                .id(backdrop.revision)
-                .transition(.opacity)
-        }
-        .animation(.easeInOut(duration: 0.5), value: backdrop.revision)
-        // Black at the top (the camera area), fading into the art below it.
-        .mask {
-            VStack(spacing: 0) {
-                Color.clear.frame(height: topBlack)
-                LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom)
-                    .frame(height: style == .open ? 36 : 14)
-                Color.black
+        // Solid black at the top (the camera area), then the art, fading in
+        // from black just below it.
+        VStack(spacing: 0) {
+            Color.black.frame(height: topBlack)
+            ZStack {
+                layers
+                    .id(backdrop.revision)
+                    .transition(.opacity)
             }
+            .animation(.easeInOut(duration: 0.5), value: backdrop.revision)
+            .overlay(alignment: .top) {
+                LinearGradient(colors: [.black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
+                    .frame(height: style == .open ? 36 : 12)
+            }
+            .clipped()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
     }

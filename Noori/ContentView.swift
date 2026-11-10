@@ -588,7 +588,8 @@ struct ContentView: View {
                 AlbumArtNotchBackground(style: .open, topBlack: max(24, vm.effectiveClosedNotchHeight))
                     .transition(.opacity)
             } else if showsClosedLyricsArtBackground {
-                AlbumArtNotchBackground(style: .closedLyrics, topBlack: vm.effectiveClosedNotchHeight)
+                // The music row grows 8 pt while hovered; keep that band black too.
+                AlbumArtNotchBackground(style: .closedLyrics, topBlack: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0))
                     .transition(.opacity)
             }
         }
@@ -815,7 +816,10 @@ struct ContentView: View {
             .frame(width: wingBaseWidth, height: notchContentHeight)
 
             Rectangle()
-                .fill(.black)
+                // Black under the camera; clear when the album art background
+                // already paints that band black (a black box here would show
+                // as a bar over the art).
+                .fill(showsClosedLyricsArtBackground ? Color.clear : Color.black)
                 .frame(width: effectiveCenterWidth, height: notchContentHeight)
                 .overlay(
                     HStack(alignment: .top) {
