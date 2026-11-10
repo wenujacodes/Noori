@@ -7,48 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-10
+
 ### Added
-- Album art background: the open notch can fill with the current song's album art behind the player, melting into a heavy blur toward the bottom so the controls and lyrics stay readable, and black at the top so it still blends with the camera. A second option puts a blurred cover behind the lyrics under the closed notch. It fades in and out with the notch and crossfades when the song changes. Turn it on in Settings › Music › Player.
-- Call live activity: during a WhatsApp, FaceTime, Zoom, Microsoft Teams, Discord, Slack or Telegram call, the closed notch shows a green phone with the call's time on the left and a small waveform on the right, like on iPhone. Click it to bring the call back to the front. It takes the place of the music pill while the call lasts. Noori notices the call when the app has the microphone and sound running for a few seconds (so voice notes don't trigger it); no audio is recorded and no new permission is needed. Turn it off in Settings › Live Activities › Calls.
-- New messages in the notch: when an iMessage or text arrives, the notch drops down with the sender's photo (or initials), name and message, and a reply field. Press Return to send the reply, Esc to dismiss; it hides by itself after about 6 seconds unless you're pointing at it or typing. Click the message to open Messages. Turn it on in Settings › Live Activities › Messages. It needs Full Disk Access (to read new messages), Contacts (for names and photos, optional) and permission to control Messages (asked on the first reply). Nothing from your messages is saved; Noori only remembers which message it saw last.
+- **Calls in the notch:** during a WhatsApp, FaceTime, Zoom, Microsoft Teams, Discord, Slack or Telegram call, the closed notch shows a green phone, the call's time and a small waveform, like on iPhone. Click it to go back to the call. Noori only checks which app is using the microphone and speakers; nothing is recorded and no new permission is needed. Settings › Live Activities › Calls.
+- **Messages in the notch:** new iMessages and texts drop down from the notch with the sender's photo or initials, and you can reply right there (Return sends, Esc dismisses). Off by default; it needs Full Disk Access to read new messages, Contacts for names and photos (optional), and permission to control Messages for replies. Nothing from your messages is saved. Settings › Live Activities › Messages.
+- **Album art background:** the open notch can fill with the current song's cover, sharp at the top and blurred toward the bottom so the controls and lyrics stay readable. A second option puts a blurred cover behind the lyrics under the closed notch. Both are off by default; Settings › Music › Player. They hide during Spotify ads.
 
 ### Changed
-- Settings search results now drop down from the search field over the sidebar like a macOS menu, instead of sliding in from the top of the sidebar and pushing the list down.
-- Lighter in the background: the lyrics clock only runs while lyrics are on and a song plays, the AirDrop check only while AirDrop changes are shown, repeating timers let macOS batch their wake-ups, and an unneeded blur on the open notch's top row and an unused test view are gone.
-- The shadow under the notch is off by default for new installs (Settings › Appearance › "Enable window shadow").
-- The music sneak peek uses the Default style for new installs (Inline is still in Settings › Music).
-- The Settings search field shows an accent-colored outline while you type in it, and clicking anywhere on it starts typing.
-- Volume, brightness and other HUDs always use the inline style in the notch; the "HUD style" setting and the old standard style are gone.
-- New installs show the next lyric line under the current one by default (Settings › Lyrics › second line can change it).
-- The title and controls blur in faster when the notch opens (sharp after about 0.16 s instead of 0.29 s).
-- Lyrics are off by default for new installs. Turn them on with the lyrics button in the notch or in Settings › Lyrics.
-- The default player controls are shuffle, previous, play/pause, next and lyrics. New installs used to get the media output button on the right, from a setting migration inherited from Atoll.
-- The menu bar icon is off by default for new installs (Settings, Restart and Quit are in the notch's right-click menu; turn the icon on in Settings › General).
-- Music player: the three main controls stay together in the center, and the two side buttons sit apart toward the edges, mirrored for balance.
-- Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
+- Volume bars are green and brightness bars yellow, and HUDs always use the inline style in the notch (the "HUD style" setting is gone).
+- Music player: play/pause and the skip buttons stay together in the center, with the two side buttons spread toward the edges. The default controls are shuffle, previous, play/pause, next and lyrics.
+- Defaults for new installs: lyrics off (turn them on with the lyrics button), the next lyric line shown under the current one, the Default sneak peek style, no shadow under the notch, and no menu bar icon (Settings, Restart and Quit are in the notch's right-click menu).
+- Smoother, lighter notch: faster and cleaner fade-in of the title and controls, the progress slider fades with the rest, the small cover's corners and flip animate smoothly, the shadow (when on) no longer stutters, the notch fades in after switching Spaces, and the lyric row eases in and out when lyrics start or end.
+- Lighter in the background: the lyrics clock and the AirDrop check only run while they're needed, and timers let macOS batch their wake-ups.
+- Settings: the search field shows an outline while you type, and results drop down under it like a macOS menu.
 
 ### Fixed
-- The song title and other text no longer flash white when the notch opens or closes: the fade used a strong blur that spread white text into a bright haze; it now fades with only a light blur.
-- The progress slider's played part no longer jumps back and slides in late when the notch opens (an extra step set it to an older position inside the opening animation).
-- On a track change, the closed notch could briefly turn into a square-cornered black rectangle cutting off the album art and visualizer. The cover's 3D flip caused it; it's now a flat flip (the cover narrows to an edge and widens again), which looks the same at this size and is lighter.
-- No black rectangle flashing over the album art background when the notch opens or closes (the closed music row drew a black box under the camera that faded over the art).
-- With both album art backgrounds on, opening and closing no longer crossfades between two differently blurred covers: the blurred cover stays and only the sharper top fades in and out.
-- The small album art's rounded corners change smoothly as it glides between the closed and open notch (they used to jump from 4 to 12 pt mid-glide).
-- The progress slider no longer seems to appear after the rest of the player when the notch opens, and its played (white) part no longer grows in from zero after the track.
-- Opening the notch feels light again: a height check measured the notch on every frame of the animation and made the whole notch redraw each time. It's gone (the window always has room now).
-- No more black rectangle flashing over the small album art when the notch opens or closes (it came from rendering the cover offscreen for the flip).
-- With the album art background on, opening and closing the notch could lose its rounded corners and stutter: the art's fade also animated the background's size on a different curve from the notch. The art now stays in place and only fades.
-- Switching Spaces (into a fullscreen app especially) no longer makes the notch pop in at once; it fades in.
-- The notch's shadow no longer stutters when it opens and closes: it's drawn from the plain notch outline and fades in and out, instead of shadowing everything inside the notch on every frame.
-- With the album art background on, the notch's opening bounce showed a dark rim around the art; the bounce is skipped then.
-- Spotify ads no longer fill the notch with the Spotify logo as album art; the art backgrounds hide while an ad plays.
-- With blurred album art behind the closed-notch lyrics, the strip under the camera showed as a black bar over the art; the whole top band is now black and the art starts below it.
-- Opening and closing the notch with an album art background is smooth again: the cover is now blurred once per song in the background (like Lyrimuse does) instead of on every frame of the animation.
-- When a song's lyrics end (or start), the closed notch now shrinks (or grows) smoothly with the lyric row instead of snapping back.
-- The progress slider no longer vanishes before the rest of the player when the notch opens or closes: it used the same strong blur as the text, which smeared the thin bar away almost at once.
-- Turning on Caps Lock while the notch was open put the closed notch's Caps Lock indicator over the album art (and could freeze the notch). It now only shows in the closed notch.
-- The open notch's rounded bottom corners could be cut off when it was taller than its window (for example when the lyric row appeared without the window growing). The window now always makes room for the notch it shows, and the window always has room for a lyric row, so turning lyrics on while the notch is open no longer cuts off its bottom.
-- The lyric row in the open notch only shows when the player has the lyrics button, so it can always be turned off where it appears; it used to show even after removing the button from the controls.
+- The open notch's rounded bottom could be cut off when the lyric row appeared (for example when turning lyrics on with the notch open).
+- The lyric row in the open notch now only shows when the player has the lyrics button, so it can always be turned off where it appears.
+- Turning on Caps Lock with the notch open put the Caps Lock indicator over the album art and could freeze the notch.
+- The closed notch could briefly show as a square-cornered black rectangle during a track change.
 
 ## [1.0.1] - 2026-11-09
 
