@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New messages in the notch: when an iMessage or text arrives, the notch drops down with the sender's photo (or initials), name and message, and a reply field. Press Return to send the reply, Esc to dismiss; it hides by itself after about 6 seconds unless you're pointing at it or typing. Click the message to open Messages. Turn it on in Settings › Live Activities › Messages. It needs Full Disk Access (to read new messages), Contacts (for names and photos, optional) and permission to control Messages (asked on the first reply). Nothing from your messages is saved; Noori only remembers which message it saw last.
 
 ### Changed
+- The Settings search field shows an accent-colored outline while you type in it, and clicking anywhere on it starts typing.
 - Volume, brightness and other HUDs always use the inline style in the notch; the "HUD style" setting and the old standard style are gone.
 - New installs show the next lyric line under the current one by default (Settings › Lyrics › second line can change it).
 - The title and controls blur in faster when the notch opens (sharp after about 0.16 s instead of 0.29 s).

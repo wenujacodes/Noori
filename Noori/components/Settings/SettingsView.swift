@@ -498,9 +498,17 @@ struct SettingsView: View {
             )
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay(
+                // Accent outline while typing, like a native search field.
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Color.white.opacity(0.08))
+                    .strokeBorder(
+                        isFocused ? Color.accentColor.opacity(0.9) : Color.white.opacity(0.08),
+                        lineWidth: isFocused ? 2 : 1
+                    )
             )
+            .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            // Clicking anywhere on the pill (not just the text) starts typing.
+            .onTapGesture { isFocused = true }
+            .animation(.easeOut(duration: 0.15), value: isFocused)
         }
 
         private var suggestionList: some View {
