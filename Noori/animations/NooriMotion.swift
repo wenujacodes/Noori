@@ -57,18 +57,17 @@ enum NooriMotion {
             active: NotchContentFadeModifier(opacity: 0),
             identity: NotchContentFadeModifier(opacity: 1)
         )
-        // Opening: the controls finish fading in exactly as the notch reaches
-        // full size, not before. Closing: they blur and fade out as the notch shrinks.
+        // Opening: the controls fade in quickly while the notch grows. Closing: they blur and fade out as the notch shrinks.
         return .asymmetric(
             insertion: fade.animation(.easeOut(duration: contentFadeInDuration).delay(contentFadeInDelay)),
             removal: fade.animation(.easeOut(duration: contentFadeOutDuration))
         )
     }
 
-    /// The controls start fading in once the notch is part-way open...
-    static let contentFadeInDelay: TimeInterval = 0.1
-    /// ...and are fully shown when it reaches full size (about 0.33s in).
-    static let contentFadeInDuration: TimeInterval = 0.19
+    /// The controls start fading in almost as soon as the notch starts opening...
+    static let contentFadeInDelay: TimeInterval = 0.03
+    /// ...and are sharp and fully shown well before it reaches full size.
+    static let contentFadeInDuration: TimeInterval = 0.13
     /// How long the title and controls take to blur and fade out on close.
     static let contentFadeOutDuration: TimeInterval = 0.25
     /// How blurred the title and controls are when fully faded out.
