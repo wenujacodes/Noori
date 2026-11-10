@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- The closed notch could get stuck as a square-cornered box (black, or the album art) until you hovered over it. Its background is now drawn in the notch's own shape, so it stays rounded even when macOS skips the notch's clip.
+
 ## [1.1.0] - 2026-11-10
 
 ### Added

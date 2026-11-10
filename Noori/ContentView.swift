@@ -588,8 +588,12 @@ struct ContentView: View {
     /// closed notch's lyrics).
     private var notchBackground: some View {
         let artAvailable = musicManager.hasActiveSession && !musicManager.isAdvertisement
+        // Drawn in the notch's own shape rather than as a rectangle that relies on
+        // the clip below. macOS sometimes skipped that clip for a frame and kept
+        // the result until the next layout (hover), showing the notch as a
+        // square-cornered box (the black, or the album art, unclipped).
         return ZStack {
-            Color.black
+            resolvedClipShape.fill(Color.black)
             // The art layers stay in place while their setting is on and only fade.
             // Adding and removing them, with an animation on the whole background,
             // also animated the background's size on a different curve from the
@@ -606,6 +610,7 @@ struct ContentView: View {
                 .animation(showsAnyArtBackground ? .easeOut(duration: 0.3) : .easeIn(duration: 0.18)) {
                     $0.opacity(showsAnyArtBackground ? 1 : 0)
                 }
+                .clipShape(resolvedClipShape)
             }
         }
     }
