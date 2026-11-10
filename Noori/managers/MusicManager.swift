@@ -502,6 +502,8 @@ class MusicManager: ObservableObject {
     private var lastArtworkContentURL: String? = nil
 
     @Published var flipAngle: Double = 0
+    /// A Spotify ad is playing (its track id starts with "spotify:ad:").
+    @Published private(set) var isAdvertisement = false
     @Published var lastFlipDirection: SkipDirection = .forward
     private let flipAnimationDuration: TimeInterval = 0.75
     private var flipCooldownActive: Bool = false
@@ -700,6 +702,9 @@ class MusicManager: ObservableObject {
         } else {
             self.updateIdleState(state: eventIsPlaying)
         }
+
+        let isAd = state.contentIdentifier?.hasPrefix("spotify:ad:") ?? false
+        if isAd != self.isAdvertisement { self.isAdvertisement = isAd }
 
         // Check for changes in track metadata using last artwork change values
         let titleChanged = state.title != self.lastArtworkTitle

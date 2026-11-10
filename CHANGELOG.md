@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
 
 ### Fixed
+- With the album art background on, the notch's opening bounce showed a dark rim around the art; the bounce is skipped then.
+- Spotify ads no longer fill the notch with the Spotify logo as album art; the art backgrounds hide while an ad plays.
 - With blurred album art behind the closed-notch lyrics, the strip under the camera showed as a black bar over the art; the whole top band is now black and the art starts below it.
 - Opening and closing the notch with an album art background is smooth again: the cover is now blurred once per song in the background (like Lyrimuse does) instead of on every frame of the animation.
 - When a song's lyrics end (or start), the closed notch now shrinks (or grows) smoothly with the lyric row instead of snapping back.

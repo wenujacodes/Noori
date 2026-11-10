@@ -411,7 +411,9 @@ struct ContentView: View {
             // a bounce plays, so the content inside never moves or stretches and
             // the notch at rest renders exactly as a plain clipped black shape.
             .background {
-                let isOpen = vm.notchState == .open
+                // Not with the album art background: the black swell would show as
+                // a dark rim around the art.
+                let isOpen = vm.notchState == .open && !showsAlbumArtBackground
                 resolvedClipShape
                     .fill(.black)
                     .keyframeAnimator(initialValue: CGFloat(0), trigger: notchOpenCount) { shape, swell in
@@ -572,10 +574,12 @@ struct ContentView: View {
 
     private var showsAlbumArtBackground: Bool {
         albumArtNotchBackground && vm.notchState == .open && musicManager.hasActiveSession
+            && !musicManager.isAdvertisement
     }
 
     private var showsClosedLyricsArtBackground: Bool {
         albumArtClosedLyricsBackground && vm.notchState == .closed && closedLyricRowVisible
+            && !musicManager.isAdvertisement
             && !vm.hideOnClosed && !lockScreenManager.isLocked
     }
 
