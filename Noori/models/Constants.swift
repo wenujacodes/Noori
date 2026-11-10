@@ -306,7 +306,7 @@ extension Defaults.Keys {
         // MARK: Appearance
     static let showEmojis = Key<Bool>("showEmojis", default: false)
     static let accentColor = Key<Color>("accentColor", default: Color.blue)
-    static let enableShadow = Key<Bool>("enableShadow", default: true)
+    static let enableShadow = Key<Bool>("enableShadow", default: false)
     static let tileShowLabels = Key<Bool>("tileShowLabels", default: false)
     static let sliderColor = Key<SliderColorEnum>(
         "sliderUseAlbumArtColor",
