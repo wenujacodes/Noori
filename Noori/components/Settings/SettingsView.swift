@@ -675,6 +675,7 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .hudAndOSD, title: "Enable external volume control listener", keywords: ["external volume", "ddc volume", "betterdisplay volume", "lunar volume", "disable native volume"], highlightID: SettingsTab.hudAndOSD.highlightID(for: "Enable external volume control listener")),
 
             // Media
+            SettingsSearchEntry(tab: .media, title: "Album art background", keywords: ["album", "art", "artwork", "cover", "background"], highlightID: SettingsTab.media.highlightID(for: "Album art background")),
             SettingsSearchEntry(tab: .media, title: "Music source", keywords: ["media source", "controller"], highlightID: SettingsTab.media.highlightID(for: "Music source")),
             SettingsSearchEntry(tab: .lyrics, title: "Show lyrics under the notch", keywords: ["lyrics", "karaoke", "words"], highlightID: SettingsTab.lyrics.highlightID(for: "Show lyrics under the notch")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics sources", keywords: ["lrclib", "netease", "qq", "source"], highlightID: SettingsTab.lyrics.highlightID(for: "Sources")),

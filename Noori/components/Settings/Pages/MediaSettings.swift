@@ -81,6 +81,19 @@ struct Media: View {
             }
 
             Section {
+                Defaults.Toggle(key: .albumArtNotchBackground) {
+                    Text("Album art background")
+                }
+                .settingsHighlight(id: highlightID("Album art background"))
+            } header: {
+                Text("Player")
+            } footer: {
+                Text("Fills the open notch with the current song's album art.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
                 Defaults.Toggle(key: .showShuffleAndRepeat) {
                     HStack {
                         Text("Enable customizable controls")

@@ -59,6 +59,7 @@ struct ContentView: View {
     @Default(.showDoNotDisturbIndicator) var showDoNotDisturbIndicator
     @Default(.enableScreenRecordingDetection) var enableScreenRecordingDetection
     @Default(.enableCapsLockIndicator) var enableCapsLockIndicator
+    @Default(.albumArtNotchBackground) private var albumArtNotchBackground
     @Default(.showStandardMediaControls) var showStandardMediaControls
     @Default(.externalDisplayStyle) var externalDisplayStyle
     @Default(.hideNonNotchUntilHover) var hideNonNotchUntilHover
@@ -399,7 +400,7 @@ struct ContentView: View {
             .frame(alignment: .top)
             .padding(.horizontal, notchHorizontalPadding)
             .padding([.horizontal, .bottom], vm.notchState == .open ? 12 : 0)
-            .background(.black)
+            .background { notchBackground }
             .clipShape(resolvedClipShape)
             .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
                 measuredNotchHeight = height
@@ -566,6 +567,26 @@ struct ContentView: View {
         .modifier(PinnedToWindowTop())
         .environmentObject(privacyManager)
         .environmentObject(vm)
+    }
+
+    private var showsAlbumArtBackground: Bool {
+        albumArtNotchBackground && vm.notchState == .open && musicManager.hasActiveSession
+    }
+
+    /// Black, or the album art when that's turned on and the notch is open.
+    private var notchBackground: some View {
+        ZStack {
+            Color.black
+            if showsAlbumArtBackground {
+                AlbumArtNotchBackground(topBlack: max(24, vm.effectiveClosedNotchHeight))
+                    .transition(.opacity)
+            }
+        }
+        // In with the notch's content, out a little faster as it closes.
+        .animation(
+            showsAlbumArtBackground ? .easeOut(duration: 0.3) : .easeIn(duration: 0.18),
+            value: showsAlbumArtBackground
+        )
     }
 
     /// Grows the window when the open notch is taller than the window, which

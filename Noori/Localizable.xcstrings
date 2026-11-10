@@ -681,6 +681,15 @@
         }
       }
     },
+    "Album art background" : {
+
+    },
+    "Fills the open notch with the current song's album art." : {
+
+    },
+    "Player" : {
+
+    },
     "• Bug fixes" : {
       "comment" : "merge:ko:alt='• 버그 수정'",
       "localizations" : {
