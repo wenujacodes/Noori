@@ -570,7 +570,7 @@ extension Defaults.Keys {
     }
     static let showSongMetadataInClosedNotch = Key<Bool>("showSongMetadataInClosedNotch", default: false)
     /// Synced lyrics under the closed notch while music plays.
-    static let showLyrics = Key<Bool>("showLyrics", default: true)
+    static let showLyrics = Key<Bool>("showLyrics", default: false)
     // Lyrics: sources
     static let lyricsUseLRCLIB = Key<Bool>("lyricsUseLRCLIB", default: true)
     static let lyricsUseNetEase = Key<Bool>("lyricsUseNetEase", default: true)
