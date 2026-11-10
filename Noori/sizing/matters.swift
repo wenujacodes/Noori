@@ -92,6 +92,17 @@ func openNotchLyricsExtraHeight() -> CGFloat {
     let controlsSpill: CGFloat = 11
     return LyricsManager.shared.showsInOpenNotch ? NotchLyricLine.rowHeight + 6 + controlsSpill : 0
 }
+/// Window height that fits the open notch with a lyric row, whether or not one
+/// is showing yet. Lyrics can turn on (or load) while the notch is open, and a
+/// window sized without them cut off the notch's bottom until it was reopened.
+/// The extra window area is transparent and lets clicks through.
+@MainActor
+func openNotchWindowHeightWithLyricsRoom(isNooriMode: Bool) -> CGFloat {
+    let base = minimalisticOpenNotchSize(isNooriMode: isNooriMode).height - openNotchLyricsExtraHeight()
+    let lyricsRoom = NotchLyricLine.rowHeight + 6 + 11
+    return addShadowPadding(to: CGSize(width: 0, height: base + lyricsRoom), isMinimalistic: true).height
+}
+
 let cornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 19, bottom: 24), closed: (top: 6, bottom: 14))
 let minimalisticCornerRadiusInsets: (opened: (top: CGFloat, bottom: CGFloat), closed: (top: CGFloat, bottom: CGFloat)) = (opened: (top: 35, bottom: 35), closed: cornerRadiusInsets.closed)
 

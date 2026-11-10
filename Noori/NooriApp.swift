@@ -501,6 +501,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Always wide enough for the closed notch with the current song's lyrics.
         var size = size
         size.width = max(size.width, LyricsManager.shared.closedWindowWidth)
+        // Always room for the open notch with lyrics (see the function).
+        size.height = max(size.height, openNotchWindowHeightWithLyricsRoom(isNooriMode: shouldUseNooriMode(for: vm.screen)))
         if vm.notchState == .open {
             size.height = max(size.height, openNotchHeightFloor)
         }

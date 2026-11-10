@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The album art flip on a track change is kept inside the cover's own frame; mid-flip it could make the closed notch show as a square-cornered black rectangle for a moment.
 - The progress slider no longer vanishes before the rest of the player when the notch opens or closes: it used the same strong blur as the text, which smeared the thin bar away almost at once.
 - Turning on Caps Lock while the notch was open put the closed notch's Caps Lock indicator over the album art (and could freeze the notch). It now only shows in the closed notch.
-- The open notch's rounded bottom corners could be cut off when it was taller than its window (for example when the lyric row appeared without the window growing). The window now always makes room for the notch it shows, checking the window's real height (turning lyrics on for the first time could still cut off the second lyric line).
+- The open notch's rounded bottom corners could be cut off when it was taller than its window (for example when the lyric row appeared without the window growing). The window now always makes room for the notch it shows, and the window always has room for a lyric row, so turning lyrics on while the notch is open no longer cuts off its bottom.
 - The lyric row in the open notch only shows when the player has the lyrics button, so it can always be turned off where it appears; it used to show even after removing the button from the controls.
 
 ## [1.0.1] - 2026-11-09
