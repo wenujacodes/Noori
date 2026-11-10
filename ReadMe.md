@@ -19,20 +19,22 @@ Noori turns the MacBook notch into a lightweight island for music, lyrics, live 
 > Noori is still in active development. Expect frequent updates, and occasional rough edges. Bug reports and ideas are welcome in [Issues](https://github.com/wenujacodes/Noori/issues).
 
 ## Features
-- **Music:** now playing for Apple Music, Spotify and any app that shows up in macOS Now Playing, with album art, a visualizer and customizable controls.
-- **Synced lyrics:** the line being sung shows under the notch, filling in word by word when the timing is available. Optional translation (on-device on macOS 15+), pronunciation (romaji, pinyin…) or the next line underneath.
+- **Music:** now playing for Apple Music, Spotify and any app that shows up in macOS Now Playing, with album art, a visualizer and customizable controls. Optionally, the album art fills the open notch (blurred toward the bottom) or sits blurred behind the lyrics.
+- **Synced lyrics:** the line being sung shows under the notch, filling in word by word when the timing is available, with the next line underneath. Or show a translation (on-device on macOS 15+) or pronunciation (romaji, pinyin…) instead. Turn lyrics on with the lyrics button in the notch.
+- **Calls:** during a WhatsApp, FaceTime, Zoom, Teams, Discord, Slack or Telegram call, the notch shows a green call timer, like on iPhone. Click it to go back to the call.
+- **Messages:** new iMessages and texts drop down from the notch with the sender's photo, and you can reply right there (optional; needs Full Disk Access).
 - **Live activities:** charging, Focus, screen recording, camera and microphone use, and Caps Lock.
 - **Devices:** Bluetooth headphones and AirPods with battery levels and low-battery reminders, plus Wi-Fi and AirDrop changes.
-- **Volume and brightness:** custom HUDs in the notch replace the macOS ones, including keyboard backlight.
+- **Volume and brightness:** custom HUDs in the notch replace the macOS ones (green for volume, yellow for brightness), including keyboard backlight.
 - **Battery:** charging, low and full battery alerts.
 - **Gestures and shortcuts:** swipe to open, close or skip tracks, and keyboard shortcuts.
-- **Updates:** Noori updates itself (right-click the menu bar icon › Check for Updates…).
+- **Updates:** Noori updates itself (Settings › About › Check for Updates; right-click the notch for Settings).
 
 ## Requirements
 - macOS 14.6 or later. Translating lyrics into other languages needs macOS 15 or later.
 - Best on a MacBook with a notch; on other screens Noori shows a pill at the top.
 - Runs on Apple Silicon and Intel Macs.
-- Permissions when you use the matching feature: Accessibility (volume and brightness HUDs), Bluetooth (device HUDs) and Automation (Spotify and Apple Music controls).
+- Permissions when you use the matching feature: Accessibility (volume and brightness HUDs), Bluetooth (device HUDs), Automation (Spotify and Apple Music controls, and replying in Messages), and for message alerts Full Disk Access (to read new messages) and Contacts (names and photos).
 
 ## Install
 1. Download `Noori-<version>.dmg` (or the `.zip`) from the [latest release](https://github.com/wenujacodes/Noori/releases/latest).
@@ -43,6 +45,8 @@ Noori turns the MacBook notch into a lightweight island for music, lyrics, live 
 ## Privacy
 - Lyrics are looked up on LRCLIB, NetEase Cloud Music and QQ Music using the song's title, artist, album and length. They're kept in memory only, never saved. You can turn sources off, or lyrics entirely, in Settings › Lyrics.
 - Translation with Apple's on-device translation stays on your Mac.
+- Message alerts read new messages from your Mac's Messages database, on your Mac only. Noori never stores or sends message contents; it only remembers which message it showed last.
+- Call detection only checks which apps are using the microphone and speakers. No audio is recorded.
 
 ## Build from source
 Requires Xcode with Swift 6.1+.
