@@ -597,15 +597,13 @@ struct ContentView: View {
         // The same room below the notch that the root frame leaves.
         let below = isNooriMode ? nooriTopOffset + nooriShadowInset * 2 : currentShadowPadding
         let needed = (measuredNotchHeight + below).rounded(.up)
-        guard abs(needed - delegate.openNotchHeightFloor) >= 1 else { return }
         delegate.openNotchHeightFloor = needed
-        let base = addShadowPadding(to: dynamicNotchSize, isMinimalistic: true)
-        guard needed > base.height else { return }
         // Resize after this layout pass, never during it (resizing the window
-        // mid-layout can make SwiftUI lay out again and again).
+        // mid-layout can make SwiftUI lay out again and again). It only grows
+        // windows that are actually shorter, so it settles at once.
         DispatchQueue.main.async {
             guard vm.notchState == .open else { return }
-            delegate.ensureWindowSize(CGSize(width: base.width, height: needed), animated: false, force: false)
+            delegate.ensureOpenWindowHeight(needed)
         }
     }
 
