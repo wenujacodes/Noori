@@ -12,10 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New messages in the notch: when an iMessage or text arrives, the notch drops down with the sender's photo (or initials), name and message, and a reply field. Press Return to send the reply, Esc to dismiss; it hides by itself after about 6 seconds unless you're pointing at it or typing. Click the message to open Messages. Turn it on in Settings › Live Activities › Messages. It needs Full Disk Access (to read new messages), Contacts (for names and photos, optional) and permission to control Messages (asked on the first reply). Nothing from your messages is saved; Noori only remembers which message it saw last.
 
 ### Changed
+- The menu bar icon is off by default for new installs (Settings, Restart and Quit are in the notch's right-click menu; turn the icon on in Settings › General).
 - Music player: the three main controls stay together in the center, and the two side buttons sit apart toward the edges, mirrored for balance.
 - Volume bars are green and brightness bars yellow in every volume/brightness HUD (Settings › Volume & Brightness › "Green volume, yellow brightness", on by default).
 
 ### Fixed
+- Turning on Caps Lock while the notch was open put the closed notch's Caps Lock indicator over the album art (and could freeze the notch). It now only shows in the closed notch.
 - The open notch's rounded bottom corners could be cut off when it was taller than its window (for example when the lyric row appeared without the window growing). The window now always makes room for the notch it shows.
 - The lyric row in the open notch only shows when the player has the lyrics button, so it can always be turned off where it appears; it used to show even after removing the button from the controls.
 

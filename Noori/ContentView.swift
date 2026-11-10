@@ -576,10 +576,16 @@ struct ContentView: View {
         // The same room below the notch that the root frame leaves.
         let below = isNooriMode ? nooriTopOffset + nooriShadowInset * 2 : currentShadowPadding
         let needed = (measuredNotchHeight + below).rounded(.up)
+        guard abs(needed - delegate.openNotchHeightFloor) >= 1 else { return }
         delegate.openNotchHeightFloor = needed
         let base = addShadowPadding(to: dynamicNotchSize, isMinimalistic: true)
         guard needed > base.height else { return }
-        delegate.ensureWindowSize(CGSize(width: base.width, height: needed), animated: false, force: false)
+        // Resize after this layout pass, never during it (resizing the window
+        // mid-layout can make SwiftUI lay out again and again).
+        DispatchQueue.main.async {
+            guard vm.notchState == .open else { return }
+            delegate.ensureWindowSize(CGSize(width: base.width, height: needed), animated: false, force: false)
+        }
     }
 
     private func installRootLifecycleHandlers<Content: View>(on view: Content) -> some View {
@@ -653,7 +659,7 @@ struct ContentView: View {
                             styleOverride: batteryModel.activeTemporaryHUDKind.map { resolvedBatteryNotificationStyle(for: $0) }
                         )
                         .id(batteryModel.activeTemporaryHUDToken)
-                      } else if isSneakPeekVisibleOnCurrentScreen && !controlHUDUnderLyrics && (Defaults[.inlineHUD] || isAirPodsListeningModeSneak) && (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
+                      } else if isSneakPeekVisibleOnCurrentScreen && !controlHUDUnderLyrics && (Defaults[.inlineHUD] || isAirPodsListeningModeSneak) && (coordinator.sneakPeek.type != .music) && (coordinator.sneakPeek.type != .battery) && (coordinator.sneakPeek.type != .capsLock || vm.notchState == .closed) && ((coordinator.sneakPeek.type != .volume && coordinator.sneakPeek.type != .brightness && coordinator.sneakPeek.type != .backlight) || vm.notchState == .closed) {
                           InlineHUD(type: $coordinator.sneakPeek.type, value: $coordinator.sneakPeek.value, icon: $coordinator.sneakPeek.icon, hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
                               .transition(
                                   coordinator.sneakPeek.type == .capsLock

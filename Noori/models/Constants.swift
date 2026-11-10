@@ -388,7 +388,7 @@ extension Defaults.Keys {
     // MARK: Bluetooth Audio Devices
     static let showBluetoothDeviceConnections = Key<Bool>("showBluetoothDeviceConnections", default: true)
     static let showWiFiChanges = Key<Bool>("showWiFiChanges", default: true)
-    static let showMenuBarIcon = Key<Bool>("showMenuBarIcon", default: true)
+    static let showMenuBarIcon = Key<Bool>("showMenuBarIcon", default: false)
     static let showAirDropChanges = Key<Bool>("showAirDropChanges", default: true)
     static let useColorCodedBatteryDisplay = Key<Bool>("useColorCodedBatteryDisplay", default: true)
     static let useSmoothColorGradient = Key<Bool>("useSmoothColorGradient", default: true)
