@@ -574,6 +574,10 @@ struct ContentView: View {
             && !musicManager.isAdvertisement
     }
 
+    private var showsAnyArtBackground: Bool {
+        showsAlbumArtBackground || showsClosedLyricsArtBackground
+    }
+
     private var showsClosedLyricsArtBackground: Bool {
         albumArtClosedLyricsBackground && vm.notchState == .closed && closedLyricRowVisible
             && !musicManager.isAdvertisement
@@ -591,18 +595,17 @@ struct ContentView: View {
             // also animated the background's size on a different curve from the
             // notch's outline, which left see-through gaps at the rounded corners
             // while the notch opened and closed. The animation now covers opacity only.
-            if albumArtNotchBackground && artAvailable {
-                AlbumArtNotchBackground(style: .open, topBlack: max(24, vm.effectiveClosedNotchHeight))
-                    .animation(showsAlbumArtBackground ? .easeOut(duration: 0.3) : .easeIn(duration: 0.18)) {
-                        $0.opacity(showsAlbumArtBackground ? 1 : 0)
-                    }
-            }
-            if albumArtClosedLyricsBackground && artAvailable {
+            if (albumArtNotchBackground || albumArtClosedLyricsBackground) && artAvailable {
                 // The music row grows 8 pt while hovered; keep that band black too.
-                AlbumArtNotchBackground(style: .closedLyrics, topBlack: vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0))
-                    .animation(.easeInOut(duration: 0.3)) {
-                        $0.opacity(showsClosedLyricsArtBackground ? 1 : 0)
-                    }
+                AlbumArtNotchBackground(
+                    sharpTop: showsAlbumArtBackground,
+                    topBlack: vm.notchState == .open
+                        ? max(24, vm.effectiveClosedNotchHeight)
+                        : vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0)
+                )
+                .animation(showsAnyArtBackground ? .easeOut(duration: 0.3) : .easeIn(duration: 0.18)) {
+                    $0.opacity(showsAnyArtBackground ? 1 : 0)
+                }
             }
         }
     }

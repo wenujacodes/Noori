@@ -105,20 +105,16 @@ final class AlbumArtBackdrop: ObservableObject {
 }
 
 /// The current song's album art behind the notch (Settings › Music › Player).
-/// The top stays black so the notch still blends with the camera housing, and a
-/// new cover crossfades in. Shows the pre-blurred images from `AlbumArtBackdrop`.
+/// One view for both the closed notch's lyrics and the open notch, so opening
+/// and closing never crossfade between two differently blurred copies: the
+/// heavily blurred cover always stays, and opening only fades in the sharper
+/// cover over its top half. The top stays black so the notch still blends with
+/// the camera housing, and a new cover crossfades in.
 struct AlbumArtNotchBackground: View {
-    enum Style {
-        /// The open notch: the cover fairly sharp at the top, melting into a heavy
-        /// blur toward the bottom so the controls and lyrics stay readable.
-        case open
-        /// Behind the closed notch's lyrics: the whole cover heavily blurred.
-        case closedLyrics
-    }
-
     @ObservedObject private var backdrop = AlbumArtBackdrop.shared
 
-    let style: Style
+    /// Show the sharper cover at the top (the open notch).
+    let sharpTop: Bool
     /// Height of the solid black band at the top (the closed notch's height).
     let topBlack: CGFloat
 
@@ -135,7 +131,7 @@ struct AlbumArtNotchBackground: View {
             .animation(.easeInOut(duration: 0.5), value: backdrop.revision)
             .overlay(alignment: .top) {
                 LinearGradient(colors: [.black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
-                    .frame(height: style == .open ? 36 : 12)
+                    .frame(height: 24)
             }
             .clipped()
         }
@@ -144,35 +140,31 @@ struct AlbumArtNotchBackground: View {
         .accessibilityHidden(true)
     }
 
-    @ViewBuilder
     private var layers: some View {
-        switch style {
-        case .open:
-            ZStack {
-                cover(backdrop.soft)
-                // The heavy blur takes over from about the middle down.
-                cover(backdrop.heavy)
-                    .mask {
-                        LinearGradient(
-                            stops: [
-                                .init(color: .clear, location: 0.35),
-                                .init(color: .black, location: 0.7),
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    }
-            }
-            .overlay {
-                LinearGradient(
-                    colors: [.black.opacity(0.2), .black.opacity(0.45)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            }
-        case .closedLyrics:
+        ZStack {
             cover(backdrop.heavy)
-                .overlay { Color.black.opacity(0.4) }
+            // The sharper cover over the top, melting into the blur from about
+            // the middle down. Only its opacity changes when the notch opens.
+            cover(backdrop.soft)
+                .mask {
+                    LinearGradient(
+                        stops: [
+                            .init(color: .black, location: 0.35),
+                            .init(color: .clear, location: 0.7),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
+                .animation(.easeOut(duration: 0.3)) { $0.opacity(sharpTop ? 1 : 0) }
+        }
+        // Darker toward the bottom, where the controls and lyrics are.
+        .overlay {
+            LinearGradient(
+                colors: [.black.opacity(0.25), .black.opacity(0.45)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
         }
     }
 
