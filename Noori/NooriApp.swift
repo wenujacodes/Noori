@@ -532,6 +532,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !AppRuntimeEnvironment.isUITesting {
             MessagesNotificationManager.shared.start()
         }
+        // Pre-blurs the album art for the notch backgrounds (only while one is on),
+        // so the first open already has it.
+        _ = AlbumArtBackdrop.shared
         MenuBarController.shared.install(updater: SettingsWindowController.shared.updater)
         
         // Migrate legacy progress bar settings

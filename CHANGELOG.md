@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
 
 ### Fixed
+- Opening and closing the notch with an album art background is smooth again: the cover is now blurred once per song in the background (like Lyrimuse does) instead of on every frame of the animation.
 - When a song's lyrics end (or start), the closed notch now shrinks (or grows) smoothly with the lyric row instead of snapping back.
 - The album art flip on a track change is kept inside the cover's own frame; mid-flip it could make the closed notch show as a square-cornered black rectangle for a moment.
 - The progress slider no longer vanishes before the rest of the player when the notch opens or closes: it used the same strong blur as the text, which smeared the thin bar away almost at once.
