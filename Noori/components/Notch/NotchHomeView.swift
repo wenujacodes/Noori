@@ -29,15 +29,34 @@ import AppKit
 struct NooriArtworkSourceView: View {
     @ObservedObject private var musicManager = MusicManager.shared
 
-    let cornerRadius: CGFloat
     let contentMode: ContentMode
 
     var body: some View {
         Image(nsImage: musicManager.albumArt)
             .resizable()
             .aspectRatio(contentMode: contentMode)
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .clipShape(AlbumArtCornerShape(isWide: musicManager.albumArt.isWideArtwork))
     }
+}
+
+/// Rounded corners for the small album art, sized as a share of the cover.
+/// The closed and open notch show the cover at different sizes and it glides
+/// between them; with fixed radii (4 pt closed, 12 pt open) the rounding
+/// jumped mid-glide. A proportional radius grows and shrinks with the cover.
+struct AlbumArtCornerShape: Shape {
+    /// Wide covers (video thumbnails) get gentler corners.
+    var isWide = false
+
+    func path(in rect: CGRect) -> Path {
+        let ratio: CGFloat = isWide ? 0.08 : 0.22
+        return RoundedRectangle(cornerRadius: min(rect.width, rect.height) * ratio, style: .continuous)
+            .path(in: rect)
+    }
+}
+
+extension NSImage {
+    /// Wider than tall (a video thumbnail rather than a square cover).
+    var isWideArtwork: Bool { size.height > 0 && size.width / size.height > 1.0 }
 }
 
 // MARK: - Music Player Components

@@ -791,7 +791,7 @@ struct ContentView: View {
                         Image(nsImage: musicManager.albumArt)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .clipShape(RoundedRectangle(cornerRadius: musicManager.albumArt.size.width/musicManager.albumArt.size.height > 1.0 ? MusicPlayerImageSizes.cornerRadiusInset.closed/3.0 : MusicPlayerImageSizes.cornerRadiusInset.closed))
+                            .clipShape(AlbumArtCornerShape(isWide: musicManager.albumArt.isWideArtwork))
                     )
                     .clipped()
                     .matchedGeometryEffect(id: "albumArt", in: albumArtNamespace)

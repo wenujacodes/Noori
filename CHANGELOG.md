@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Volume bars are always green and brightness bars yellow in every volume/brightness HUD.
 
 ### Fixed
+- The small album art's rounded corners change smoothly as it glides between the closed and open notch (they used to jump from 4 to 12 pt mid-glide).
+- The progress slider no longer seems to appear after the rest of the player when the notch opens.
 - Opening the notch feels light again: a height check measured the notch on every frame of the animation and made the whole notch redraw each time. It's gone (the window always has room now).
 - No more black rectangle flashing over the small album art when the notch opens or closes (it came from rendering the cover offscreen for the flip).
 - With the album art background on, opening and closing the notch could lose its rounded corners and stutter: the art's fade also animated the background's size on a different curve from the notch. The art now stays in place and only fades.

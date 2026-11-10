@@ -121,8 +121,9 @@ struct MinimalisticMusicPlayerView: View {
                 // Compact progress bar
                 progressBar
                     .padding(.top, batteryOffNotchMode ? 4 : 6)
-                    // A 4 pt bar vanishes under the full blur; fade it with the rest.
-                    .fadesWithNotchContent(blur: 2)
+                    // A 4 pt bar vanishes under the full blur and looks late at low
+                    // opacity: a light blur, and it comes in a little ahead.
+                    .fadesWithNotchContent(blur: 2, early: true)
                 
                 // Compact playback controls
                 if shouldShowControlHUDRow {
@@ -788,10 +789,6 @@ struct MinimalisticAlbumArtView: View {
     @ObservedObject var vm: NooriViewModel
     let albumArtNamespace: Namespace.ID
 
-    private var albumArtCornerRadius: CGFloat {
-        musicManager.albumArt.size.width / musicManager.albumArt.size.height > 1.0 ? 4 : 12
-    }
-
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             albumArtButton
@@ -805,10 +802,7 @@ struct MinimalisticAlbumArtView: View {
                 Color.clear
                     .aspectRatio(1, contentMode: .fit)
                     .background(
-                        NooriArtworkSourceView(
-                            cornerRadius: albumArtCornerRadius,
-                            contentMode: .fit
-                        )
+                        NooriArtworkSourceView(contentMode: .fit)
                     )
                     .clipped()
                     .matchedGeometryEffect(id: "albumArt", in: albumArtNamespace)

@@ -103,10 +103,13 @@ private struct FadesWithNotchContentModifier: ViewModifier {
     /// Blur when fully faded out. Thin things (the progress bar) use less, or
     /// the blur smears them away long before the rest has faded.
     let blur: CGFloat
+    /// Thin things also look later than the rest at the same opacity; these
+    /// reach full strength sooner (square-root curve) while opening.
+    let early: Bool
 
     func body(content: Content) -> some View {
         let isClosing = vm.notchState == .closed
-        let opacity = !enabled ? 1 : (isClosing ? 0 : openingOpacity)
+        let opacity = !enabled ? 1 : (isClosing ? 0 : (early ? openingOpacity.squareRoot() : openingOpacity))
         content
             .blur(radius: (1 - opacity) * blur)
             .opacity(opacity)
@@ -121,7 +124,7 @@ extension View {
     /// Open-notch content that fades and blurs in and out with the notch.
     /// Views that glide in from the closed notch (album art, visualizer) pass
     /// `false` while the closed notch shows them, so they stay sharp.
-    func fadesWithNotchContent(_ enabled: Bool = true, blur: CGFloat = NooriMotion.contentFadeBlur) -> some View {
-        modifier(FadesWithNotchContentModifier(enabled: enabled, blur: blur))
+    func fadesWithNotchContent(_ enabled: Bool = true, blur: CGFloat = NooriMotion.contentFadeBlur, early: Bool = false) -> some View {
+        modifier(FadesWithNotchContentModifier(enabled: enabled, blur: blur, early: early))
     }
 }
