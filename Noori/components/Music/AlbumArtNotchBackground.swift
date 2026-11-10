@@ -25,13 +25,10 @@ import SwiftUI
 final class AlbumArtBackdrop: ObservableObject {
     static let shared = AlbumArtBackdrop()
 
-    /// The open notch's background, baked into one picture: the cover sharp at
-    /// the top, melting into a heavy blur from about the middle down, darkened
-    /// toward the bottom (512 × 256, the open notch's shape).
-    @Published private(set) var open: NSImage?
-    /// Behind the closed notch's lyrics: the cover heavily blurred and dimmed
-    /// (a 64 px image; scaling it up adds its own softness).
-    @Published private(set) var closed: NSImage?
+    /// The cover, softened a little (about 256 px).
+    @Published private(set) var soft: NSImage?
+    /// The cover, heavily blurred (a 64 px image).
+    @Published private(set) var heavy: NSImage?
     /// Changes with every new cover, for the crossfade.
     @Published private(set) var revision = 0
 
@@ -56,8 +53,8 @@ final class AlbumArtBackdrop: ObservableObject {
             } else {
                 self.renderTask?.cancel()
                 self.renderedArt = nil
-                self.open = nil
-                self.closed = nil
+                self.soft = nil
+                self.heavy = nil
             }
         }
         .store(in: &cancellables)
@@ -72,13 +69,11 @@ final class AlbumArtBackdrop: ObservableObject {
         renderTask = Task.detached(priority: .userInitiated) {
             let soft = Self.blurred(cgImage, side: 256, radius: 1.5)
             let heavy = Self.blurred(cgImage, side: 64, radius: 6)
-            let open = (soft != nil && heavy != nil) ? Self.composeOpen(soft: soft!, heavy: heavy!) : nil
-            let closed = heavy.flatMap { Self.composeClosed(heavy: $0) }
             guard !Task.isCancelled else { return }
             await MainActor.run { [weak self] in
                 guard let self, self.renderedArt == id else { return }
-                self.open = open.map { NSImage(cgImage: $0, size: .zero) }
-                self.closed = closed.map { NSImage(cgImage: $0, size: .zero) }
+                self.soft = soft.map { NSImage(cgImage: $0, size: .zero) }
+                self.heavy = heavy.map { NSImage(cgImage: $0, size: .zero) }
                 self.revision &+= 1
             }
         }
@@ -107,47 +102,6 @@ final class AlbumArtBackdrop: ObservableObject {
         guard let output = blur.outputImage?.cropped(to: input.extent) else { return small }
         return context.createCGImage(output, from: input.extent)
     }
-
-    /// The open notch's picture: `soft` over `heavy` through a top-to-bottom
-    /// mask (sharp down to 35%, blurred from 70%), then a black wash from 25%
-    /// at the top to 45% at the bottom. Both covers fill a 2:1 frame, cropped
-    /// in the middle like the notch shows them.
-    nonisolated private static func composeOpen(soft: CGImage, heavy: CGImage) -> CGImage? {
-        let w: CGFloat = 512, h: CGFloat = 256
-        let frame = CGRect(x: 0, y: 0, width: w, height: h)
-        func filled(_ image: CGImage) -> CIImage {
-            let ci = CIImage(cgImage: image)
-            let scale = w / ci.extent.width
-            return ci.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
-                .transformed(by: CGAffineTransform(translationX: 0, y: -(w - h) / 2))
-                .cropped(to: frame)
-        }
-        // Core Image's y axis points up: the top of the picture is y = h.
-        func gradient(top: CIColor, bottom: CIColor, topY: CGFloat, bottomY: CGFloat) -> CIImage? {
-            CIFilter(name: "CILinearGradient", parameters: [
-                "inputPoint0": CIVector(x: 0, y: topY), "inputColor0": top,
-                "inputPoint1": CIVector(x: 0, y: bottomY), "inputColor1": bottom,
-            ])?.outputImage?.cropped(to: frame)
-        }
-        guard let mask = gradient(top: .white, bottom: .black, topY: h * 0.65, bottomY: h * 0.3),
-              let wash = gradient(top: CIColor(red: 0, green: 0, blue: 0, alpha: 0.25),
-                                  bottom: CIColor(red: 0, green: 0, blue: 0, alpha: 0.45),
-                                  topY: h, bottomY: 0),
-              let blend = CIFilter(name: "CIBlendWithMask", parameters: [
-                kCIInputImageKey: filled(soft),
-                kCIInputBackgroundImageKey: filled(heavy),
-                kCIInputMaskImageKey: mask,
-              ])?.outputImage
-        else { return nil }
-        return context.createCGImage(wash.composited(over: blend).cropped(to: frame), from: frame)
-    }
-
-    /// The closed notch's picture: the heavy blur dimmed by 40% black.
-    nonisolated private static func composeClosed(heavy: CGImage) -> CGImage? {
-        let ci = CIImage(cgImage: heavy)
-        let dim = CIImage(color: CIColor(red: 0, green: 0, blue: 0, alpha: 0.4)).cropped(to: ci.extent)
-        return context.createCGImage(dim.composited(over: ci), from: ci.extent)
-    }
 }
 
 /// The current song's album art behind the notch (Settings › Music › Player).
@@ -159,10 +113,8 @@ final class AlbumArtBackdrop: ObservableObject {
 struct AlbumArtNotchBackground: View {
     @ObservedObject private var backdrop = AlbumArtBackdrop.shared
 
-    /// Show the open notch's picture (sharp at the top).
+    /// Show the sharper cover at the top (the open notch).
     let sharpTop: Bool
-    /// Show the closed notch's blurred picture underneath (that setting is on).
-    let showsClosedLayer: Bool
     /// Height of the solid black band at the top (the closed notch's height).
     let topBlack: CGFloat
 
@@ -188,15 +140,31 @@ struct AlbumArtNotchBackground: View {
         .accessibilityHidden(true)
     }
 
-    /// One baked picture at a time; during an open/close with both backgrounds
-    /// on, the open picture fades over the closed one.
     private var layers: some View {
         ZStack {
-            if showsClosedLayer {
-                cover(backdrop.closed)
-            }
-            cover(backdrop.open)
+            cover(backdrop.heavy)
+            // The sharper cover over the top, melting into the blur from about
+            // the middle down. Only its opacity changes when the notch opens.
+            cover(backdrop.soft)
+                .mask {
+                    LinearGradient(
+                        stops: [
+                            .init(color: .black, location: 0.35),
+                            .init(color: .clear, location: 0.7),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
                 .animation(.easeOut(duration: 0.3)) { $0.opacity(sharpTop ? 1 : 0) }
+        }
+        // Darker toward the bottom, where the controls and lyrics are.
+        .overlay {
+            LinearGradient(
+                colors: [.black.opacity(0.25), .black.opacity(0.45)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
         }
     }
 

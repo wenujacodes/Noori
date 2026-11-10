@@ -599,7 +599,6 @@ struct ContentView: View {
                 // The music row grows 8 pt while hovered; keep that band black too.
                 AlbumArtNotchBackground(
                     sharpTop: showsAlbumArtBackground,
-                    showsClosedLayer: albumArtClosedLyricsBackground,
                     topBlack: vm.notchState == .open
                         ? max(24, vm.effectiveClosedNotchHeight)
                         : vm.effectiveClosedNotchHeight + (isHovering ? 8 : 0)
