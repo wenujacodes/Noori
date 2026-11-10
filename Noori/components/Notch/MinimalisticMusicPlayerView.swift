@@ -121,7 +121,8 @@ struct MinimalisticMusicPlayerView: View {
                 // Compact progress bar
                 progressBar
                     .padding(.top, batteryOffNotchMode ? 4 : 6)
-                    .fadesWithNotchContent()
+                    // A 4 pt bar vanishes under the full blur; fade it with the rest.
+                    .fadesWithNotchContent(blur: 2)
                 
                 // Compact playback controls
                 if shouldShowControlHUDRow {
