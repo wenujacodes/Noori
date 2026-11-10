@@ -553,6 +553,8 @@ extension Defaults.Keys {
     /// Synced lyrics under the closed notch while music plays.
     /// Fill the open notch with the current song's album art.
     static let albumArtNotchBackground = Key<Bool>("albumArtNotchBackground", default: false)
+    /// Blurred album art behind the lyrics under the closed notch.
+    static let albumArtClosedLyricsBackground = Key<Bool>("albumArtClosedLyricsBackground", default: false)
     static let showLyrics = Key<Bool>("showLyrics", default: false)
     // Lyrics: sources
     static let lyricsUseLRCLIB = Key<Bool>("lyricsUseLRCLIB", default: true)

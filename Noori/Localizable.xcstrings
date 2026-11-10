@@ -681,6 +681,12 @@
         }
       }
     },
+    "Blurred album art behind closed-notch lyrics" : {
+
+    },
+    "Fills the open notch with the current song's album art, blurred toward the bottom. The second option puts a blurred cover behind the lyrics under the closed notch." : {
+
+    },
     "• Bug fixes" : {
       "comment" : "merge:ko:alt='• 버그 수정'",
       "localizations" : {
@@ -6704,9 +6710,6 @@
       }
     },
     "Fill in words as they're sung" : {
-
-    },
-    "Fills the open notch with the current song's album art." : {
 
     },
     "Focus" : {

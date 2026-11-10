@@ -85,10 +85,14 @@ struct Media: View {
                     Text("Album art background")
                 }
                 .settingsHighlight(id: highlightID("Album art background"))
+                Defaults.Toggle(key: .albumArtClosedLyricsBackground) {
+                    Text("Blurred album art behind closed-notch lyrics")
+                }
+                .settingsHighlight(id: highlightID("Blurred album art behind closed-notch lyrics"))
             } header: {
                 Text("Player")
             } footer: {
-                Text("Fills the open notch with the current song's album art.")
+                Text("Fills the open notch with the current song's album art, blurred toward the bottom. The second option puts a blurred cover behind the lyrics under the closed notch.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

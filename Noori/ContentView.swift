@@ -60,6 +60,7 @@ struct ContentView: View {
     @Default(.enableScreenRecordingDetection) var enableScreenRecordingDetection
     @Default(.enableCapsLockIndicator) var enableCapsLockIndicator
     @Default(.albumArtNotchBackground) private var albumArtNotchBackground
+    @Default(.albumArtClosedLyricsBackground) private var albumArtClosedLyricsBackground
     @Default(.showStandardMediaControls) var showStandardMediaControls
     @Default(.externalDisplayStyle) var externalDisplayStyle
     @Default(.hideNonNotchUntilHover) var hideNonNotchUntilHover
@@ -573,12 +574,21 @@ struct ContentView: View {
         albumArtNotchBackground && vm.notchState == .open && musicManager.hasActiveSession
     }
 
-    /// Black, or the album art when that's turned on and the notch is open.
+    private var showsClosedLyricsArtBackground: Bool {
+        albumArtClosedLyricsBackground && vm.notchState == .closed && closedLyricRowVisible
+            && !vm.hideOnClosed && !lockScreenManager.isLocked
+    }
+
+    /// Black, or the album art when that's turned on (open notch, or behind the
+    /// closed notch's lyrics).
     private var notchBackground: some View {
         ZStack {
             Color.black
             if showsAlbumArtBackground {
-                AlbumArtNotchBackground(topBlack: max(24, vm.effectiveClosedNotchHeight))
+                AlbumArtNotchBackground(style: .open, topBlack: max(24, vm.effectiveClosedNotchHeight))
+                    .transition(.opacity)
+            } else if showsClosedLyricsArtBackground {
+                AlbumArtNotchBackground(style: .closedLyrics, topBlack: vm.effectiveClosedNotchHeight)
                     .transition(.opacity)
             }
         }
@@ -587,6 +597,7 @@ struct ContentView: View {
             showsAlbumArtBackground ? .easeOut(duration: 0.3) : .easeIn(duration: 0.18),
             value: showsAlbumArtBackground
         )
+        .animation(.easeInOut(duration: 0.3), value: showsClosedLyricsArtBackground)
     }
 
     /// Grows the window when the open notch is taller than the window, which
