@@ -112,22 +112,29 @@ mkdir -p "$DIST"
 rm -f "$ZIP"
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
-# 4. Sign the zip and update the appcast. generate_appcast works on a folder
-#    holding the archives and appcast.xml, so the current appcast is copied in
-#    first; existing entries are kept.
+# 4. Sign the zip and make the new appcast. generate_appcast works on a folder
+#    holding the archives and appcast.xml. Only this version's zip goes in, so
+#    the older entries are kept exactly as they are (with older zips in the
+#    folder it rewrites their links to this version's release and adds delta
+#    files). The result stays in a staging folder until the release is up.
 SPARKLE_BIN="$(find "$DERIVED/SourcePackages/artifacts" "$HOME/Library/Developer/Xcode/DerivedData" \
     -path "*sparkle/Sparkle/bin" -type d 2>/dev/null | head -1)"
 [[ -n "$SPARKLE_BIN" ]] || { echo "Sparkle tools not found; resolve packages first" >&2; exit 1; }
-cp "$APPCAST" "$DIST/appcast.xml"
+STAGE="$DERIVED/appcast"
+rm -rf "$STAGE"
+mkdir -p "$STAGE"
+cp "$ZIP" "$STAGE/"
+cp "$APPCAST" "$STAGE/appcast.xml"
 "$SPARKLE_BIN/generate_appcast" \
     --account Noori \
     --download-url-prefix "$DOWNLOAD_PREFIX" \
-    "$DIST"
-cp "$DIST/appcast.xml" "$APPCAST"
-echo "Updated $APPCAST"
+    "$STAGE"
+rm -f "$STAGE"/*.delta
+echo "Signed $ZIP"
 
 # 5. Optionally publish: the GitHub release (zip + this version's changelog
-#    notes), then the appcast on main.
+#    notes), then the appcast on main. Release first, feed second: the feed
+#    must never point at a missing download.
 if [[ "$PUBLISH" == "--publish" ]]; then
     NOTES="$DIST/notes-$VERSION.md"
     awk -v v="$VERSION" '
@@ -137,17 +144,30 @@ if [[ "$PUBLISH" == "--publish" ]]; then
     ' CHANGELOG.md > "$NOTES"
     [[ -s "$NOTES" ]] || echo "See the changelog for what's new." > "$NOTES"
 
-    gh release create "v$VERSION" "$ZIP" \
-        --repo "$RELEASES_REPO" \
-        --title "Noori $VERSION" \
-        --notes-file "$NOTES"
+    # Create the release first, then upload the zip with retries (big uploads
+    # sometimes time out).
+    if ! gh release view "v$VERSION" --repo "$RELEASES_REPO" > /dev/null 2>&1; then
+        gh release create "v$VERSION" \
+            --repo "$RELEASES_REPO" \
+            --title "Noori $VERSION" \
+            --notes-file "$NOTES"
+    fi
+    for attempt in 1 2 3 4 5; do
+        gh release upload "v$VERSION" "$ZIP" --clobber --repo "$RELEASES_REPO" && break
+        [[ $attempt == 5 ]] && { echo "Upload failed; the release v$VERSION has no zip yet and the appcast wasn't changed" >&2; exit 1; }
+        echo "Upload failed, trying again ($attempt/5)…" >&2
+        sleep 5
+    done
     echo "Published release v$VERSION in $RELEASES_REPO"
 
-    # Release first, feed second: the feed must never point at a missing download.
+    cp "$STAGE/appcast.xml" "$APPCAST"
     git add VERSION Noori.xcodeproj/project.pbxproj CHANGELOG.md Updates/appcast.xml
     git commit -q -m "Release $VERSION"
     git push -q
     echo "Committed and pushed the version bump and the appcast"
+else
+    cp "$STAGE/appcast.xml" "$APPCAST"
+    echo "Updated $APPCAST"
 fi
 
 if [[ "$PUBLISH" != "--publish" ]]; then
