@@ -9,6 +9,7 @@
  */
 
 import CoreWLAN
+import Combine
 import Defaults
 import Foundation
 import SwiftUI
@@ -41,6 +42,7 @@ final class ConnectivityMonitor: NSObject {
     // AirDrop
     private var airDropMode: String?
     private var airDropTimer: Timer?
+    private var airDropSettingObserver: AnyCancellable?
 
     private override init() {
         super.init()
@@ -103,10 +105,25 @@ final class ConnectivityMonitor: NSObject {
     private func startAirDrop() {
         airDropMode = Self.readAirDropMode()
         // sharingd posts no public notification for this setting, so check it
-        // every couple of seconds (a cheap preferences read).
-        airDropTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-            MainActor.assumeIsolated { ConnectivityMonitor.shared.checkAirDrop() }
-        }
+        // every couple of seconds (a cheap preferences read), but only while
+        // AirDrop changes are shown at all.
+        airDropSettingObserver = Defaults.publisher(.showAirDropChanges)
+            .map(\.newValue)
+            .removeDuplicates()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] enabled in
+                guard let self else { return }
+                self.airDropTimer?.invalidate()
+                self.airDropTimer = nil
+                guard enabled else { return }
+                self.airDropMode = Self.readAirDropMode()
+                let timer = Timer(timeInterval: 2, repeats: true) { _ in
+                    MainActor.assumeIsolated { ConnectivityMonitor.shared.checkAirDrop() }
+                }
+                timer.tolerance = 0.5
+                RunLoop.main.add(timer, forMode: .common)
+                self.airDropTimer = timer
+            }
     }
 
     /// "Off", "Contacts Only" or "Everyone" (sometimes "Everyone for 10 Minutes").

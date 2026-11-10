@@ -54,11 +54,25 @@ final class LyricsManager: ObservableObject {
     private let memoryCacheLimit = 40
 
     private init() {
-        // Cheap: returns at once when nothing is playing or there are no lyrics.
-        Timer.publish(every: 0.5, on: .main, in: .common)
-            .autoconnect()
-            .sink { [weak self] _ in self?.updateWithinLyrics() }
-            .store(in: &cancellables)
+        // Ticks only while lyrics are on, loaded and a song is playing; otherwise
+        // there's nothing to follow and no timer wakes the Mac.
+        Publishers.CombineLatest3(
+            Defaults.publisher(.showLyrics).map(\.newValue),
+            music.$isPlaying,
+            $lines.map { !$0.isEmpty }
+        )
+        .map { $0 && $1 && $2 }
+        .removeDuplicates()
+        .map { active -> AnyPublisher<Void, Never> in
+            guard active else { return Empty().eraseToAnyPublisher() }
+            return Timer.publish(every: 0.5, tolerance: 0.1, on: .main, in: .common)
+                .autoconnect()
+                .map { _ in () }
+                .eraseToAnyPublisher()
+        }
+        .switchToLatest()
+        .sink { [weak self] _ in self?.updateWithinLyrics() }
+        .store(in: &cancellables)
 
         Publishers.CombineLatest4(music.$songTitle, music.$artistName, music.$album, music.$songDuration)
             .combineLatest(Defaults.publisher(.showLyrics).map(\.newValue))
