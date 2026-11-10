@@ -177,3 +177,6 @@ graphify-out/
 
 # Python test caches
 __pycache__/
+
+# Coverage data written when running a debug build from the repo folder
+*.profraw
