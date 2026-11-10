@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Call live activity: during a WhatsApp, FaceTime, Zoom, Microsoft Teams, Discord, Slack or Telegram call, the closed notch shows a green phone with the call's time on the left and a small waveform on the right, like on iPhone. Click it to bring the call back to the front. It takes the place of the music pill while the call lasts. Noori notices the call when the app has the microphone and sound running for a few seconds (so voice notes don't trigger it); no audio is recorded and no new permission is needed. Turn it off in Settings › Live Activities › Calls.
+
 ### Changed
 - Music player: the three main controls stay together in the center, and the two side buttons sit apart toward the edges, mirrored for balance.
 - Volume bars are green and brightness bars yellow in every volume/brightness HUD (Settings › Volume & Brightness › "Green volume, yellow brightness", on by default).

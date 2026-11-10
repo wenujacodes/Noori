@@ -203,6 +203,17 @@ struct LiveActivitiesSettings: View {
             }
 
             Section {
+                Defaults.Toggle(key: .showCallLiveActivity) {
+                    Text("Show calls in the notch")
+                }
+                .settingsHighlight(id: highlightID("Show calls in the notch"))
+            } header: {
+                Text("Calls")
+            } footer: {
+                Text("Shows a call timer in the notch during WhatsApp, FaceTime, Zoom, Teams, Discord, Slack and Telegram calls. Click it to go back to the call.")
+            }
+
+            Section {
                 Toggle(
                     "Enable music live activity",
                     isOn: $coordinator.musicLiveActivityEnabled.animation()

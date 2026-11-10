@@ -49,6 +49,8 @@ struct ContentView: View {
     @ObservedObject var doNotDisturbManager = DoNotDisturbManager.shared
     @ObservedObject var lockScreenManager = LockScreenManager.shared
     @ObservedObject var capsLockManager = CapsLockManager.shared
+    @ObservedObject var callManager = CallActivityManager.shared
+    @Default(.showCallLiveActivity) var showCallLiveActivity
     
     @Default(.enableHorizontalMusicGestures) var enableHorizontalMusicGestures
     @Default(.showCapsLockLabel) var showCapsLockLabel
@@ -454,6 +456,9 @@ struct ContentView: View {
                         handleHover(hovering)
                     }
                     .onTapGesture {
+                        if handleClosedCallTapIfNeeded() {
+                            return
+                        }
                         if handleClosedMusicWaveformTapIfNeeded() {
                             return
                         }
@@ -638,6 +643,10 @@ struct ContentView: View {
                       } else if vm.notchState == .closed && capsLockManager.isCapsLockActive && Defaults[.enableCapsLockIndicator] && !vm.hideOnClosed && !lockScreenManager.isLocked {
                           InlineHUD(type: .constant(.capsLock), value: .constant(1.0), icon: .constant(""), hoverAnimation: $isHovering, gestureProgress: $gestureProgress)
                               .transition(AnyTransition.move(edge: .trailing).combined(with: .opacity))
+                      } else if showsClosedCallActivity {
+                          CallLiveActivity(isHovering: isHovering, gestureProgress: gestureProgress)
+                              .id("closed-call-live-activity")
+                              .transition(closedLiveActivitySwapTransition)
                       } else if canShowMusicDuringExpansion && musicPairingEligible {
                           MusicLiveActivity(secondary: musicSecondary)
                               .id("closed-music-live-activity")
@@ -1070,6 +1079,26 @@ struct ContentView: View {
             && !coordinator.firstLaunch
     }
 
+    /// The call pill shows in the closed notch (it takes priority over music).
+    private var showsClosedCallActivity: Bool {
+        vm.notchState == .closed
+            && showCallLiveActivity
+            && callManager.isCallActive
+            && !vm.hideOnClosed
+            && !lockScreenManager.isLocked
+            && (!isCurrentScreenExpansionVisible || currentScreenExpansionType == .music)
+    }
+
+    /// A click on the call pill brings the calling app to the front instead of opening the notch.
+    private func handleClosedCallTapIfNeeded() -> Bool {
+        guard showsClosedCallActivity else { return false }
+        if Defaults[.enableHaptics] {
+            triggerHapticIfAllowed()
+        }
+        callManager.bringCallAppToFront()
+        return true
+    }
+
     private func handleClosedMusicWaveformTapIfNeeded() -> Bool {
         guard shouldShowClosedMusicWaveformPlayPauseOverlay(for: nil),
               isHoveringClosedMusicWaveformControl else {
@@ -1144,6 +1173,7 @@ struct ContentView: View {
                 guard vm.notchState == .closed else { return }
                 guard !self.coordinator.isHoverOpenSuppressed else { return }
                 guard self.isHovering else { return }
+                guard !self.handleClosedCallTapIfNeeded() else { return }
                 guard !self.handleClosedMusicWaveformTapIfNeeded() else { return }
                 if Defaults[.enableHaptics] {
                     self.triggerHapticIfAllowed()

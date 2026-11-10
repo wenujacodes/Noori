@@ -681,6 +681,21 @@
         }
       }
     },
+    "Call" : {
+
+    },
+    "Call in %@" : {
+
+    },
+    "Calls" : {
+
+    },
+    "Show calls in the notch" : {
+
+    },
+    "Shows a call timer in the notch during WhatsApp, FaceTime, Zoom, Teams, Discord, Slack and Telegram calls. Click it to go back to the call." : {
+
+    },
     "• Bug fixes" : {
       "comment" : "merge:ko:alt='• 버그 수정'",
       "localizations" : {

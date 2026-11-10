@@ -617,6 +617,7 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .liveActivities, title: "Show Focus Label", keywords: ["focus label", "text"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show Focus Label")),
             SettingsSearchEntry(tab: .liveActivities, title: "Enable Camera Detection", keywords: ["camera", "privacy indicator"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable Camera Detection")),
             SettingsSearchEntry(tab: .liveActivities, title: "Enable Microphone Detection", keywords: ["microphone", "privacy"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable Microphone Detection")),
+            SettingsSearchEntry(tab: .liveActivities, title: "Show calls in the notch", keywords: ["call", "calls", "phone", "whatsapp", "facetime", "zoom", "teams", "discord", "slack", "telegram"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show calls in the notch")),
             SettingsSearchEntry(tab: .liveActivities, title: "Enable music live activity", keywords: ["music", "now playing"], highlightID: SettingsTab.liveActivities.highlightID(for: "Enable music live activity")),
 
             SettingsSearchEntry(tab: .liveActivities, title: "Show Focus as brief toast", keywords: ["focus", "toast"], highlightID: SettingsTab.liveActivities.highlightID(for: "Show Focus as brief toast")),
