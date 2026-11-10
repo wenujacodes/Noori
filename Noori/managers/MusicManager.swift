@@ -703,7 +703,13 @@ class MusicManager: ObservableObject {
             self.updateIdleState(state: eventIsPlaying)
         }
 
-        let isAd = state.contentIdentifier?.hasPrefix("spotify:ad:") ?? false
+        // Spotify ads: the AppleScript track id starts with "spotify:ad:". Through
+        // macOS Now Playing there's no such id, but ads come from the artist
+        // "Spotify" (no real song is credited to just "Spotify").
+        let isSpotify = state.bundleIdentifier == "com.spotify.client"
+        let isAd = (state.contentIdentifier?.contains("spotify:ad:") ?? false)
+            || (isSpotify && state.artist.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare("Spotify") == .orderedSame)
+            || (isSpotify && state.artist.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare("Advertisement") == .orderedSame)
         if isAd != self.isAdvertisement { self.isAdvertisement = isAd }
 
         // Check for changes in track metadata using last artwork change values
