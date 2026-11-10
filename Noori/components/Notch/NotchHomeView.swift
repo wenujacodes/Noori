@@ -315,11 +315,15 @@ struct CustomSlider: View {
                     .frame(height: trackHeight)
                     .cornerRadius(trackHeight / 2)
 
-                // Filled track
+                // Filled track. Its width never animates: inside the notch's
+                // opening animation it grew from 0 (the slider's first width) and
+                // showed up after the grey track. Position changes are already set
+                // without animation; dragging still animates the height.
                 Rectangle()
                     .fill(color)
                     .frame(width: filledTrackWidth, height: trackHeight)
                     .cornerRadius(trackHeight / 2)
+                    .animation(nil, value: filledTrackWidth)
             }
             .frame(height: max(restingTrackHeight, draggingTrackHeight), alignment: .bottom)
             .contentShape(Rectangle())
