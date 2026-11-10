@@ -806,11 +806,12 @@ struct ContentView: View {
             }
             .frame(width: wingBaseWidth, height: notchContentHeight)
 
+            // Clear: the notch behind it is already black under the camera (the
+            // album art backgrounds keep a black band there too). A black box here
+            // showed as a black rectangle over the art while the notch opened or
+            // closed and this row faded.
             Rectangle()
-                // Black under the camera; clear when the album art background
-                // already paints that band black (a black box here would show
-                // as a bar over the art).
-                .fill(showsClosedLyricsArtBackground ? Color.clear : Color.black)
+                .fill(Color.clear)
                 .frame(width: effectiveCenterWidth, height: notchContentHeight)
                 .overlay(
                     HStack(alignment: .top) {
