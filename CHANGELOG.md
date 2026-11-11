@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Noori checks for updates on its own once a day, in the background, and offers new versions when they're out (before, you had to click Check for Updates). Turn it off, or have updates download by themselves, in Settings › About.
+
 ## [1.2.2] - 2026-11-11
 
 ### Fixed
