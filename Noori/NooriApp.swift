@@ -497,6 +497,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Before anything asks for Accessibility: drop a stale entry left by an
+        // older signature, so the prompt adds one that works.
+        if !AppRuntimeEnvironment.isUITesting {
+            StalePermissionCleanup.run()
+        }
 
         LockScreenManager.shared.configure(viewModel: vm)
         LockScreenIndicatorWindowManager.shared.configure(viewModel: vm)
