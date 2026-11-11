@@ -3,6 +3,14 @@
     <channel>
         <title>Noori</title>
         <item>
+            <title>1.2.1</title>
+            <pubDate>Wed, 11 Nov 2026 11:42:57 +0530</pubDate>
+            <sparkle:version>6</sparkle:version>
+            <sparkle:shortVersionString>1.2.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/wenujacodes/Noori/releases/download/v1.2.1/Noori-1.2.1.zip" length="8041601" type="application/octet-stream" sparkle:edSignature="19PKRHSCt+BAJuDXzxcYFuk3fKc98UYv5xFRz+mzT5Z+T19NGUT/P1Pqx1QrBT9ZkujCr+/cis+p4Xx0MU53Bg=="/>
+        </item>
+        <item>
             <title>1.2.0</title>
             <pubDate>Wed, 11 Nov 2026 11:29:12 +0530</pubDate>
             <sparkle:version>5</sparkle:version>
@@ -17,14 +25,6 @@
             <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/wenujacodes/Noori/releases/download/v1.1.0/Noori-1.1.0.zip" length="7962180" type="application/octet-stream" sparkle:edSignature="7j1G2oAsjLAsRIYLXc+eWspACtDYyfkM1q5V7Rq01wBLDt3I3alPuHhiyAMLAy2vtzHUBBFeIdhkgn2Lt3WpCw=="/>
-        </item>
-        <item>
-            <title>1.0.1</title>
-            <pubDate>Tue, 10 Nov 2026 08:53:15 +0530</pubDate>
-            <sparkle:version>3</sparkle:version>
-            <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/wenujacodes/Noori/releases/download/v1.0.1/Noori-1.0.1.zip" length="7723448" type="application/octet-stream" sparkle:edSignature="8COPp0Ptyr/Ya4MzPS3xWfPzkI3RhvKMSA5dK47Ud4+nWCiEsRZVMMcQAzpUh5IO4nS/4o3VtYHWv3aYGmtTAQ=="/>
         </item>
     </channel>
 </rss>
