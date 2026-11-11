@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-11
+
 ### Added
 - **Per-song lyrics timing:** when one song's lyrics run early or late, right-click the notch › Lyrics Timing to move them 0.5 s earlier or later, or use "This song" in Settings › Lyrics › Timing. It lasts until Noori quits; the global timing offset (now up to ±5 s) still applies to every song.
 - **Vibrant visualizer colors are back** and are the default: the visualizer picks the cover's most colorful shades instead of its average color. Settings › Music › Music visualizer › Visualizer colors switches back to Legacy.
