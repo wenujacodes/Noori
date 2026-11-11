@@ -79,7 +79,27 @@ func minimalisticOpenNotchSize(isNooriMode: Bool) -> CGSize {
     }
 
     size.height += openNotchLyricsExtraHeight()
+    if openNotchShowsHUDUnderLyrics() { size.height += openNotchHUDRowHeight }
     return size
+}
+
+/// Height of the volume/brightness row under the open notch's lyrics.
+let openNotchHUDRowHeight: CGFloat = 30
+
+/// A volume, brightness or keyboard backlight change while the open notch shows
+/// lyrics: the notch grows at the bottom for a slider under the lyrics, and the
+/// playback controls stay where they are.
+@MainActor
+func openNotchShowsHUDUnderLyrics() -> Bool {
+    guard LyricsManager.shared.showsInOpenNotch, Defaults[.enableSystemHUD] else { return false }
+    let peek = NooriViewCoordinator.shared.sneakPeek
+    guard peek.show else { return false }
+    switch peek.type {
+    case .volume: return Defaults[.enableVolumeHUD]
+    case .brightness: return Defaults[.enableBrightnessHUD]
+    case .backlight: return Defaults[.enableKeyboardBacklightHUD]
+    default: return false
+    }
 }
 
 /// Extra height of the open notch for the lyric row under the player controls.
@@ -98,8 +118,10 @@ func openNotchLyricsExtraHeight() -> CGFloat {
 /// The extra window area is transparent and lets clicks through.
 @MainActor
 func openNotchWindowHeightWithLyricsRoom(isNooriMode: Bool) -> CGFloat {
-    let base = minimalisticOpenNotchSize(isNooriMode: isNooriMode).height - openNotchLyricsExtraHeight()
-    let lyricsRoom = NotchLyricLine.rowHeight + 6 + 11
+    let shownHUD: CGFloat = openNotchShowsHUDUnderLyrics() ? openNotchHUDRowHeight : 0
+    let base = minimalisticOpenNotchSize(isNooriMode: isNooriMode).height - openNotchLyricsExtraHeight() - shownHUD
+    // Room for the lyric row and the volume/brightness row that can appear under it.
+    let lyricsRoom = NotchLyricLine.rowHeight + 6 + 11 + openNotchHUDRowHeight
     return addShadowPadding(to: CGSize(width: 0, height: base + lyricsRoom), isMinimalistic: true).height
 }
 

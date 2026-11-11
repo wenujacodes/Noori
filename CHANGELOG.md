@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When the notch opens, the song title, progress bar, controls and lyric line slide down out of the top of the notch as they fade in, one row after another, and slide back up when it closes. The album art and visualizer still glide in from the closed notch.
 
 ### Fixed
+- Changing volume or brightness with lyrics in the open notch no longer swaps the playback controls for the slider: the notch grows at the bottom and the slider appears under the lyrics. The slider's icons are white instead of black.
 - The notch could lose its rounded corners and show as a square box (often when lyrics appeared under the closed notch) until you hovered over it. The music visualizer was the only AppKit view inside the notch, and it could make macOS drop the notch's rounded clip; it's now drawn in SwiftUI and looks the same.
 - Lyrics could run a few seconds late when a source had several versions of a song: Noori now picks the one closest in length to what's playing, instead of the first that was within 4 seconds.
 - Bluetooth devices only show a HUD when they actually connect: not in the open notch, not for devices already connected when Noori starts or the Mac wakes, and not when headphones drop and reconnect on their own within two minutes.

@@ -125,9 +125,10 @@ struct MinimalisticMusicPlayerView: View {
                     // opacity: a light blur, and it comes in a little ahead.
                     .fadesWithNotchContent(blur: 2, early: true, slide: 12)
                 
-                // Compact playback controls
-                if shouldShowControlHUDRow {
-                    controlHUDRow
+                // Compact playback controls (with lyrics showing, the volume or
+                // brightness slider goes under the lyrics instead; see below)
+                if shouldShowControlHUDRow && !lyricsManager.showsInOpenNotch {
+                    controlHUDRow()
                         .padding(.top, 4)
                         .fadesWithNotchContent(slide: 16)
                 } else {
@@ -147,6 +148,14 @@ struct MinimalisticMusicPlayerView: View {
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 }
 
+                // Volume / brightness under the lyrics: the notch grows at the
+                // bottom to fit it, and the slider fades in place there.
+                if shouldShowControlHUDRow && lyricsManager.showsInOpenNotch {
+                    controlHUDRow(height: 22)
+                        .padding(.top, openNotchHUDRowHeight - 22)
+                        .transition(.opacity)
+                }
+
             }
             .padding(.horizontal, shouldUseNooriMode(for: vm.screen) ? -4 : 12)
             .padding(.top, shouldUseNooriMode(for: vm.screen) ? 14 : (batteryOffNotchMode ? 10 : 6))
@@ -155,6 +164,7 @@ struct MinimalisticMusicPlayerView: View {
             .frame(height: calculateDynamicHeight(), alignment: .top)
             // Turning lyrics on or off grows or shrinks the player smoothly.
             .animation(NooriMotion.notchOpen, value: lyricsManager.showsInOpenNotch)
+            .animation(NooriMotion.change, value: shouldShowControlHUDRow)
         }
     }
 
@@ -188,6 +198,7 @@ struct MinimalisticMusicPlayerView: View {
             height += isNoori ? 14 : 15 // top padding
             height += isNoori ? 14 : minimalisticBaselineBottomPadding
             height += openNotchLyricsExtraHeight()
+            if openNotchShowsHUDUnderLyrics() { height += openNotchHUDRowHeight }
             return height
         }
 
@@ -201,6 +212,7 @@ struct MinimalisticMusicPlayerView: View {
         height += 10 // top padding
         height += 10 // bottom padding
         height += openNotchLyricsExtraHeight()
+        if openNotchShowsHUDUnderLyrics() { height += openNotchHUDRowHeight }
         return height
     }
 
@@ -413,7 +425,7 @@ struct MinimalisticMusicPlayerView: View {
         }
     }
 
-    private var controlHUDRow: some View {
+    private func controlHUDRow(height: CGFloat = 60) -> some View {
         HStack(alignment: .center, spacing: 10) {
             if !controlLeftIconName.isEmpty {
                 Image(systemName: controlLeftIconName)
@@ -429,8 +441,10 @@ struct MinimalisticMusicPlayerView: View {
                     .frame(width: 22, height: 22, alignment: .center)
             }
         }
+        // White icons on the dark notch (they defaulted to black).
+        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .center)
-        .frame(height: 60, alignment: .center)
+        .frame(height: height, alignment: .center)
         .onAppear { syncHUDValueIfNeeded(force: true) }
         .onChange(of: coordinator.sneakPeek.value) { _, _ in
             syncHUDValueIfNeeded(force: false)
