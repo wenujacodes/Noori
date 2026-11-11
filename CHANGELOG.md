@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When the notch opens, the song title, progress bar, controls and lyric line slide down out of the top of the notch as they fade in, one row after another, and slide back up when it closes. The album art and visualizer still glide in from the closed notch.
 
 ### Fixed
+- The notch no longer jumps sideways for a moment when it closes with lyrics on, or when a song changes: Noori's (invisible) window keeps one width instead of resizing and re-centering whenever a sneak peek or the lyrics width changed.
 - Resting the pointer on the notch's side edge (with lyrics on especially) no longer makes it open and close over and over with a haptic each time: the open notch only closes once the pointer really leaves it.
 - Changing volume or brightness with lyrics in the open notch no longer swaps the playback controls for the slider: the notch grows at the bottom and the slider appears under the lyrics. The slider's icons are white instead of black.
 - The notch could lose its rounded corners and show as a square box (often when lyrics appeared under the closed notch) until you hovered over it. The music visualizer was the only AppKit view inside the notch, and it could make macOS drop the notch's rounded clip; it's now drawn in SwiftUI and looks the same.

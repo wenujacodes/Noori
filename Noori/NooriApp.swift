@@ -260,7 +260,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         -> NSWindow
     {
         // Use the current required size instead of always using openNotchSize
-        let baseSize = calculateRequiredNotchSize()
+        let baseSize = stabilizedWindowSize(calculateRequiredNotchSize())
         let requiredSize = adjustedSizeForScreen(baseSize, screen: screen)
         let roundedWidth = requiredSize.width.rounded()
         let roundedHeight = requiredSize.height.rounded()
@@ -439,13 +439,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         resizeWindows(to: size, animated: animated, force: force)
     }
 
+    /// The widest closed notch with lyrics (`LyricsManager.closedWindowWidth`:
+    /// at most 620 + 130) plus the shadow padding.
+    private static let stableWindowWidth: CGFloat = 780
+
+    /// The window size actually used: the fixed width above, and always room
+    /// for the open notch with lyrics (see `openNotchWindowHeightWithLyricsRoom`).
+    private func stabilizedWindowSize(_ size: CGSize) -> CGSize {
+        CGSize(
+            width: max(size.width, Self.stableWindowWidth, LyricsManager.shared.closedWindowWidth),
+            height: max(size.height, openNotchWindowHeightWithLyricsRoom(isNooriMode: shouldUseNooriMode(for: vm.screen)))
+        )
+    }
+
     private func resizeWindows(to size: CGSize, animated: Bool, force: Bool) {
         guard size.width > 0, size.height > 0 else { return }
-        // Always wide enough for the closed notch with the current song's lyrics.
-        var size = size
-        size.width = max(size.width, LyricsManager.shared.closedWindowWidth)
-        // Always room for the open notch with lyrics (see the function).
-        size.height = max(size.height, openNotchWindowHeightWithLyricsRoom(isNooriMode: shouldUseNooriMode(for: vm.screen)))
+        // One fixed width, wide enough for everything the notch can show (the
+        // widest lyrics, sneak peeks, battery HUDs). Resizing re-centers the
+        // window, and for a frame the notch was drawn off-center: it jumped
+        // sideways when a sneak peek started or ended (every song change) and
+        // when closing with lyrics. The extra area is transparent and lets clicks
+        // through. Still grows past it if something ever needs more.
+        let size = stabilizedWindowSize(size)
 
         if Defaults[.showOnAllDisplays] {
             for (screen, window) in windows {
