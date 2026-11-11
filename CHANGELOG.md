@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-11-11
+
 ### Changed
 - Lyrics are 16 pt by default for new installs (Settings › Lyrics › Size goes up to 20 pt now).
 - All the player's control buttons are white (shuffle, repeat, lyrics and the output buttons were grey); a toggle that's on is still green.
