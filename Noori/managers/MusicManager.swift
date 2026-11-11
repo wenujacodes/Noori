@@ -522,6 +522,12 @@ class MusicManager: ObservableObject {
             }
             .store(in: &cancellables)
 
+        // Re-pick the album art colors when the color style changes.
+        Defaults.publisher(.colorExtractionMode, options: [])
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.calculateAverageColor() }
+            .store(in: &cancellables)
+
         // Observe Pear Desktop launch/terminate for auto-detection
         setupPearDesktopAutoDetection()
 

@@ -684,6 +684,7 @@ struct SettingsView: View {
             // Media
             SettingsSearchEntry(tab: .media, title: "Blurred album art behind closed-notch lyrics", keywords: ["album", "art", "cover", "blur", "lyrics", "closed"], highlightID: SettingsTab.media.highlightID(for: "Blurred album art behind closed-notch lyrics")),
             SettingsSearchEntry(tab: .media, title: "Album art background", keywords: ["album", "art", "artwork", "cover", "background"], highlightID: SettingsTab.media.highlightID(for: "Album art background")),
+            SettingsSearchEntry(tab: .media, title: "Visualizer colors", keywords: ["visualizer", "color", "vibrant", "legacy", "bars"], highlightID: SettingsTab.media.highlightID(for: "Visualizer colors")),
             SettingsSearchEntry(tab: .media, title: "Music source", keywords: ["media source", "controller"], highlightID: SettingsTab.media.highlightID(for: "Music source")),
             SettingsSearchEntry(tab: .lyrics, title: "Show lyrics under the notch", keywords: ["lyrics", "karaoke", "words"], highlightID: SettingsTab.lyrics.highlightID(for: "Show lyrics under the notch")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics sources", keywords: ["lrclib", "netease", "qq", "source"], highlightID: SettingsTab.lyrics.highlightID(for: "Sources")),

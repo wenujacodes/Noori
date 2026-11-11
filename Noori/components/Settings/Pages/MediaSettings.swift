@@ -27,6 +27,7 @@ struct Media: View {
     @Default(.showSneakPeekOnTrackChange) private var showSneakPeekOnTrackChange
     @Default(.autoHideInactiveNotchMediaPlayer) private var autoHideInactiveNotchMediaPlayer
     @Default(.visualizerBarCount) private var visualizerBarCount
+    @Default(.colorExtractionMode) private var colorExtractionMode
     @Default(.sliderColor) private var sliderColor
 
     
@@ -195,6 +196,12 @@ struct Media: View {
                     Text("5").tag(5)
                     Text("6").tag(6)
                 }
+
+                Picker("Visualizer colors", selection: $colorExtractionMode) {
+                    Text("Vibrant").tag(ColorExtractionMode.vibrant)
+                    Text("Legacy").tag(ColorExtractionMode.legacy)
+                }
+                .settingsHighlight(id: highlightID("Visualizer colors"))
 
             } header: {
                 Text("Music visualizer")

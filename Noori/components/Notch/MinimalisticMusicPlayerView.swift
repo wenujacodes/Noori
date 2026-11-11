@@ -123,17 +123,17 @@ struct MinimalisticMusicPlayerView: View {
                     .padding(.top, batteryOffNotchMode ? 4 : 6)
                     // A 4 pt bar vanishes under the full blur and looks late at low
                     // opacity: a light blur, and it comes in a little ahead.
-                    .fadesWithNotchContent(blur: 2, early: true)
+                    .fadesWithNotchContent(blur: 2, early: true, slide: 12)
                 
                 // Compact playback controls
                 if shouldShowControlHUDRow {
                     controlHUDRow
                         .padding(.top, 4)
-                        .fadesWithNotchContent()
+                        .fadesWithNotchContent(slide: 16)
                 } else {
                     playbackControls
                         .padding(.top, 4)
-                        .fadesWithNotchContent()
+                        .fadesWithNotchContent(slide: 16)
                 }
 
                 // The line being sung, under the controls.
@@ -143,7 +143,7 @@ struct MinimalisticMusicPlayerView: View {
                     }
                     .frame(height: NotchLyricLine.rowHeight)
                     .padding(.top, 6)
-                    .fadesWithNotchContent()
+                    .fadesWithNotchContent(slide: 18)
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 }
 
@@ -297,7 +297,7 @@ struct MinimalisticMusicPlayerView: View {
     private var visualizer: some View {
         let width = CGFloat(Defaults[.visualizerBarCount]) * 4
         return Rectangle()
-            .fill((Defaults[.coloredSpectrogram] ? Color(nsColor: MusicManager.shared.avgColor) : Color.gray).spectrogramGradient())
+            .fill((Defaults[.coloredSpectrogram] ? Color(nsColor: MusicManager.shared.avgColor) : Color.gray).spectrogramGradient(secondary: Defaults[.coloredSpectrogram] ? Color(nsColor: MusicManager.shared.secondaryColor) : nil))
             .mask {
                 AudioVisualizerView(isPlaying: .constant(MusicManager.shared.isPlaying))
                     .frame(width: width, height: 16)
@@ -306,7 +306,7 @@ struct MinimalisticMusicPlayerView: View {
             // Glides from the closed notch's visualizer, like the album art.
             .matchedGeometryEffect(id: "spectrum", in: albumArtNamespace)
             // Nothing to glide from when the closed notch shows no music: blur in/out instead.
-            .fadesWithNotchContent(!closedNotchShowsMusic(vm: vm))
+            .fadesWithNotchContent(!closedNotchShowsMusic(vm: vm), slide: 0)
     }
     
     // MARK: - Progress Bar (Full Width)
@@ -811,7 +811,7 @@ struct MinimalisticAlbumArtView: View {
         }
         .buttonStyle(PlainButtonStyle())
         // Nothing to glide from when the closed notch shows no music: blur in/out instead.
-        .fadesWithNotchContent(!closedNotchShowsMusic(vm: vm))
+        .fadesWithNotchContent(!closedNotchShowsMusic(vm: vm), slide: 0)
     }
 }
 

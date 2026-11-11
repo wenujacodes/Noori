@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Vibrant visualizer colors are back** and are the default: the visualizer picks the cover's most colorful shades instead of its average color. Settings › Music › Music visualizer › Visualizer colors switches back to Legacy.
+
+### Changed
+- When the notch opens, the song title, progress bar, controls and lyric line slide down out of the top of the notch as they fade in, one row after another, and slide back up when it closes. The album art and visualizer still glide in from the closed notch.
+
 ### Fixed
 - The closed notch could get stuck as a square-cornered box (black, or the album art) until you hovered over it. Its background is now drawn in the notch's own shape, so it stays rounded even when macOS skips the notch's clip.
 

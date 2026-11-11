@@ -8916,6 +8916,9 @@
     "line by line" : {
 
     },
+    "Legacy" : {
+
+    },
     "Listens for Focus session changes via distributed notifications" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -18047,6 +18050,9 @@
         }
       }
     },
+    "Vibrant" : {
+
+    },
     "Video" : {
 
     },
@@ -18069,6 +18075,9 @@
           }
         }
       }
+    },
+    "Visualizer colors" : {
+
     },
     "Volume" : {
       "comment" : "A button that sets the preview to show a volume OSD.",

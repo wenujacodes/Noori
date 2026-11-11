@@ -59,7 +59,7 @@ enum NooriMotion {
         )
         // Opening: the controls fade in quickly while the notch grows. Closing: they blur and fade out as the notch shrinks.
         return .asymmetric(
-            insertion: fade.animation(.easeOut(duration: contentFadeInDuration).delay(contentFadeInDelay)),
+            insertion: fade.animation(.smooth(duration: contentFadeInDuration).delay(contentFadeInDelay)),
             removal: fade.animation(.easeOut(duration: contentFadeOutDuration))
         )
     }
@@ -67,7 +67,10 @@ enum NooriMotion {
     /// The controls start fading in almost as soon as the notch starts opening...
     static let contentFadeInDelay: TimeInterval = 0.03
     /// ...and are sharp and fully shown well before it reaches full size.
-    static let contentFadeInDuration: TimeInterval = 0.13
+    static let contentFadeInDuration: TimeInterval = 0.2
+    /// How far the title slides down from the top while it fades in; the rows
+    /// below it start a little higher (see `fadesWithNotchContent`).
+    static let contentSlide: CGFloat = 8
     /// How long the title and controls take to fade out on close.
     static let contentFadeOutDuration: TimeInterval = 0.25
     /// How blurred the title and controls are when fully faded out. Kept small:
@@ -102,6 +105,9 @@ private struct FadesWithNotchContentModifier: ViewModifier {
     @EnvironmentObject private var vm: NooriViewModel
     /// When false the view stays sharp and fully visible (it glides instead).
     let enabled: Bool
+    /// How far above its place the view starts, so it slides down out of the
+    /// notch's top edge as it fades in (and back up as it fades out).
+    let slide: CGFloat
     /// Blur when fully faded out. Thin things (the progress bar) use less, or
     /// the blur smears them away long before the rest has faded.
     let blur: CGFloat
@@ -115,6 +121,7 @@ private struct FadesWithNotchContentModifier: ViewModifier {
         content
             .blur(radius: (1 - opacity) * blur)
             .opacity(opacity)
+            .offset(y: -(1 - opacity) * slide)
             .animation(
                 isClosing ? .easeOut(duration: NooriMotion.contentFadeOutDuration) : nil,
                 value: isClosing
@@ -123,10 +130,17 @@ private struct FadesWithNotchContentModifier: ViewModifier {
 }
 
 extension View {
-    /// Open-notch content that fades and blurs in and out with the notch.
-    /// Views that glide in from the closed notch (album art, visualizer) pass
-    /// `false` while the closed notch shows them, so they stay sharp.
-    func fadesWithNotchContent(_ enabled: Bool = true, blur: CGFloat = NooriMotion.contentFadeBlur, early: Bool = false) -> some View {
-        modifier(FadesWithNotchContentModifier(enabled: enabled, blur: blur, early: early))
+    /// Open-notch content that fades and blurs in and out with the notch,
+    /// sliding down from the notch's top edge by `slide` points (rows lower in
+    /// the notch pass more, so they come out one after another). Views that
+    /// glide in from the closed notch (album art, visualizer) pass `false`
+    /// while the closed notch shows them, so they stay sharp, and `slide: 0`.
+    func fadesWithNotchContent(
+        _ enabled: Bool = true,
+        blur: CGFloat = NooriMotion.contentFadeBlur,
+        early: Bool = false,
+        slide: CGFloat = NooriMotion.contentSlide
+    ) -> some View {
+        modifier(FadesWithNotchContentModifier(enabled: enabled, slide: slide, blur: blur, early: early))
     }
 }

@@ -1052,7 +1052,7 @@ struct ContentView: View {
             // Sized to just the visible bars, so it can glide to the open
             // player's visualizer (same id) without jumping.
             Rectangle()
-                .fill((Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray).spectrogramGradient())
+                .fill((Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.avgColor) : Color.gray).spectrogramGradient(secondary: Defaults[.coloredSpectrogram] ? Color(nsColor: musicManager.secondaryColor) : nil))
                 .frame(width: min(width, 50), height: 12)
                 .mask {
                     AudioVisualizerView(isPlaying: $musicManager.isPlaying)
