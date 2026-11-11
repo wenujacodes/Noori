@@ -205,22 +205,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// Fades the visible notch windows in over a moment after a Space switch.
-    /// Windows that are hidden on purpose (alpha 0: lock screen, another display)
-    /// are left alone.
-    private func fadeInWindowsAfterSpaceChange() {
-        guard !windowsHiddenForLock else { return }
-        let all = Defaults[.showOnAllDisplays] ? Array(windows.values) : (window.map { [$0] } ?? [])
-        let visible = all.filter { $0.isVisible && $0.alphaValue > 0.99 }
-        guard !visible.isEmpty else { return }
-        visible.forEach { $0.alphaValue = 0 }
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.3
-            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
-            visible.forEach { $0.animator().alphaValue = 1 }
-        }
-    }
-
     private func hideWindowsForLock() {
         guard !windowsHiddenForLock else { return }
         windowsHiddenForLock = true
@@ -272,26 +256,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// Rebuilds the notch's CGSSpace membership from the current hide option and the
-    /// live windows. The space pins the notch above every space (fullscreen included)
-    /// and is used **only** for "Never hide"; the hide options keep the set empty so
-    /// FullscreenMediaDetector can hide the notch. Assigning the whole set lets the
-    /// CGSSpace diff additions/removals, so this is safe to call on any change.
-    @MainActor
-    private func syncNotchSpaceMembership() {
-        guard Defaults[.hideNotchOption] == .never else {
-            NotchSpaceManager.shared.notchSpace.windows = []
-            return
-        }
-        if Defaults[.showOnAllDisplays] {
-            NotchSpaceManager.shared.notchSpace.windows = Set(windows.values)
-        } else if let window = window {
-            NotchSpaceManager.shared.notchSpace.windows = [window]
-        } else {
-            NotchSpaceManager.shared.notchSpace.windows = []
-        }
-    }
-
     private func createNooriWindow(for screen: NSScreen, with viewModel: NooriViewModel)
         -> NSWindow
     {
@@ -324,12 +288,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.contentView = hostingView
         
         window.orderFrontRegardless()
-        // Pin above every space (fullscreen included) only for "Never hide"; the
-        // hide options leave the window on the collectionBehavior path so
-        // FullscreenMediaDetector can hide it. See NotchSpaceManager.
-        if Defaults[.hideNotchOption] == .never {
-            NotchSpaceManager.shared.notchSpace.windows.insert(window)
-        }
+        // Pin above every Space (fullscreen included) in the max-level CGSSpace, so
+        // switching Spaces never takes it off screen: it stays put like the camera
+        // housing instead of popping back in when the switch ends. "Hide Noori in
+        // full screen" still works, since hiding is done in the notch view
+        // (`hideOnClosed`).
+        NotchSpaceManager.shared.notchSpace.windows.insert(window)
         //SkyLightOperator.shared.delegateWindow(window)
         return window
     }
@@ -526,13 +490,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !AppRuntimeEnvironment.isUITesting {
             MessagesNotificationManager.shared.start()
         }
-        // The notch window is on every Space, so it popped in at once when switching
-        // Spaces (into a fullscreen app especially). Fade it in instead.
-        NSWorkspace.shared.notificationCenter.addObserver(
-            forName: NSWorkspace.activeSpaceDidChangeNotification, object: nil, queue: .main
-        ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.fadeInWindowsAfterSpaceChange() }
-        }
         // Pre-blurs the album art for the notch backgrounds (only while one is on),
         // so the first open already has it.
         _ = AlbumArtBackdrop.shared
@@ -632,13 +589,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 
 
-        // Pin/unpin the notch above all spaces when the hide option changes:
-        // "Never hide" joins the max-level CGSSpace, the hide options leave it.
-        Defaults.publisher(.hideNotchOption, options: []).sink { [weak self] _ in
-            Task { @MainActor [weak self] in
-                self?.syncNotchSpaceMembership()
-            }
-        }.store(in: &cancellables)
         
         
         // Observe screen recording settings changes
