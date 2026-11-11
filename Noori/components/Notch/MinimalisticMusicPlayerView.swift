@@ -163,15 +163,10 @@ struct MinimalisticMusicPlayerView: View {
 
 
 
-    /// Color of a turned-on toggle (shuffle, repeat, lyrics…): the album art's
-    /// color, like the artist name, so it's the same in every music app instead
-    /// of the app's brand color (Spotify green, otherwise blue). White when
-    /// player tinting is off.
-    private var activeToggleColor: Color {
-        Defaults[.playerColorTinting]
-            ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.7)
-            : .white
-    }
+    /// Color of a turned-on toggle (lyrics, shuffle, repeat…): always green, in
+    /// every music app, so "on" reads the same everywhere. (The album art's
+    /// color made it light blue, grey… depending on the cover.)
+    private var activeToggleColor: Color { .green }
 
 
 
