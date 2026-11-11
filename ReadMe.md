@@ -19,8 +19,8 @@ Noori turns the MacBook notch into a lightweight island for music, lyrics, live 
 > Noori is still in active development. Expect frequent updates, and occasional rough edges. Bug reports and ideas are welcome in [Issues](https://github.com/wenujacodes/Noori/issues).
 
 ## Features
-- **Music:** now playing for Apple Music, Spotify and any app that shows up in macOS Now Playing, with album art, a visualizer and customizable controls. Optionally, the album art fills the open notch (blurred toward the bottom) or sits blurred behind the lyrics.
-- **Synced lyrics:** the line being sung shows under the notch, filling in word by word when the timing is available, with the next line underneath. Or show a translation (on-device on macOS 15+) or pronunciation (romaji, pinyin…) instead. Turn lyrics on with the lyrics button in the notch.
+- **Music:** now playing for Apple Music, Spotify and any app that shows up in macOS Now Playing, with album art, a visualizer in the cover's colors (Vibrant, or the classic Legacy look) and customizable controls. Optionally, the album art fills the open notch (blurred toward the bottom) or sits blurred behind the lyrics.
+- **Synced lyrics:** the line being sung shows under the notch, filling in word by word when the timing is available, with the next line underneath. Or show a translation (on-device on macOS 15+) or pronunciation (romaji, pinyin…) instead. Turn lyrics on with the lyrics button in the notch. If a song's lyrics run early or late, right-click the notch › Lyrics Timing to nudge just that song, or shift every song in Settings › Lyrics.
 - **Calls:** during a WhatsApp, FaceTime, Zoom, Teams, Discord, Slack or Telegram call, the notch shows a green call timer, like on iPhone. Click it to go back to the call.
 - **Messages:** new iMessages and texts drop down from the notch with the sender's photo, and you can reply right there (optional; needs Full Disk Access).
 - **Live activities:** charging, Focus, screen recording, camera and microphone use, and Caps Lock.
