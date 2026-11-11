@@ -100,12 +100,21 @@ xcodebuild build \
     ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO \
     DEPLOYMENT_POSTPROCESSING=YES STRIP_INSTALLED_PRODUCT=YES STRIP_STYLE=non-global \
     DEBUG_INFORMATION_FORMAT=dwarf-with-dsym \
-    CODE_SIGN_IDENTITY="$SIGN_IDENTITY" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES \
+    CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES \
     > "$DERIVED/build.log" 2>&1 \
     || { grep -E "error:" "$DERIVED/build.log" | sort -u | head -20 >&2; echo "Build failed; nothing was released (full log: $DERIVED/build.log)" >&2; exit 1; }
 echo "Build succeeded."
 APP="$DERIVED/Build/Products/Release/Noori.app"
 [[ -d "$APP" ]] || { echo "Build failed: $APP not found" >&2; exit 1; }
+# Built ad-hoc (signing the packages with a certificate would need a team and
+# profiles), then re-signed with the certificate: every nested piece (Sparkle's
+# helpers, frameworks) and the app, keeping each one's entitlements. Not its
+# old requirements: an ad-hoc requirement is tied to that exact build.
+if [[ "$SIGN_IDENTITY" != "-" ]]; then
+    codesign --force --deep --sign "$SIGN_IDENTITY" --timestamp=none \
+        --preserve-metadata=entitlements,flags,runtime "$APP" \
+        || { echo "Re-signing Noori.app failed; nothing was released" >&2; exit 1; }
+fi
 # The signature must be valid; show what it's tied to.
 codesign --verify --deep --strict "$APP" \
     || { echo "Noori.app's code signature isn't valid; nothing was released" >&2; exit 1; }
