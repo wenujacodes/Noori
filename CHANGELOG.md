@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- All the player's control buttons are white (shuffle, repeat, lyrics and the output buttons were grey); a toggle that's on is still green.
+
 ## [1.2.0] - 2026-11-11
 
 ### Added

@@ -568,8 +568,8 @@ struct MinimalisticMusicPlayerView: View {
         action: @escaping () -> Void
     ) -> some View {
         let resolvedActiveColor = activeColor ?? activeToggleColor
-        // Extra buttons (shuffle, repeat, …) are grey so the main three stand out.
-        let restingColor: Color = isSecondary ? .gray : .white.opacity(0.85)
+        // Every control button is white when off (green when a toggle is on).
+        let restingColor: Color = .white
         return MinimalisticSquircircleButton(
             icon: icon,
             fontSize: size,
@@ -691,7 +691,7 @@ struct MinimalisticMusicPlayerView: View {
                 fontWeight: .medium,
                 frameSize: CGSize(width: 36, height: 36),
                 cornerRadius: 14,
-                foregroundColor: .gray,
+                foregroundColor: .white,
                 pressEffect: .pop,
                 symbolEffectStyle: .replace
             ) {
@@ -752,7 +752,7 @@ struct MinimalisticMusicPlayerView: View {
                 fontWeight: .medium,
                 frameSize: CGSize(width: 36, height: 36),
                 cornerRadius: 14,
-                foregroundColor: .gray,
+                foregroundColor: .white,
                 pressEffect: .pop,
                 symbolEffectStyle: .replace
             ) {
