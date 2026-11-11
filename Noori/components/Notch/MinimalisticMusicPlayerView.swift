@@ -32,6 +32,7 @@ struct MinimalisticMusicPlayerView: View {
     @Default(.showMediaOutputControl) private var showMediaOutputControl
     @Default(.musicSkipBehavior) private var musicSkipBehavior
     @Default(.showLyrics) private var showLyrics
+    @Default(.albumArtNotchBackground) private var albumArtNotchBackground
     @ObservedObject private var lyricsManager = LyricsManager.shared
     @ObservedObject private var coordinator = NooriViewCoordinator.shared
     @State private var hudValue: Double = 0
@@ -223,11 +224,20 @@ struct MinimalisticMusicPlayerView: View {
             isExplicit: false,
             font: .system(size: 11, weight: .medium),
             nsFont: .subheadline,
-            textColor: Defaults[.playerColorTinting]
-                ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.6)
-                : .gray,
+            textColor: artistColor,
             frameWidth: width
         )
+    }
+
+    /// Light grey over the album art background (a cover-colored name could
+    /// vanish into the cover behind it); otherwise the cover's color.
+    private var artistColor: Color {
+        let artBackground = albumArtNotchBackground && musicManager.hasActiveSession
+            && !musicManager.isAdvertisement
+        if artBackground { return Color(white: 0.82) }
+        return Defaults[.playerColorTinting]
+            ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.6)
+            : .gray
     }
 
     // MARK: - U-Shaped Notch-Hugging Header

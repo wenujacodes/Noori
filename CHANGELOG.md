@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Vibrant visualizer colors are back** and are the default: the visualizer picks the cover's most colorful shades instead of its average color. Settings › Music › Music visualizer › Visualizer colors switches back to Legacy.
 
 ### Changed
+- With the album art background on, the artist name in the open notch is light grey instead of the cover's color, so it stays readable over the cover.
 - Turned-on player toggles (lyrics, shuffle, repeat) are always green, in every music app, instead of Spotify green in Spotify and blue everywhere else.
 - When the notch opens, the song title, progress bar, controls and lyric line slide down out of the top of the notch as they fade in, one row after another, and slide back up when it closes. The album art and visualizer still glide in from the closed notch.
 
