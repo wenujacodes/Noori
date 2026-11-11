@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-11-11
+
 ### Fixed
 - If Noori's signature changes, macOS keeps the old Noori entry under Accessibility, switched on but no longer working (brightness keys showed the macOS HUD until the entry was removed by hand). Noori now notices the new signature and clears its own old entry before asking, so the new permission works right away.
 
