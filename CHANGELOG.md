@@ -12,10 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Vibrant visualizer colors are back** and are the default: the visualizer picks the cover's most colorful shades instead of its average color. Settings › Music › Music visualizer › Visualizer colors switches back to Legacy.
 
 ### Changed
-- Turned-on player toggles (lyrics, shuffle, repeat) use the album art's color in every music app, instead of Spotify green in Spotify and blue everywhere else (white when player tinting is off).
+- Turned-on player toggles (lyrics, shuffle, repeat) are always green, in every music app, instead of Spotify green in Spotify and blue everywhere else.
 - When the notch opens, the song title, progress bar, controls and lyric line slide down out of the top of the notch as they fade in, one row after another, and slide back up when it closes. The album art and visualizer still glide in from the closed notch.
 
 ### Fixed
+- The notch could lose its rounded corners and show as a square box (often when lyrics appeared under the closed notch) until you hovered over it. The music visualizer was the only AppKit view inside the notch, and it could make macOS drop the notch's rounded clip; it's now drawn in SwiftUI and looks the same.
 - Lyrics could run a few seconds late when a source had several versions of a song: Noori now picks the one closest in length to what's playing, instead of the first that was within 4 seconds.
 - Bluetooth devices only show a HUD when they actually connect: not in the open notch, not for devices already connected when Noori starts or the Mac wakes, and not when headphones drop and reconnect on their own within two minutes.
 - Changing volume or brightness while lyrics show under the closed notch no longer slides the bar down over the lyrics and back up: the notch grows taller and the bar fades in place, and the lyrics stay still.

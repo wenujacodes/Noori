@@ -21,128 +21,58 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import AppKit
-import Cocoa
 import SwiftUI
 import Defaults
 
-class AudioSpectrum: NSView {
-    private var barLayers: [CAShapeLayer] = []
-    private var isPlaying: Bool = true
-    private var animationTimer: Timer?
-    
-    override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        wantsLayer = true
-        setupBars()
-    }
-
-    deinit {
-        animationTimer?.invalidate()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        wantsLayer = true
-        setupBars()
-    }
-
-    private func setupBars() {
-        let barWidth: CGFloat = 2
-        let barCount = Defaults[.visualizerBarCount]
-        let spacing: CGFloat = barWidth
-        let totalWidth = CGFloat(barCount) * (barWidth + spacing)
-        let totalHeight: CGFloat = 14
-        frame.size = CGSize(width: totalWidth, height: totalHeight)
-
-        for i in 0 ..< barCount {
-            let xPosition = CGFloat(i) * (barWidth + spacing)
-            let barLayer = CAShapeLayer()
-            barLayer.frame = CGRect(x: xPosition, y: 0, width: barWidth, height: totalHeight)
-            barLayer.position = CGPoint(x: xPosition + barWidth / 2, y: totalHeight / 2)
-            barLayer.fillColor = NSColor.white.cgColor
-            
-            let path = NSBezierPath(roundedRect: CGRect(x: 0, y: 0, width: barWidth, height: totalHeight),
-                                    xRadius: barWidth / 2,
-                                    yRadius: barWidth / 2)
-            barLayer.path = path.cgPath
-            
-            barLayers.append(barLayer)
-            layer?.addSublayer(barLayer)
-        }
-    }
-    
-    override func viewDidMoveToWindow() {
-        super.viewDidMoveToWindow()
-        if window == nil {
-            stopAnimating()
-        } else if isPlaying {
-            startAnimating()
-        }
-    }
-
-    private func startAnimating() {
-        guard animationTimer == nil else { return }
-        animationTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] _ in
-            self?.updateBars()
-        }
-        animationTimer?.tolerance = 0.03
-    }
-    
-    private func stopAnimating() {
-        animationTimer?.invalidate()
-        animationTimer = nil
-        resetBars()
-    }
-    
-    private func updateBars() {
-        for barLayer in barLayers {
-            let animation = CABasicAnimation(keyPath: "transform.scale.y")
-            animation.fromValue = barLayer.presentation()?.value(forKeyPath: "transform.scale.y") ?? 0.35
-            animation.toValue = CGFloat.random(in: 0.35 ... 1.0)
-            animation.duration = 0.3
-            animation.autoreverses = true
-            animation.fillMode = .forwards
-            animation.isRemovedOnCompletion = false
-            if #available(macOS 13.0, *) {
-                animation.preferredFrameRateRange = CAFrameRateRange(minimum: 24, maximum: 24, preferred: 24)
-            }
-            barLayer.add(animation, forKey: "scaleY")
-        }
-    }
-    
-    private func resetBars() {
-        for barLayer in barLayers {
-            barLayer.removeAllAnimations()
-            barLayer.transform = CATransform3DMakeScale(1, 0.35, 1)
-        }
-    }
-    
-    func setPlaying(_ playing: Bool) {
-        isPlaying = playing
-        if isPlaying {
-            startAnimating()
-        } else {
-            stopAnimating()
-        }
-    }
-}
-
-struct AudioSpectrumView: NSViewRepresentable {
+/// The music visualizer's bars: thin white capsules that bounce to random
+/// heights while music plays and rest low when it's paused.
+///
+/// Pure SwiftUI on purpose. It used to be an AppKit view (CAShapeLayers), and
+/// an AppKit view inside the notch made macOS sometimes drop the notch's
+/// rounded clip, leaving a square-cornered box until the next hover.
+struct AudioSpectrumView: View {
     @Binding var isPlaying: Bool
-    
-    func makeNSView(context: Context) -> AudioSpectrum {
-        let spectrum = AudioSpectrum()
-        spectrum.setPlaying(isPlaying)
-        return spectrum
-    }
-    
-    func updateNSView(_ nsView: AudioSpectrum, context: Context) {
-        nsView.setPlaying(isPlaying)
+
+    private let barCount = Defaults[.visualizerBarCount]
+    private static let barWidth: CGFloat = 2
+    private static let height: CGFloat = 14
+    private static let restingScale: CGFloat = 0.35
+    /// How often the bars pick new heights (as before: 0.3 s up, 0.3 s back).
+    private static let step: Duration = .milliseconds(300)
+
+    @State private var scales: [CGFloat] = []
+
+    var body: some View {
+        HStack(spacing: Self.barWidth) {
+            ForEach(0..<barCount, id: \.self) { index in
+                Capsule()
+                    .fill(.white)
+                    .frame(width: Self.barWidth, height: Self.height)
+                    .scaleEffect(y: scale(at: index), anchor: .center)
+            }
+        }
+        .frame(width: CGFloat(barCount) * Self.barWidth * 2, height: Self.height, alignment: .leading)
+        // Runs only while playing, and stops when the view goes away.
+        .task(id: isPlaying) {
+            guard isPlaying else {
+                withAnimation(.easeOut(duration: 0.3)) { scales = [] }
+                return
+            }
+            var up = true
+            while !Task.isCancelled {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    scales = up
+                        ? (0..<barCount).map { _ in CGFloat.random(in: Self.restingScale...1) }
+                        : scales.map { max(Self.restingScale, $0 * 0.55) }
+                }
+                up.toggle()
+                try? await Task.sleep(for: Self.step)
+            }
+        }
     }
 
-    static func dismantleNSView(_ nsView: AudioSpectrum, coordinator: ()) {
-        nsView.setPlaying(false)
+    private func scale(at index: Int) -> CGFloat {
+        index < scales.count ? scales[index] : Self.restingScale
     }
 }
 
@@ -150,4 +80,5 @@ struct AudioSpectrumView: NSViewRepresentable {
     AudioSpectrumView(isPlaying: .constant(true))
         .frame(width: 16, height: 20)
         .padding()
+        .background(.black)
 }
