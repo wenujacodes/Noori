@@ -118,7 +118,8 @@ fi
 # The signature must be valid; show what it's tied to.
 codesign --verify --deep --strict "$APP" \
     || { echo "Noori.app's code signature isn't valid; nothing was released" >&2; exit 1; }
-echo "Signed with: $(codesign -dvv "$APP" 2>&1 | grep -m1 '^Authority=' | cut -d= -f2- || echo 'ad-hoc')"
+AUTHORITY="$(codesign -dvv "$APP" 2>&1 | sed -n 's/^Authority=//p' | head -1 || true)"
+echo "Signed with: ${AUTHORITY:-ad-hoc}"
 # Refuse to ship an app that won't start on one kind of Mac.
 for arch in arm64 x86_64; do
     lipo "$APP/Contents/MacOS/Noori" -verify_arch "$arch" \
