@@ -20,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lyrics could run a few seconds late when a source had several versions of a song: Noori now picks the one closest in length to what's playing, instead of the first that was within 4 seconds.
 - Bluetooth devices only show a HUD when they actually connect: not in the open notch, not for devices already connected when Noori starts or the Mac wakes, and not when headphones drop and reconnect on their own within two minutes.
 - Changing volume or brightness while lyrics show under the closed notch no longer slides the bar down over the lyrics and back up: the notch grows taller and the bar fades in place, and the lyrics stay still.
-- Media from browsers and other non-music apps no longer shows the app's icon or a site's logo (like Facebook's) as the cover; it shows a plain music-note cover instead. Music apps still show their own icon when a song has no cover.
 - A connected Bluetooth device's name now scrolls when it's too long for the HUD, instead of being cut off.
 - Switching Spaces (into a full-screen app especially) no longer makes the notch pop in at the end of the switch: it now stays on screen through the switch, like the camera housing. "Hide Noori in full screen" works as before.
 - The closed notch could get stuck as a square-cornered box (black, or the album art) until you hovered over it. Its background is now drawn in the notch's own shape, so it stays rounded even when macOS skips the notch's clip.
