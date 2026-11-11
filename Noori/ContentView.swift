@@ -1324,6 +1324,18 @@ struct ContentView: View {
                 try? await Task.sleep(for: .milliseconds(100))
                 guard !Task.isCancelled else { return }
 
+                // The open notch's top corners curve inward, so a pointer at the
+                // notch's side edge (the wide closed notch with lyrics especially)
+                // can be outside the open shape but inside the closed one: closing
+                // put it back inside, which opened the notch again, over and over,
+                // with a haptic each time. While the pointer is still within the
+                // open notch's rectangle, wait for it to really leave.
+                while !Task.isCancelled,
+                      await MainActor.run(body: { self.vm.notchState == .open && self.vm.isMouseHovering() }) {
+                    try? await Task.sleep(for: .milliseconds(100))
+                }
+                guard !Task.isCancelled else { return }
+
                 await MainActor.run {
                     withAnimation(NooriMotion.hover) {
                         self.isHovering = false
