@@ -581,7 +581,7 @@ extension Defaults.Keys {
     static let lyricsKaraoke = Key<Bool>("lyricsKaraoke", default: true)
     static let lyricsAlignment = Key<LyricsAlignment>("lyricsAlignment", default: .center)
     static let lyricsColorStyle = Key<LyricsColorStyle>("lyricsColorStyle", default: .white)
-    static let lyricsFontSize = Key<Double>("lyricsFontSize", default: 12)
+    static let lyricsFontSize = Key<Double>("lyricsFontSize", default: 16)
     static let lyricsFontWeight = Key<LyricsFontWeight>("lyricsFontWeight", default: .semibold)
     // Lyrics: behavior
     static let lyricsHideWhenPaused = Key<Bool>("lyricsHideWhenPaused", default: true)

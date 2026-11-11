@@ -174,7 +174,7 @@ struct LyricsSettingsView: View {
 
                 HStack {
                     Text("Text size")
-                    Slider(value: $fontSize, in: 10...16, step: 1)
+                    Slider(value: $fontSize, in: 10...20, step: 1)
                     Text("\(Int(fontSize)) pt")
                         .foregroundStyle(.secondary)
                         .monospacedDigit()
