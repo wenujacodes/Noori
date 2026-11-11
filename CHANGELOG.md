@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lyrics are 16 pt by default for new installs (Settings › Lyrics › Size goes up to 20 pt now).
 - All the player's control buttons are white (shuffle, repeat, lyrics and the output buttons were grey); a toggle that's on is still green.
 
+### Fixed
+- Noori no longer asks for its permissions (Accessibility, Automation, Full Disk Access…) again after every update. Releases were signed differently each time, so macOS treated every update as a new app; they now keep the same signature. You may be asked one last time after installing this version.
+
 ## [1.2.0] - 2026-11-11
 
 ### Added

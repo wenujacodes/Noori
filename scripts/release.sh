@@ -23,7 +23,12 @@
 # the changelog and Updates/appcast.xml and pushes them. Installed copies read
 # that appcast on main and download from the release.
 #
-# Signing: SIGN_IDENTITY (default "-", ad-hoc) is used for the app itself.
+# Signing: the app is signed with SIGN_IDENTITY, or else the first "Developer ID
+# Application" certificate in the Keychain, or else the first "Apple Development"
+# one, and only ad-hoc ("-") when there's none. Use a real certificate: macOS
+# remembers permissions (Accessibility, Automation, Full Disk Access) by the
+# app's signature, and an ad-hoc signature is different for every build, so
+# every update asked for all of them again. Keep using the same certificate.
 # The Sparkle signature uses the "Noori" EdDSA key in the login Keychain
 # (created with `generate_keys --account Noori`). Keep a backup of that key:
 # without it no existing install can update again.
@@ -57,7 +62,15 @@ if ! [[ "$BUILD" =~ ^[0-9]+$ ]]; then
 fi
 
 export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
-SIGN_IDENTITY="${SIGN_IDENTITY:--}"
+if [[ -z "${SIGN_IDENTITY:-}" ]]; then
+    IDENTITIES="$(security find-identity -v -p codesigning 2>/dev/null || true)"
+    SIGN_IDENTITY="$(grep '"Developer ID Application:' <<<"$IDENTITIES" | head -1 | awk '{print $2}' || true)"
+    [[ -n "$SIGN_IDENTITY" ]] || SIGN_IDENTITY="$(grep '"Apple Development:' <<<"$IDENTITIES" | head -1 | awk '{print $2}' || true)"
+    if [[ -z "$SIGN_IDENTITY" ]]; then
+        SIGN_IDENTITY="-"
+        echo "warning: no signing certificate found; signing ad-hoc (users will be asked for permissions again after this update)" >&2
+    fi
+fi
 DERIVED="$ROOT/build/release"
 DIST="$ROOT/dist"
 APPCAST="$ROOT/Updates/appcast.xml"
@@ -93,6 +106,10 @@ xcodebuild build \
 echo "Build succeeded."
 APP="$DERIVED/Build/Products/Release/Noori.app"
 [[ -d "$APP" ]] || { echo "Build failed: $APP not found" >&2; exit 1; }
+# The signature must be valid; show what it's tied to.
+codesign --verify --deep --strict "$APP" \
+    || { echo "Noori.app's code signature isn't valid; nothing was released" >&2; exit 1; }
+echo "Signed with: $(codesign -dvv "$APP" 2>&1 | grep -m1 '^Authority=' | cut -d= -f2- || echo 'ad-hoc')"
 # Refuse to ship an app that won't start on one kind of Mac.
 for arch in arm64 x86_64; do
     lipo "$APP/Contents/MacOS/Noori" -verify_arch "$arch" \
