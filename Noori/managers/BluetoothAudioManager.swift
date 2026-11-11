@@ -94,6 +94,18 @@ class BluetoothAudioManager: ObservableObject {
     private var lastPmsetRefreshDate: Date?
     private let pmsetRefreshCooldown: TimeInterval = 5
     private var hudBatteryWaitTasks: [UUID: Task<Void, Never>] = [:]
+
+    /// No Bluetooth HUDs until this time: devices found at launch or right
+    /// after the Mac wakes connected "a while ago" from the user's point of
+    /// view, so they're recorded quietly instead of announced.
+    private var quietUntil = Date().addingTimeInterval(10)
+    private var isQuiet: Bool { Date() < quietUntil }
+    /// When each device last disconnected. Headphones drop and pick the link
+    /// back up on their own (idle, out of range for a moment); a reconnect
+    /// soon after isn't news, so it shows no HUD.
+    private var lastDisconnectByAddress: [String: Date] = [:]
+    private let quietReconnectWindow: TimeInterval = 120
+    private var wakeObserver: NSObjectProtocol?
     private let hudBatteryWaitInterval: TimeInterval = 0.3
     private let hudBatteryWaitTimeout: TimeInterval = 1.8
     /// How long the device-connected HUD stays up.
@@ -129,6 +141,11 @@ class BluetoothAudioManager: ObservableObject {
         setupAirPodsListeningModeLogObserver()
         checkInitialDevices()
         startPollingForChanges()
+        wakeObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didWakeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.quietUntil = Date().addingTimeInterval(10)
+        }
         powerMonitor = BluetoothPowerMonitor { [weak self] isOn in
             self?.showBluetoothPowerHUD(isOn: isOn)
         }
@@ -460,7 +477,14 @@ class BluetoothAudioManager: ObservableObject {
 
                 refreshBatteryLevelsForConnectedDevices()
                 
-                // Show HUD for new connection
+                // Show HUD for new connection, unless it's just reconnecting
+                // (launch, wake, or a short drop): then it isn't news.
+                let reconnectedSoon = lastDisconnectByAddress[address]
+                    .map { Date().timeIntervalSince($0) < quietReconnectWindow } ?? false
+                if isQuiet || reconnectedSoon {
+                    print("🎧 [BluetoothAudioManager] Quietly tracking \(audioDevice.name) (no HUD)")
+                    continue
+                }
                 if let refreshedDevice = connectedDevices.last {
                     showDeviceConnectedHUD(refreshedDevice)
                 } else {
@@ -491,7 +515,9 @@ class BluetoothAudioManager: ObservableObject {
         if !removedDevices.isEmpty {
             print("🎧 [BluetoothAudioManager] 👋 Audio device(s) disconnected")
             removedDevices.forEach { cancelHUDBatteryWait(for: $0) }
-            if let device = removedDevices.last {
+            let now = Date()
+            removedDevices.forEach { lastDisconnectByAddress[$0.address] = now }
+            if !isQuiet, let device = removedDevices.last {
                 showDeviceDisconnectedHUD(device)
             }
         }
@@ -1898,7 +1924,7 @@ class BluetoothAudioManager: ObservableObject {
 
     /// Shows "Bluetooth · On" or "Bluetooth · Off".
     private func showBluetoothPowerHUD(isOn: Bool) {
-        guard Defaults[.showBluetoothDeviceConnections] else { return }
+        guard Defaults[.showBluetoothDeviceConnections], !isQuiet else { return }
 
         // Turning it off moves audio back to the Mac (a volume change).
         HUDSuppressionCoordinator.shared.suppressVolumeHUD(for: 2)
@@ -1997,6 +2023,8 @@ class BluetoothAudioManager: ObservableObject {
         let address = event.device.address
         guard lastListeningModeByAddress[address] != event.mode else { return }
         lastListeningModeByAddress[address] = event.mode
+        // The mode read at launch or wake isn't a change: just remember it.
+        guard !isQuiet else { return }
         activeListeningModeEvent = event
 
         print("🎧 [BluetoothAudioManager] 🎚️ AirPods listening mode changed: \(event.mode.displayName)")

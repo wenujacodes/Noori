@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When the notch opens, the song title, progress bar, controls and lyric line slide down out of the top of the notch as they fade in, one row after another, and slide back up when it closes. The album art and visualizer still glide in from the closed notch.
 
 ### Fixed
+- Bluetooth devices only show a HUD when they actually connect: not in the open notch, not for devices already connected when Noori starts or the Mac wakes, and not when headphones drop and reconnect on their own within two minutes.
 - Changing volume or brightness while lyrics show under the closed notch no longer slides the bar down over the lyrics and back up: the notch grows taller and the bar fades in place, and the lyrics stay still.
 - Media from browsers and other non-music apps no longer shows the app's icon or a site's logo (like Facebook's) as the cover; it shows a plain music-note cover instead. Music apps still show their own icon when a song has no cover.
 - A connected Bluetooth device's name now scrolls when it's too long for the HUD, instead of being cut off.
