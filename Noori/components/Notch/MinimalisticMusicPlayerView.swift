@@ -163,8 +163,14 @@ struct MinimalisticMusicPlayerView: View {
 
 
 
-    private var brandAccentColor: Color {
-        musicManager.brandAccentColor
+    /// Color of a turned-on toggle (shuffle, repeat, lyrics…): the album art's
+    /// color, like the artist name, so it's the same in every music app instead
+    /// of the app's brand color (Spotify green, otherwise blue). White when
+    /// player tinting is off.
+    private var activeToggleColor: Color {
+        Defaults[.playerColorTinting]
+            ? Color(nsColor: musicManager.avgColor).ensureMinimumBrightness(factor: 0.7)
+            : .white
     }
 
 
@@ -542,7 +548,7 @@ struct MinimalisticMusicPlayerView: View {
         isSecondary: Bool = false,
         action: @escaping () -> Void
     ) -> some View {
-        let resolvedActiveColor = activeColor ?? brandAccentColor
+        let resolvedActiveColor = activeColor ?? activeToggleColor
         // Extra buttons (shuffle, repeat, …) are grey so the main three stand out.
         let restingColor: Color = isSecondary ? .gray : .white.opacity(0.85)
         return MinimalisticSquircircleButton(
