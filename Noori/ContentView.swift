@@ -886,18 +886,22 @@ struct ContentView: View {
 
             if showLyricRow {
                 NotchLyricLine(width: max(0, notchWidth - 16))
-                    .padding(.bottom, showsControlHUD ? 2 : 6)
+                    // Same spacing with or without the HUD below, so the lyrics never move.
+                    .padding(.bottom, 6)
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 if showsControlHUD {
                     // Volume / brightness under the lyrics for a moment; the lyrics stay.
+                    // It only fades in place while the notch grows taller to fit it
+                    // (and out while it shrinks back), instead of sliding down over
+                    // the lyrics and back up.
                     NotchLyricHUDRow(
                         type: coordinator.sneakPeek.type,
                         value: coordinator.sneakPeek.value,
                         width: max(0, notchWidth - 16)
                     )
                     .frame(height: 22)
-                    .padding(.bottom, 8)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    .padding(.bottom, 4)
+                    .transition(.opacity)
                 }
             }
         }
