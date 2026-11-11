@@ -759,13 +759,17 @@ class MusicManager: ObservableObject {
             }
 
             if artworkChanged, let artwork = state.artwork {
-                self.updateArtwork(artwork)
+                self.updateArtwork(artwork, bundleIdentifier: state.bundleIdentifier)
             } else if state.artwork == nil {
-                // Try to use app icon if no artwork but track changed. Wait a bit
-                // first: the artwork often arrives in a separate update right after,
-                // and that cancels this, so the app icon doesn't flash first.
-                if let appIconImage = AppIconAsNSImage(for: state.bundleIdentifier) {
+                // No artwork: a music app shows its icon, anything else (a
+                // browser, say) a plain music-note cover. Wait a bit first: the
+                // artwork often arrives in a separate update right after, and
+                // that cancels this, so the stand-in doesn't flash first.
+                if NowPlayingArtwork.isMusicApp(state.bundleIdentifier),
+                   let appIconImage = AppIconAsNSImage(for: state.bundleIdentifier) {
                     self.updateAlbumArt(newAlbumArt: appIconImage, isAppIcon: true, delay: 1.0)
+                } else {
+                    self.updateAlbumArt(newAlbumArt: NowPlayingArtwork.placeholder, isAppIcon: true, delay: 1.0)
                 }
             }
             self.artworkData = state.artwork
@@ -1025,11 +1029,17 @@ class MusicManager: ObservableObject {
         }
     }
 
-    private func updateArtwork(_ artworkData: Data) {
+    private func updateArtwork(_ artworkData: Data, bundleIdentifier: String?) {
+        let isMusicApp = NowPlayingArtwork.isMusicApp(bundleIdentifier)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
 
-            if let artworkImage = NSImage(data: artworkData) {
+            if let decoded = NSImage(data: artworkData) {
+                // Browsers pass on whatever the site offers, often just its logo
+                // (Facebook's "f"): show the music-note cover instead.
+                let artworkImage = !isMusicApp && NowPlayingArtwork.looksLikeLogo(decoded)
+                    ? NowPlayingArtwork.placeholder
+                    : decoded
                 DispatchQueue.main.async { [weak self] in
                     self?.updateAlbumArt(newAlbumArt: artworkImage)
                 }

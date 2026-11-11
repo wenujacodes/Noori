@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When the notch opens, the song title, progress bar, controls and lyric line slide down out of the top of the notch as they fade in, one row after another, and slide back up when it closes. The album art and visualizer still glide in from the closed notch.
 
 ### Fixed
+- Media from browsers and other non-music apps no longer shows the app's icon or a site's logo (like Facebook's) as the cover; it shows a plain music-note cover instead. Music apps still show their own icon when a song has no cover.
 - A connected Bluetooth device's name now scrolls when it's too long for the HUD, instead of being cut off.
 - Switching Spaces (into a full-screen app especially) no longer makes the notch pop in at the end of the switch: it now stays on screen through the switch, like the camera housing. "Hide Noori in full screen" works as before.
 - The closed notch could get stuck as a square-cornered box (black, or the album art) until you hovered over it. Its background is now drawn in the notch's own shape, so it stays rounded even when macOS skips the notch's clip.
