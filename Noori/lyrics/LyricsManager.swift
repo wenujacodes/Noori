@@ -36,6 +36,29 @@ final class LyricsManager: ObservableObject {
     /// the last line (the song's ending), where it would be an empty strip.
     @Published private(set) var isWithinLyrics = false
 
+    /// Extra timing for the current song only, in ms (positive = earlier), on top
+    /// of the global offset. Sources time the same song differently, so one
+    /// song can run late while the rest are fine. Memory only, like the lyrics.
+    @Published private(set) var songOffsetMs = 0
+    private var songOffsets: [String: Int] = [:]
+    private var songOffsetKey: String?
+
+    /// The global and per-song offsets together, in ms.
+    var totalOffsetMs: Int { Defaults[.lyricsOffsetMs] + songOffsetMs }
+
+    /// Moves the current song's lyrics earlier (positive) or later (negative).
+    func nudgeSongTiming(byMs delta: Int) {
+        guard let songOffsetKey else { return }
+        let value = min(10_000, max(-10_000, songOffsetMs + delta))
+        songOffsets[songOffsetKey] = value == 0 ? nil : value
+        songOffsetMs = value
+        updateWithinLyrics()
+    }
+
+    func resetSongTiming() {
+        nudgeSongTiming(byMs: -songOffsetMs)
+    }
+
     @Published private(set) var translationRequest: LyricsTranslationRequest?
     @Published private(set) var translationStatus: LyricsTranslationStatus = .idle
 
@@ -117,7 +140,7 @@ final class LyricsManager: ObservableObject {
         let within: Bool = {
             guard let first = lines.firstIndex(where: { !$0.text.isEmpty }),
                   let last = lines.lastIndex(where: { !$0.text.isEmpty }) else { return false }
-            let ms = Int(music.estimatedPlaybackPosition() * 1000) + 150 + Defaults[.lyricsOffsetMs]
+            let ms = Int(music.estimatedPlaybackPosition() * 1000) + 150 + totalOffsetMs
             // Show the row a moment before the first line, so it's there when it starts.
             let start = lines[first].timeMs - 1000
             // The last line ends at the pause after it, its last sung word, or after 6 s.
@@ -205,6 +228,8 @@ final class LyricsManager: ObservableObject {
             currentQuery = nil
             fetchTask?.cancel()
             setFetched(nil)
+            songOffsetKey = nil
+            songOffsetMs = 0
             return
         }
 
@@ -223,6 +248,8 @@ final class LyricsManager: ObservableObject {
         fetchTask?.cancel()
 
         let key = cacheKey(for: query)
+        songOffsetKey = key
+        songOffsetMs = songOffsets[key] ?? 0
         if let cached = memoryCache[key] {
             setFetched(cached)
             return

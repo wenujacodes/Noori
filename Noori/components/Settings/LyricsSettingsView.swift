@@ -112,7 +112,26 @@ struct LyricsSettingsView: View {
             }
 
             Section {
-                Stepper(value: $offsetMs, in: -3000...3000, step: 100) {
+                if !lyrics.lines.isEmpty {
+                    Stepper {
+                        HStack {
+                            Text("This song")
+                            Spacer()
+                            Text(Self.offsetLabel(lyrics.songOffsetMs))
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+                    } onIncrement: {
+                        lyrics.nudgeSongTiming(byMs: 250)
+                    } onDecrement: {
+                        lyrics.nudgeSongTiming(byMs: -250)
+                    }
+                    .settingsHighlight(id: highlightID("This song"))
+                    if lyrics.songOffsetMs != 0 {
+                        Button("Reset this song") { lyrics.resetSongTiming() }
+                    }
+                }
+                Stepper(value: $offsetMs, in: -5000...5000, step: 100) {
                     HStack {
                         Text("Timing offset")
                         Spacer()
@@ -128,7 +147,7 @@ struct LyricsSettingsView: View {
             } header: {
                 Text("Timing")
             } footer: {
-                Text("A positive offset shows lyrics earlier, a negative one later.")
+                Text("A positive offset shows lyrics earlier, a negative one later. \"This song\" fixes one song whose lyrics are off (you can also right-click the notch › Lyrics Timing) and lasts until Noori quits; the timing offset applies to every song.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -206,9 +225,10 @@ struct LyricsSettingsView: View {
         return false
     }
 
-    private var offsetLabel: String {
-        let seconds = Double(offsetMs) / 1000
-        return offsetMs == 0 ? "0 s" : String(format: "%+.1f s", seconds)
+    private var offsetLabel: String { Self.offsetLabel(offsetMs) }
+
+    private static func offsetLabel(_ ms: Int) -> String {
+        ms == 0 ? "0 s" : String(format: "%+.2g s", Double(ms) / 1000)
     }
 
     private var currentStatus: String {

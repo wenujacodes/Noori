@@ -691,7 +691,7 @@ struct SettingsView: View {
             SettingsSearchEntry(tab: .lyrics, title: "Second line", keywords: ["translation", "pronunciation", "romaji", "pinyin", "next line"], highlightID: SettingsTab.lyrics.highlightID(for: "Second line")),
             SettingsSearchEntry(tab: .lyrics, title: "Translate lyrics to", keywords: ["translation", "language"], highlightID: SettingsTab.lyrics.highlightID(for: "Translate to")),
             SettingsSearchEntry(tab: .lyrics, title: "Chinese characters", keywords: ["simplified", "traditional"], highlightID: SettingsTab.lyrics.highlightID(for: "Chinese characters")),
-            SettingsSearchEntry(tab: .lyrics, title: "Lyrics timing offset", keywords: ["offset", "delay", "early", "late", "sync"], highlightID: SettingsTab.lyrics.highlightID(for: "Timing offset")),
+            SettingsSearchEntry(tab: .lyrics, title: "Lyrics timing offset", keywords: ["offset", "delay", "early", "late", "sync", "timing", "song"], highlightID: SettingsTab.lyrics.highlightID(for: "Timing offset")),
             SettingsSearchEntry(tab: .lyrics, title: "Fill in words as they're sung", keywords: ["karaoke", "word by word"], highlightID: SettingsTab.lyrics.highlightID(for: "Fill in words as they're sung")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics color", keywords: ["color", "album", "accent"], highlightID: SettingsTab.lyrics.highlightID(for: "Color")),
             SettingsSearchEntry(tab: .lyrics, title: "Lyrics text size", keywords: ["font", "size"], highlightID: SettingsTab.lyrics.highlightID(for: "Text size")),

@@ -92,15 +92,29 @@ enum LyricsMatching {
         return abs(candidate - query) <= 4
     }
 
-    /// The first candidate (in the source's own order, which puts official releases
-    /// first) whose title, artist and length match; an exact title wins over
-    /// "(feat. …)" and other variants.
+    /// The candidate whose title, artist and length match: an exact title wins
+    /// over "(feat. …)" and other variants, then the closest length (another
+    /// version of the song, with a longer intro say, is timed seconds off), then
+    /// the source's own order, which puts official releases first.
     static func best<T>(_ items: [T], query: LyricsQuery, title: (T) -> String, artists: (T) -> [String], duration: (T) -> Double) -> T? {
         let matches = items.filter {
             titleMatches(title($0), query.title) && artistMatches(artists($0), query.artist) && durationMatches(duration($0), query.duration)
         }
         let exactTitle = normalize(query.title)
-        return matches.first { normalize(title($0)) == exactTitle } ?? matches.first
+        func lengthGap(_ item: T) -> Double {
+            let d = duration(item)
+            guard d > 0, query.duration > 0 else { return 2 }  // unknown: between close and far
+            return abs(d - query.duration)
+        }
+        // `min` keeps the first of equals, so the source's order breaks ties.
+        return matches.enumerated().min { a, b in
+            let aExact = normalize(title(a.element)) == exactTitle
+            let bExact = normalize(title(b.element)) == exactTitle
+            if aExact != bExact { return aExact }
+            let gapA = lengthGap(a.element), gapB = lengthGap(b.element)
+            if abs(gapA - gapB) >= 0.5 { return gapA < gapB }
+            return a.offset < b.offset
+        }?.element
     }
 }
 

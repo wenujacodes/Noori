@@ -535,6 +535,17 @@ struct ContentView: View {
                 Button("Settings") {
                     SettingsWindowController.shared.showWindow()
                 }
+                if showLyrics && !lyricsManager.lines.isEmpty {
+                    // Quick fix for a song whose lyrics run early or late.
+                    Menu("Lyrics Timing") {
+                        Button("Show Lyrics Earlier (0.5 s)") { lyricsManager.nudgeSongTiming(byMs: 500) }
+                        Button("Show Lyrics Later (0.5 s)") { lyricsManager.nudgeSongTiming(byMs: -500) }
+                        if lyricsManager.songOffsetMs != 0 {
+                            Divider()
+                            Button("Reset Timing for This Song") { lyricsManager.resetSongTiming() }
+                        }
+                    }
+                }
                 Divider()
                 Button("Restart Noori") {
                     restartNoori()

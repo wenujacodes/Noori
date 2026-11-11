@@ -46,7 +46,7 @@ struct NotchLyricLine: View {
     var body: some View {
         let fillsWords = karaoke && lyrics.isWordTimed
         TimelineView(.animation(minimumInterval: fillsWords ? 1.0 / 60.0 : 0.1, paused: !music.isPlaying)) { context in
-            let ms = Int(music.estimatedPlaybackPosition(at: context.date) * 1000) + leadMs + offsetMs
+            let ms = Int(music.estimatedPlaybackPosition(at: context.date) * 1000) + leadMs + offsetMs + lyrics.songOffsetMs
             let index = lyrics.lineIndex(at: ms)
             let line = index.map { lyrics.lines[$0] }
 
