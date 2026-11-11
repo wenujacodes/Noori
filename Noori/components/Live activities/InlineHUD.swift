@@ -260,7 +260,10 @@ struct InlineHUD: View {
                             nsFont: .subheadline,
                             textColor: .white,
                             minDuration: 0.2,
-                            frameWidth: infoWidth,
+                            // The column also holds the 20 pt icon and the 5 pt gap;
+                            // given the whole column, a name that didn't fit was
+                            // measured as fitting, so it was cut off instead of scrolling.
+                            frameWidth: max(0, infoWidth - 25),
                             // A long name scrolls through twice before the HUD closes.
                             onScrollPass: { NooriViewCoordinator.shared.holdSneakPeek(for: $0 * 2) }
                         )

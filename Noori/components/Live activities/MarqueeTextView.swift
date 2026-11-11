@@ -97,6 +97,11 @@ struct MarqueeText: View {
             .onChange(of: text) { _, _ in
                 resetAndStart()
             }
+            // The space can change after the text appears (a HUD settling to
+            // its width); recheck whether it needs to scroll.
+            .onChange(of: frameWidth) { _, _ in
+                resetAndStart()
+            }
             .onAppear {
                 resetAndStart()
             }
